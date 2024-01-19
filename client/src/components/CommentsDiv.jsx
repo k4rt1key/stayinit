@@ -21,7 +21,7 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength }) 
         event.preventDefault()
 
         if (!isAuthenticate) {
-            navigate("/login")
+            navigate(`/login?return-url=${window.location.pathname}`)
         }
         else {
             try {

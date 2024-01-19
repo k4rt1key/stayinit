@@ -147,13 +147,14 @@ export default function Card({ hostel }) {
 
     return (
 
-        <section className="cursor-pointer flex flex-col py-2 my-2 md:px-[2rem] bg-colorY  ">
-            <div className="flex flex-col w-full items-start">
+        <section className="cursor-pointer flex flex-col items-center py-2 px-4 my-2 min-w-[80%] md:px-[6rem] ">
+            <div className="flex flex-col w-full items-center">
                 <div className="shadow-lg px-[4rem] py-4 rounded-lg">
-                    {/* Title */}
-                    <div className="flex flex-row gap-5  max-w-[50rem] w-full">
 
-                        <div className="flex flex-col gap-3 items-center md:items-start py-4">
+                    {/* Title & Like Icon */}
+                    <div className="flex flex-row lg:justify-between justify-center gap-5 w-full max-w-[50rem]">
+                        {/* Titile */}
+                        <div className="w-[90%] flex flex-col gap-3 items-start py-4">
                             <h1 className="leading-3 text-xl">
                                 {hostel.name}
                             </h1>
@@ -195,7 +196,7 @@ export default function Card({ hostel }) {
 
                                 {priceAndSharingDivArray}
 
-                                <Link to={`./${hostel._id}`} rel="noopener noreferrer">
+                                <Link to={`./${hostel.uniqueName}`} rel="noopener noreferrer">
                                     <div className="lg:absolute bottom-0 right-0 bg-colorG text-[#FFFBF2] px-4 py-4 rounded-[1rem] md-down: my-5">
                                         <div className="text-base leading-6 self-center whitespace-nowrap">
                                             See what’s available

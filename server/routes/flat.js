@@ -13,7 +13,7 @@ const {
 router.post("/", authMiddleware, addFlat)
 
 router.get("/", getAllFlats)
-router.get("/:id", getFlat)
+router.get("/:flatname", getFlat)
 
 router.patch("/:id", authMiddleware, updateFlat)
 router.delete("/:id", authMiddleware, deleteFlat)

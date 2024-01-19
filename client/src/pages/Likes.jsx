@@ -71,8 +71,8 @@ export default function likes() {
 
     return (
         <div>
-            <div className="p-6 font-Classy text-xl">Total {totalLikes} likes</div>
-            <div className="w-full flex flex-row flex-wrap gap-10 justify-center  md:justify-normal items-center p-6">
+            <div className="p-6 text-center w-full font-Classy text-xl">Total {totalLikes} likes</div>
+            <div className="w-full flex flex-row flex-wrap gap-10 justify-center items-center p-6">
                 {likedPropertyCards.length > 0 ? likedPropertyCards :
                     <div className="p-4 flex flex-col gap-4">
                         <h1 className="text-2xl">Nothing is liked...</h1>

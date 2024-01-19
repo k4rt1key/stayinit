@@ -202,7 +202,7 @@ export default function Card({ flat }) {
                                     </div>
                                 </div>
                                 {/* Link to Flat.jsx page */}
-                                <Link to={`./${flat._id}`} rel="noopener noreferrer">
+                                <Link to={`./${flat.uniqueName}`} rel="noopener noreferrer">
                                     <div className="lg:absolute bottom-0 right-0 bg-colorG text-[#FFFBF2] px-4 py-4 rounded-[1rem] md-down: my-5">
                                         <div className="text-base leading-6 self-center whitespace-nowrap">
                                             See what’s available

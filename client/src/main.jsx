@@ -31,9 +31,9 @@ const router = createBrowserRouter(createRoutesFromElements(
     {/* <Route path="/prediction" element={<Prediction />} /> */}
 
     <Route path="/hostels" element={<HostelsListing />} />
-    <Route path="/hostels/:id" element={<Hostel />} />
+    <Route path="/hostels/:hostelname" element={<Hostel />} />
     <Route path="/flats" element={<FlatListing />} />
-    <Route path="/flats/:id" element={<Flat />} />
+    <Route path="/flats/:flatname" element={<Flat />} />
 
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />

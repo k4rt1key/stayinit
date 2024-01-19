@@ -9,7 +9,7 @@ const { getHostel, getAllHostels, addHostel, updateHostel, deleteHostel, addPric
 router.post("/", authMiddlewere, addHostel)
 
 router.get("/", getAllHostels)
-router.get("/:id", getHostel)
+router.get("/:hostelname", getHostel)
 
 router.patch("/:id", authMiddlewere, updateHostel)
 router.delete("/:id", authMiddlewere, deleteHostel)

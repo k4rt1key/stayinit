@@ -4,9 +4,9 @@ const Image = require("../models/Image")
 
 async function getHostel(req, res) {
     try {
-        const { id } = req.params
+        const { hostelname } = req.params
 
-        const hostelInDb = await Hostel.findById(id)
+        const hostelInDb = await Hostel.findOne({uniqueName: hostelname})
             .populate('priceAndSharing comments likes arrayOfImages')
             .populate({
                 path: "comments",
@@ -110,6 +110,7 @@ async function addHostel(req, res) {
     try {
         const { // addedBy, likes, comments are by default added to [] in the model
             name,
+            uniqueName,
             priceAndSharing,
             forWhichGender,
             addressLink,
@@ -140,6 +141,7 @@ async function addHostel(req, res) {
         const newHostel = new Hostel({
             name,
             priceAndSharing,
+            uniqueName,
             address,
             forWhichGender,
             addressLink,

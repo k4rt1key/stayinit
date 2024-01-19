@@ -18,11 +18,26 @@ const Flatschema = new mongoose.Schema({
         enum: ["flat"]
     },
 
+    uniqueName: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+    },
+
     name: {
         type: String,
         required: true,
+        unique: true,
         min: 3,
         max: 20,
+    },
+
+    uniqueName: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
     },
 
     price: {

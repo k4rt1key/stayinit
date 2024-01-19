@@ -39,7 +39,7 @@ export default function LikedCard({ flatOrHostel, name, type, profile, setLikedP
     }
 
     return (
-        <div className="w-[15rem] flex flex-col gap-10 p-6 items-start rounded-[1rem] shadow-md">
+        <div className="w-[15rem] flex flex-col gap-10 p-6 items-center rounded-[1rem] shadow-md">
             {/* Image of liked property */}
             <div className="">
                 <img src={getFirstImage(flatOrHostel)} className="w-full rounded-[1rem]" alt="property_image" />

@@ -17,6 +17,13 @@ const HostelSchema = new mongoose.Schema({
         trim: true,
     },
 
+    uniqueName: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+    },
+
     priceAndSharing: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "PriceAndSharing",

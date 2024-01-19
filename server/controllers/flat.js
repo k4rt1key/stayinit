@@ -4,19 +4,20 @@ const Profile = require("../models/Profile")
 const Comment = require("../models/Comment")
 const Like = require("../models/Like")
 
+// get flat by unique name
 async function getFlat(req, res) {
     try {
 
-        const { id } = req.params
+        const { flatname } = req.params
 
-        if (!id) {
+        if (!flatname) {
             return res.status(400).json({
                 "success": false,
-                "message": "you must provide flat-id",
+                "message": "you must provide flat-name",
             })
         }
 
-        const flatInDb = await Flat.findById(id)
+        const flatInDb = await Flat.findOne({uniqueName: flatname})
             .populate("arrayOfImages likes")
             .populate({
                 path: "comments",
@@ -45,6 +46,7 @@ async function getFlat(req, res) {
         })
     }
 }
+
 
 async function getAllFlats(req, res) {
     try {
@@ -106,7 +108,7 @@ async function addFlat(req, res) {
     try {
         // getting values from request
         const {
-            type, name, price, bhk, sqft, furnitureType, address,
+            type, name, uniqueName,price, bhk, sqft, furnitureType, address,
             locality, city, pincode, addressLink, nearestLandmarks,
             contactNumber, contactEmail, arrayOfImages, atWhichFloor,
             totalFloor, description, bathrooms,
@@ -117,7 +119,7 @@ async function addFlat(req, res) {
         const { _id: profile } = req.profile;
 
         const newFlat = new Flat({
-            type, name, price, bhk, sqft, furnitureType,
+            type, name, uniqueName, price, bhk, sqft, furnitureType,
             address, locality, city, pincode, addressLink,
             nearestLandmarks, contactNumber, contactEmail,
             addedBy: profile, comments: [], likes: [], arrayOfImages: arrayOfImages || [], atWhichFloor,
