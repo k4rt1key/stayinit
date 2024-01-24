@@ -59,6 +59,7 @@ export default function HostelInfo() {
         contactEmail,
         addedBy,
         nearestLandmarks,
+        nearestLandmarksForSearching,
         comments,
         likes,
         arrayOfImages,
@@ -75,6 +76,8 @@ export default function HostelInfo() {
         cleaning,
     } = hostel
 
+    console.log(hostel)
+    console.log("nearestLandmarksForSearching: " + nearestLandmarksForSearching)
 
     // Creating Aminities Div
     const aminitesArr = []
@@ -339,7 +342,7 @@ export default function HostelInfo() {
 
 
                     {/* Nearest Landmarks */}
-                    <NearestLandmarks />
+                    <NearestLandmarks nearestLandmarksForSearching={nearestLandmarksForSearching} />
 
                 </div >
 

@@ -54,6 +54,7 @@ export default function likes() {
 
 
     const likedPropertyCards = likedProperty.map((property) => {
+        console.log(property);
         return (
             <LikedCard
                 key={property._id}

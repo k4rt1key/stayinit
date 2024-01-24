@@ -24,6 +24,11 @@ const HostelSchema = new mongoose.Schema({
         trim: true,
     },
 
+    developer: {
+        type: String,
+        required: true,
+    },
+
     priceAndSharing: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "PriceAndSharing",
@@ -84,6 +89,11 @@ const HostelSchema = new mongoose.Schema({
     nearestLandmarks: {
         type: [String]
     },
+
+    nearestLandmarksForSearching: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "NearestLandmarksForSearching",
+    }],
 
     // >>> Contact Fields -- mandatory
     contactNumber: {

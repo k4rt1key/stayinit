@@ -7,6 +7,8 @@ const {
     pincodeValidator,
 } = require('../validator/modelValidator');
 
+const { NearestLandmarksForSearching } = require("./NearestLandmarksForSearching")
+
 
 const Flatschema = new mongoose.Schema({
 
@@ -31,6 +33,11 @@ const Flatschema = new mongoose.Schema({
         unique: true,
         min: 3,
         max: 20,
+    },
+
+    developer: {
+        type: String,
+        required: true,
     },
 
     uniqueName: {
@@ -121,6 +128,11 @@ const Flatschema = new mongoose.Schema({
         type: [String]
     },
 
+    nearestLandmarksForSearching: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "NearestLandmarksForSearching",
+    }],
+
     // >>> Contact Fields -- mandatory
     contactNumber: {
         type: String,
@@ -194,13 +206,6 @@ const Flatschema = new mongoose.Schema({
         type: Number,
         min: 0,
         max: 10,
-    },
-
-    devloper: {
-        type: String,
-        trim: true,
-        min: 3,
-        max: 20,
     },
 
 }, { timestamps: true })

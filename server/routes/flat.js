@@ -8,7 +8,9 @@ const {
     addFlat,
     deleteFlat,
     updateFlat,
-    addFlatImage } = require("../controllers/flat")
+    addFlatImage,
+    addNearestLandmarks,
+} = require("../controllers/flat")
 
 router.post("/", authMiddleware, addFlat)
 
@@ -19,6 +21,8 @@ router.patch("/:id", authMiddleware, updateFlat)
 router.delete("/:id", authMiddleware, deleteFlat)
 
 router.post("/flat-image", authMiddleware, addFlatImage)
+
+router.post("/nearest-landmarks", authMiddleware, addNearestLandmarks)
 
 module.exports = router
 

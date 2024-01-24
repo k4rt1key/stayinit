@@ -39,7 +39,6 @@ export default function Flat() {
             const data = jsonResponse.data;
 
             if (jsonResponse.success === true) {
-                console.log("liked Successfully")
 
                 const newList = []
                 data.forEach((like) => {
@@ -146,6 +145,8 @@ export default function Flat() {
 
     const [prediction, setPrediction] = useState()
     const { flatname } = useParams();
+    console.log("prediction -> " + prediction)
+
 
     const [flat, setFlat] = useState({})
     const [loading, setLoading] = useState(false)
@@ -154,20 +155,16 @@ export default function Flat() {
 
     // function : to predict flat's price range based on flat's attributes
     async function fetchPrediction(flat) {
-        if (authData.isAuthenticate) {
-            const response = await fetch('http://localhost:8000/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+        try {
+            if(authData.isAuthenticate){
+                console.log(flat.developer)
+                console.log(JSON.stringify({
                     property_sqft: flat.sqft,
                     property_bhk: flat.bhk,
-                    developer: flat.developer.toLowerCase(),
+                    property_project: flat.developer.toLowerCase(),
                     property_city: flat.city.toLowerCase(),
                     property_locality: flat.locality.toLowerCase(),
                     is_furnished: flat.furnitureType.toLowerCase(),
-                    property_project: "",
                     num_of_baths: flat.bathrooms,
                     bachelors_or_family: "bachelors",
                     floornumber: flat.atWhichFloor,
@@ -178,16 +175,44 @@ export default function Flat() {
                     num_of_bathsnan: 0,
                     floornumbernan: 0,
                     totalfloornan: 0
-                }),
-            });
+                }))
 
-            const data = await response.json()
+                const response = await fetch('http://localhost:7000/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        property_sqft: flat.sqft,
+                        property_bhk: flat.bhk,
+                        property_project: flat.developer.toLowerCase(),
+                        property_city: flat.city.toLowerCase(),
+                        property_locality: flat.locality.toLowerCase(),
+                        is_furnished: flat.furnitureType.toLowerCase(),
+                        num_of_baths: flat.bathrooms,
+                        bachelors_or_family: "bachelors",
+                        floornumber: flat.atWhichFloor,
+                        totalfloor: flat.totalfloor || flat.atWhichFloor,
 
+                        property_pricenan: 0,
+                        property_bhknan: 0,
+                        property_sqftnan: 0,
+                        num_of_bathsnan: 0,
+                        floornumbernan: 0,
+                        totalfloornan: 0
+                    }),
+                });
 
-            setPrediction(data.prediction)
-        }
-        else {
-            navigate("/login")
+                const jsonResponse = await response.json()
+                setPrediction(jsonResponse.prediction)
+
+            } else {
+                navigate(`/login?return-url=${window.location.pathname}`)
+            }
+        } 
+        
+        catch(error){
+            console.log(error)
         }
     }
 
@@ -201,7 +226,6 @@ export default function Flat() {
 
         const response = await fetch(`http://localhost:5000/api/v1/flat/${flatname}`, requestOptions);
         const jsonResponse = await response.json();
-        console.log(jsonResponse)
 
         if (jsonResponse.success === true) {
             setFlat(jsonResponse.data);
@@ -219,9 +243,8 @@ export default function Flat() {
         address, locality, city, pincode, addressLink,
         nearestLandmarks, contactNumber, contactEmail,
         addedBy, comments, likes, arrayOfImages, atWhichFloor,
-        totalFloor, description, bathrooms, balconies, developer,
+        totalFloor, description, bathrooms, balconies, developer, nearestLandmarksForSearching,
     } = flat
-
 
     // returning UI component
     if (!loading) {
@@ -294,7 +317,7 @@ export default function Flat() {
                                         {`Price Should be between ${roundToNearestThousand(prediction - (prediction * 0.07))} - ${roundToNearestThousand(prediction + (prediction * 0.07))} Rupees`}
                                     </div>
                                 ) : (
-                                    <button onClick={() => fetchPrediction(flat)} className="">
+                                    <button className="" onClick={()=> { fetchPrediction(flat)}}>
                                         <div className=" text-[#FFFBF2] bg-colorG px-3 py-3 md-down: my-5 rounded-[1rem]">
                                             <div className="text-base text-center leading-6 self-center whitespace-nowrap">
                                                 See Expected Price
@@ -305,7 +328,7 @@ export default function Flat() {
                     </div>
 
                     {/* Nearest Landmarks */}
-                    <NearestLandmarks nearestLandmarks={nearestLandmarks} />
+                    <NearestLandmarks nearestLandmarksForSearching={nearestLandmarksForSearching} />
 
 
                     {/* Contact Details */}

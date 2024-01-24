@@ -1,13 +1,14 @@
 const Hostel = require("../models/Hostel")
 const PriceAndSharing = require("../models/PriceAndSharing")
 const Image = require("../models/Image")
+const NearestLandmarksForSearching = require("../models/NearestLandmarksForSearching")
 
 async function getHostel(req, res) {
     try {
         const { hostelname } = req.params
 
         const hostelInDb = await Hostel.findOne({uniqueName: hostelname})
-            .populate('priceAndSharing comments likes arrayOfImages')
+            .populate('priceAndSharing comments likes arrayOfImages nearestLandmarksForSearching')
             .populate({
                 path: "comments",
                 populate: {
@@ -72,7 +73,7 @@ async function getAllHostels(req, res) {
             ...(forWhichGender && { forWhichGender })
         }
 
-        const hostelsInDb = await Hostel.find(queryObj).populate('priceAndSharing comments likes arrayOfImages').exec()
+        const hostelsInDb = await Hostel.find(queryObj).populate('priceAndSharing comments likes arrayOfImages nearestLandmarksForSearching').exec()
 
         // Filter hostels by price and then sort them
         const filteredData = hostelsInDb.filter((hostel) => {
@@ -111,6 +112,7 @@ async function addHostel(req, res) {
         const { // addedBy, likes, comments are by default added to [] in the model
             name,
             uniqueName,
+            developer,
             priceAndSharing,
             forWhichGender,
             addressLink,
@@ -133,7 +135,6 @@ async function addHostel(req, res) {
             filterWater,
             cctv,
             cleaning,
-
         } = req.body
 
         const { _id: profile } = req.profile;
@@ -141,6 +142,7 @@ async function addHostel(req, res) {
         const newHostel = new Hostel({
             name,
             priceAndSharing,
+            developer,
             uniqueName,
             address,
             forWhichGender,
@@ -167,7 +169,7 @@ async function addHostel(req, res) {
             filterWater,
             cctv,
             cleaning,
-
+            nearestLandmarksForSearching: [],
         })
 
         const createdHostel = await newHostel.save()
@@ -327,6 +329,48 @@ async function addHostelImage(req, res) {
     }
 }
 
+async function addNearestLandmarks(req, res){
+
+    try{
+
+        const {distance, place, hostel} = req.body;
+        
+        const newNearestLandmarkObject = new NearestLandmarksForSearching({
+        distance,
+        place,
+        hostel,
+    });
+    
+    if(!newNearestLandmarkObject) {
+        return res.status(500).json({
+            "success": false,
+            "message": "error in creating object"
+        })
+    }
+
+    await newNearestLandmarkObject.save();
+    
+    await Hostel.findByIdAndUpdate(
+        hostel,
+        { $push: { nearestLandmarksForSearching: newNearestLandmarkObject._id} },
+        { new: true}
+        )
+
+    res.status(200).json({
+        "success": true,
+        "message": "nearest landmark added successfully",
+        "data": newNearestLandmarkObject,
+
+    })
+
+    } catch(error) {
+        return res.status(500).json({
+            "success": false,
+            "message": error.message
+        })
+    }
+}
+
 module.exports = {
     getHostel,
     getAllHostels,
@@ -335,4 +379,5 @@ module.exports = {
     updateHostel,
     addPriceAndSharingDetails,
     addHostelImage,
+    addNearestLandmarks,
 }
