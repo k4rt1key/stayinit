@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLoaderData } from "react-router-dom";
 
 import { useAuth } from '../contexts/Auth'
 import { roundToNearestThousand } from "../utils/utilityFunctions";
@@ -24,6 +24,7 @@ export default function Flat() {
     const [likeLoading, setLikeLoading] = useState(false)
 
 
+    // like releted logic --->
     async function getLikes() {
         try {
             const requestOptions = {
@@ -143,16 +144,38 @@ export default function Flat() {
         }
     }
 
-    const [prediction, setPrediction] = useState()
-    const { flatname } = useParams();
-    console.log("prediction -> " + prediction)
-
-
     const [flat, setFlat] = useState({})
+    const { flatname } = useParams();
     const [loading, setLoading] = useState(false)
+    
+    async function fetchFlatInfo() {
 
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        };
+
+
+        const response = await fetch(`http://localhost:5000/api/v1/flat/${flatname}`, requestOptions);
+        const jsonResponse = await response.json();
+
+        if (jsonResponse.success === true) {
+            setFlat(jsonResponse.data);
+        }
+    }
+
+    const [prediction, setPrediction] = useState()
     const [commentsLength, setCommentsLength] = useState(0);
 
+
+    useEffect(() => {
+        setLoading(true);
+        fetchFlatInfo()
+        setLoading(false)
+    }, [commentsLength])
+
+
+    
     // function : to predict flat's price range based on flat's attributes
     async function fetchPrediction(flat) {
         try {
@@ -216,28 +239,7 @@ export default function Flat() {
         }
     }
 
-    async function fetchFlatInfo() {
-
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        };
-
-
-        const response = await fetch(`http://localhost:5000/api/v1/flat/${flatname}`, requestOptions);
-        const jsonResponse = await response.json();
-
-        if (jsonResponse.success === true) {
-            setFlat(jsonResponse.data);
-        }
-    }
-
-    useEffect(() => {
-        setLoading(true);
-        fetchFlatInfo()
-        setLoading(false)
-    }, [commentsLength])
-
+    
     const {
         _id, type, name, price, bhk, sqft, furnitureType,
         address, locality, city, pincode, addressLink,

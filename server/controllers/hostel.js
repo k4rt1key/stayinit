@@ -360,7 +360,6 @@ async function addNearestLandmarks(req, res){
         "success": true,
         "message": "nearest landmark added successfully",
         "data": newNearestLandmarkObject,
-
     })
 
     } catch(error) {
