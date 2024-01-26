@@ -1,10 +1,11 @@
 import { Carousel } from "@material-tailwind/react";
+import {nanoid} from "nanoid";
 
 export default function ImageCarousel({ arrayOfImages }) {
     const images = arrayOfImages && arrayOfImages.length > 0 ?
         arrayOfImages.map((image) => {
             return (
-                <img src={image.url} className="h-full w-full object-cover" alt="propery images" lazy='true' />
+                <img key={nanoid()} src={image.url} className="h-full w-full object-cover" alt="propery images" lazy='true' />
             )
         }) : []
 

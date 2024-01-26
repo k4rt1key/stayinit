@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../contexts/Auth';
 
 import { Spinner } from "@material-tailwind/react";
@@ -12,6 +12,8 @@ export default function Login() {
     const [loginData, setLoginData] = React.useState({})
     const [error, setError] = React.useState("")
 
+    const [searchParams, setSearchParams] = useSearchParams();
+    const returnUrl = searchParams.get("return-url")
     const [loading, setLoading] = React.useState(false)
 
     function handleLoginInput(event) {
@@ -48,7 +50,11 @@ export default function Login() {
 
             if (jsonResponse.success === true) {
                 loginContextFunction(jsonResponse)
-                navigate('/');
+                if(returnUrl){
+                    navigate(`${returnUrl}`); 
+                } else {
+                    navigate("/"); 
+                }
                 window.location.reload();
             } else {
                 setError(jsonResponse.message)

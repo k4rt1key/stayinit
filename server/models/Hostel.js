@@ -17,6 +17,18 @@ const HostelSchema = new mongoose.Schema({
         trim: true,
     },
 
+    uniqueName: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+    },
+
+    developer: {
+        type: String,
+        required: true,
+    },
+
     priceAndSharing: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "PriceAndSharing",
@@ -77,6 +89,11 @@ const HostelSchema = new mongoose.Schema({
     nearestLandmarks: {
         type: [String]
     },
+
+    nearestLandmarksForSearching: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "NearestLandmarksForSearching",
+    }],
 
     // >>> Contact Fields -- mandatory
     contactNumber: {
@@ -149,5 +166,7 @@ const HostelSchema = new mongoose.Schema({
     cleaning: Boolean,
 
 }, { timestamps: true })
+
+HostelSchema.index({'$**': 'text'});
 
 module.exports = mongoose.model("Hostel", HostelSchema)

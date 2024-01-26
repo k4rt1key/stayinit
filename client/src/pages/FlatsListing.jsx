@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useSearchParams } from "react-router-dom";
+import { useLoaderData, useSearchParams } from "react-router-dom";
 
 import { useAuth } from "../contexts/Auth"
 import { Spinner } from "@material-tailwind/react";
@@ -10,26 +10,8 @@ import Cards from "../components/Flat/Cards"
 export default function FlatListing() {
 
     const [searchParams, setSearchParams] = useSearchParams()
-
-    const [flats, setFlats] = useState([]);
-
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    async function fetchFlats() {
-        const response = await fetch("http://localhost:5000/api/v1/flat");
-        const jsonResponse = await response.json();
-        const data = jsonResponse.data;
-        setFlats(data);
-    }
-
-    useEffect(() => {
-        setLoading(true);
-        fetchFlats();
-        setLoading(false);
-    }, [])
-
-
+    const flats = useLoaderData()
+        
     const filters = {
         minPrice: Number(searchParams.get("minPrice")),
         maxPrice: Number(searchParams.get("maxPrice")),
@@ -64,7 +46,7 @@ export default function FlatListing() {
     return (
         <div>
             <FlatFilters />
-            {loading ? <Spinner color="white" size="sm" /> : <Cards flats={filteredFlats} />}
+            {!flats ? <Spinner color="white" size="sm" /> : <Cards flats={filteredFlats} />}
         </div>
     );
 

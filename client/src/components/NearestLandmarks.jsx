@@ -1,15 +1,17 @@
 import React from "react";
 
-export default function NearestLandmarks({ nearestLandmarks }) {
+export default function NearestLandmarks({ nearestLandmarksForSearching }) {
+
+    console.log(nearestLandmarksForSearching)
 
     let nearestLandmarksDivs = []
 
-    if (nearestLandmarks) {
+    if (nearestLandmarksForSearching) {
 
-        nearestLandmarksDivs = nearestLandmarks.map((oneLandmark) => {
+        nearestLandmarksDivs = nearestLandmarksForSearching.map((oneLandmark) => {
 
-            const km = oneLandmark.split("km from")[0]
-            const location = oneLandmark.split("km from")[1]
+            const km = oneLandmark.distance;
+            const location = oneLandmark.place;
             return (
                 <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
                     <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">

@@ -1,9 +1,11 @@
 // Import necessary modules and components
 import React from "react"
-import { Link } from "react-router-dom"
+import { Link, useRevalidator } from "react-router-dom"
 import { getFirstImage } from "../utils/utilityFunctions"
 
-export default function LikedCard({ flatOrHostel, name, type, profile, setLikedProperty, locality, city, image }) {
+export default function LikedCard({ flatOrHostel, name, type, locality, city }) {
+
+    const revalidator = useRevalidator();
 
     async function unlike() {
 
@@ -20,26 +22,12 @@ export default function LikedCard({ flatOrHostel, name, type, profile, setLikedP
 
         if (jsonResponse.success === true) {
             // if the property is unliked then remove it from the liked property state
-            setLikedProperty((prev) => {
-                let result = [...prev];
-
-                result = result.filter((property) => {
-                    if (property.flat) {
-                        return property.flat._id !== flatOrHostel._id
-                    }
-
-                    if (property.hostel) {
-                        return property.hostel._id !== flatOrHostel._id
-                    }
-                })
-
-                return result;
-            })
+            revalidator.revalidate();
         }
     }
 
     return (
-        <div className="w-[15rem] flex flex-col gap-10 p-6 items-start rounded-[1rem] shadow-md">
+        <div className="w-[15rem] flex flex-col gap-10 p-6 items-center rounded-[1rem] shadow-md">
             {/* Image of liked property */}
             <div className="">
                 <img src={getFirstImage(flatOrHostel)} className="w-full rounded-[1rem]" alt="property_image" />

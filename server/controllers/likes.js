@@ -112,13 +112,6 @@ async function getLikedProperties(req, res) {
                 populate: { path: 'arrayOfImages' }
             });
 
-        if (likesInDb.length <= 0) {
-            return res.status(404).json({
-                "success": false,
-                "message": "this user has not liked any property",
-            });
-        }
-
         res.status(200).json({
             "success": true,
             "message": "successfully fetched all liked properties",

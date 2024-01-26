@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useSearchParams } from "react-router-dom";
+import { useLoaderData, useSearchParams } from "react-router-dom";
 
 import { Spinner } from "@material-tailwind/react";
 
@@ -9,24 +9,8 @@ import Cards from "../components/Hostel/Cards"
 export default function HostelListing() {
 
     const [searchParams, setSearchParams] = useSearchParams()
-
-    const [hostels, sethostels] = useState([]);
-
-    const [loading, setLoading] = useState(true);
-
-    async function fetchhostels() {
-        const response = await fetch("http://localhost:5000/api/v1/hostel");
-        const jsonResponse = await response.json();
-        const data = jsonResponse.data;
-        sethostels(data);
-    }
-
-    useEffect(() => {
-        setLoading(true);
-        fetchhostels();
-        setLoading(false);
-    }, [])
-
+    const hostels = useLoaderData()
+   
     const filters = {
         "minPrice": Number(searchParams.get("minPrice")),
         "maxPrice": Number(searchParams.get("maxPrice")),
@@ -64,7 +48,7 @@ export default function HostelListing() {
     return (
         <div>
             <HostelFilters />
-            {loading ? <Spinner color="white" size="sm" /> : <Cards hostels={filteredHostels} />}
+            <Cards hostels={filteredHostels} />
         </div>
     );
 

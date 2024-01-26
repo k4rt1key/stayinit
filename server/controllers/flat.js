@@ -3,27 +3,30 @@ const Image = require("../models/Image")
 const Profile = require("../models/Profile")
 const Comment = require("../models/Comment")
 const Like = require("../models/Like")
+const NearestLandmarksForSearching = require("../models/NearestLandmarksForSearching")
 
+// get flat by unique name
 async function getFlat(req, res) {
     try {
 
-        const { id } = req.params
+        const { flatname } = req.params
 
-        if (!id) {
+        if (!flatname) {
             return res.status(400).json({
                 "success": false,
-                "message": "you must provide flat-id",
+                "message": "you must provide flat-name",
             })
         }
 
-        const flatInDb = await Flat.findById(id)
-            .populate("arrayOfImages likes")
+        const flatInDb = await Flat.findOne({ uniqueName: flatname })
+            .populate("arrayOfImages comments likes nearestLandmarksForSearching")
             .populate({
                 path: "comments",
                 populate: {
                     path: "profile",
                 }
             })
+
 
         if (!flatInDb) {
             return res.status(404).json({
@@ -51,7 +54,7 @@ async function getAllFlats(req, res) {
 
         // getting filters and sorting options from request query 
         // then creating queryObject
-        const { bhk, furnitureType } = req.query
+        const { bhk, furnitureType, search } = req.query
 
         const minPrice = req.query.minPrice || 0
         const maxPrice = req.query.maxPrice || Infinity
@@ -71,9 +74,13 @@ async function getAllFlats(req, res) {
             queryObj.furnitureType = furnitureType
         }
 
+        if(search){
+            queryObj.$text = { $search: search }
+        }
+
         // finding flats with the queryObject
         const flatsInDb = await Flat.find(queryObj)
-            .populate("arrayOfImages comments likes")
+            .populate("arrayOfImages comments likes nearestLandmarksForSearching")
             .sort(
                 sortByPrice ? { "price": sortByPrice } : sortBySqft ? { "sqft": sortBySqft } : null
             )
@@ -81,18 +88,11 @@ async function getAllFlats(req, res) {
             .where("sqft").gt(minSqft - 1).lt(maxSqft + 1)
             .exec()
 
-        if (flatsInDb.length > 0) {
-            return res.status(200).json({
-                "success": true,
-                "message": "your flats were fetched successfully",
-                "data": flatsInDb
-            })
-        } else {
-            return res.status(404).json({
-                "success": false,
-                "error": "no flats found",
-            })
-        }
+        return res.status(200).json({
+            "success": true,
+            "message": "your flats were fetched successfully",
+            "data": flatsInDb
+        })
 
     } catch (error) {
         res.status(500).json({
@@ -106,22 +106,22 @@ async function addFlat(req, res) {
     try {
         // getting values from request
         const {
-            type, name, price, bhk, sqft, furnitureType, address,
+            type, name, uniqueName, price, bhk, sqft, furnitureType, address,
             locality, city, pincode, addressLink, nearestLandmarks,
             contactNumber, contactEmail, arrayOfImages, atWhichFloor,
             totalFloor, description, bathrooms,
-            balconies, developer
+            balconies, developer,
         } = req.body
-
 
         const { _id: profile } = req.profile;
 
         const newFlat = new Flat({
-            type, name, price, bhk, sqft, furnitureType,
+            type, name, uniqueName, price, bhk, sqft, furnitureType,
             address, locality, city, pincode, addressLink,
             nearestLandmarks, contactNumber, contactEmail,
             addedBy: profile, comments: [], likes: [], arrayOfImages: arrayOfImages || [], atWhichFloor,
             totalFloor, description, bathrooms, balconies, developer,
+            nearestLandmarksForSearching: []
         })
 
         await newFlat.save()
@@ -265,11 +265,52 @@ async function addFlatImage(req, res) {
     }
 }
 
+async function addNearestLandmarks(req, res) {
+
+    try {
+        const { distance, place, hostel, flat } = req.body;
+
+        const newNearestLandmarkObject = new NearestLandmarksForSearching({
+            distance,
+            place,
+            flat,
+        });
+
+        if (!newNearestLandmarkObject) {
+            return res.status(500).json({
+                "success": false,
+                "message": "error in creating object"
+            })
+        }
+
+        await newNearestLandmarkObject.save();
+
+        await Flat.findByIdAndUpdate(
+            flat,
+            { $push: { nearestLandmarksForSearching: newNearestLandmarkObject._id } },
+            { new: true }
+        )
+
+        res.status(200).json({
+            "success": true,
+            "message": "nearest landmark added successfully",
+            "data": newNearestLandmarkObject,
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            "success": false,
+            "message": error.message
+        })
+    }
+}
+
 module.exports = {
     getFlat,
     getAllFlats,
     addFlat,
     deleteFlat,
     updateFlat,
-    addFlatImage
+    addFlatImage,
+    addNearestLandmarks,
 }
