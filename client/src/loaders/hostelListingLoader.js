@@ -1,25 +1,36 @@
-export async function fetchHostelsInfo({ request, params}) {
+export async function hostelsLoader({ request, params }) {
 
     try {
 
-    const requestOptions = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    };
+        const url = new URL(request.url);
+        const searchParams = url.searchParams;
+        const search = searchParams.get('search');
 
-    const response = await fetch("http://localhost:5000/api/v1/hostel", requestOptions);
-    const jsonResponse = await response.json();
+        let searchQuery = "";
+        if (search) {
+            searchQuery = "?search=" + search;
+        } else {
+            searchQuery = "";
+        }
 
-    if (jsonResponse.success === true) {
-        return jsonResponse.data;
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        };
+
+        const response = await fetch("http://localhost:5000/api/v1/hostel"+searchQuery, requestOptions);
+        const jsonResponse = await response.json();
+
+        if (jsonResponse.success === true) {
+            return jsonResponse.data;
+        }
+
+        else {
+            throw new Error(jsonResponse.message)
+        }
     }
 
-    else {
-        throw new Error(jsonResponse.message)
+    catch (error) {
+        throw new Error(error.message)
     }
-}
-
-catch (error) {
-    throw new Error(error.message)
-}
 }

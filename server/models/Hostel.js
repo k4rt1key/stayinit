@@ -167,4 +167,6 @@ const HostelSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
+HostelSchema.index({'$**': 'text'});
+
 module.exports = mongoose.model("Hostel", HostelSchema)

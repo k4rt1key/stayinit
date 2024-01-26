@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useParams, useNavigate, useLoaderData } from "react-router-dom";
+import { useParams, useNavigate, useLoaderData, useRevalidator } from "react-router-dom";
 
 import { useAuth } from '../contexts/Auth'
 import { roundToNearestThousand } from "../utils/utilityFunctions";
@@ -14,6 +14,7 @@ import NearestLandmarks from "../components/NearestLandmarks";
 export default function Flat() {
 
     const navigate = useNavigate()
+    const revalidator = useRevalidator();
 
     // states for "Authentication" and result of "Predicted Prices"
     const { authData } = useAuth()
@@ -144,42 +145,14 @@ export default function Flat() {
         }
     }
 
-    const [flat, setFlat] = useState({})
-    const { flatname } = useParams();
-    const [loading, setLoading] = useState(false)
-    
-    async function fetchFlatInfo() {
-
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        };
-
-
-        const response = await fetch(`http://localhost:5000/api/v1/flat/${flatname}`, requestOptions);
-        const jsonResponse = await response.json();
-
-        if (jsonResponse.success === true) {
-            setFlat(jsonResponse.data);
-        }
-    }
-
+    const flat = useLoaderData();
     const [prediction, setPrediction] = useState()
     const [commentsLength, setCommentsLength] = useState(0);
 
-
-    useEffect(() => {
-        setLoading(true);
-        fetchFlatInfo()
-        setLoading(false)
-    }, [commentsLength])
-
-
-    
     // function : to predict flat's price range based on flat's attributes
     async function fetchPrediction(flat) {
         try {
-            if(authData.isAuthenticate){
+            if (authData.isAuthenticate) {
                 console.log(flat.developer)
                 console.log(JSON.stringify({
                     property_sqft: flat.sqft,
@@ -232,14 +205,13 @@ export default function Flat() {
             } else {
                 navigate(`/login?return-url=${window.location.pathname}`)
             }
-        } 
-        
-        catch(error){
+        }
+
+        catch (error) {
             console.log(error)
         }
     }
 
-    
     const {
         _id, type, name, price, bhk, sqft, furnitureType,
         address, locality, city, pincode, addressLink,
@@ -249,19 +221,19 @@ export default function Flat() {
     } = flat
 
     // returning UI component
-    if (!loading) {
+    if (flat) {
         return (
             <div className="mt-4 gap-8 flex flex-col">
                 <div className="relative">
                     {/* Like icon */}
                     {isAuthenticate ?
-                            <div className="bg-colorY2H border-2 border-black p-2 rounded-lg z-10 absolute top-8 right-8 flex justify-center items-center">
-                                {likeLoading ?
-                                    <Spinner color="white" size="sm" />
-                                    :
-                                    <img src={likedProperty.includes(flat._id) ? `/icons/red-heart.png` : `/icons/heart.png`} className="w-[2rem]" onClick={toggleLike} alt="" />
-                                }
-                            </div> : null}
+                        <div className="bg-colorY2H border-2 border-black p-2 rounded-lg z-10 absolute top-8 right-8 flex justify-center items-center">
+                            {likeLoading ?
+                                <Spinner color="white" size="sm" />
+                                :
+                                <img src={likedProperty.includes(flat._id) ? `/icons/red-heart.png` : `/icons/heart.png`} className="w-[2rem]" onClick={toggleLike} alt="" />
+                            }
+                        </div> : null}
 
                     <ImageCarousel arrayOfImages={arrayOfImages} />
                 </div>
@@ -319,7 +291,7 @@ export default function Flat() {
                                         {`Price Should be between ${roundToNearestThousand(prediction - (prediction * 0.07))} - ${roundToNearestThousand(prediction + (prediction * 0.07))} Rupees`}
                                     </div>
                                 ) : (
-                                    <button className="" onClick={()=> { fetchPrediction(flat)}}>
+                                    <button className="" onClick={() => { fetchPrediction(flat) }}>
                                         <div className=" text-[#FFFBF2] bg-colorG px-3 py-3 md-down: my-5 rounded-[1rem]">
                                             <div className="text-base text-center leading-6 self-center whitespace-nowrap">
                                                 See Expected Price
@@ -373,7 +345,14 @@ export default function Flat() {
 
                 {/* Comments */}
                 <div className="p-6 w-full">
-                    <CommentsDiv type="flat" key={_id} _id={_id} comments={comments} setCommentsLength={setCommentsLength} />
+                    <CommentsDiv
+                        type="flat"
+                        key={_id}
+                        _id={_id}
+                        comments={comments}
+                        setCommentsLength={setCommentsLength}
+                        revalidator={revalidator}
+                    />
                 </div>
 
             </div >

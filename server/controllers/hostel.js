@@ -7,7 +7,7 @@ async function getHostel(req, res) {
     try {
         const { hostelname } = req.params
 
-        const hostelInDb = await Hostel.findOne({uniqueName: hostelname})
+        const hostelInDb = await Hostel.findOne({ uniqueName: hostelname })
             .populate('priceAndSharing comments likes arrayOfImages nearestLandmarksForSearching')
             .populate({
                 path: "comments",
@@ -56,7 +56,8 @@ async function getAllHostels(req, res) {
             cleaning,
             sortByPrice,
             minPrice = 0,
-            maxPrice = Infinity
+            maxPrice = Infinity,
+            search
         } = req.query
 
         const queryObj = {
@@ -73,6 +74,10 @@ async function getAllHostels(req, res) {
             ...(forWhichGender && { forWhichGender })
         }
 
+        if (search) {
+            queryObj.$text = { $search: search }
+        }
+
         const hostelsInDb = await Hostel.find(queryObj).populate('priceAndSharing comments likes arrayOfImages nearestLandmarksForSearching').exec()
 
         // Filter hostels by price and then sort them
@@ -87,18 +92,12 @@ async function getAllHostels(req, res) {
             return sortByPrice == 1 ? minPriceLocalA - minPriceLocalB : minPriceLocalB - minPriceLocalA
         })
 
-        if (filteredData.length > 0) {
-            return res.status(200).json({
-                "success": true,
-                "message": "all hostels fetched successfully",
-                "data": filteredData
-            })
-        } else {
-            return res.status(404).json({
-                "success": false,
-                "message": "hostels not found",
-            })
-        }
+        return res.status(200).json({
+            "success": true,
+            "message": "all hostels fetched successfully",
+            "data": filteredData
+        })
+
     } catch (error) {
         res.status(500).json({
             "success": false,
@@ -329,40 +328,40 @@ async function addHostelImage(req, res) {
     }
 }
 
-async function addNearestLandmarks(req, res){
+async function addNearestLandmarks(req, res) {
 
-    try{
+    try {
 
-        const {distance, place, hostel} = req.body;
-        
+        const { distance, place, hostel } = req.body;
+
         const newNearestLandmarkObject = new NearestLandmarksForSearching({
-        distance,
-        place,
-        hostel,
-    });
-    
-    if(!newNearestLandmarkObject) {
-        return res.status(500).json({
-            "success": false,
-            "message": "error in creating object"
-        })
-    }
+            distance,
+            place,
+            hostel,
+        });
 
-    await newNearestLandmarkObject.save();
-    
-    await Hostel.findByIdAndUpdate(
-        hostel,
-        { $push: { nearestLandmarksForSearching: newNearestLandmarkObject._id} },
-        { new: true}
+        if (!newNearestLandmarkObject) {
+            return res.status(500).json({
+                "success": false,
+                "message": "error in creating object"
+            })
+        }
+
+        await newNearestLandmarkObject.save();
+
+        await Hostel.findByIdAndUpdate(
+            hostel,
+            { $push: { nearestLandmarksForSearching: newNearestLandmarkObject._id } },
+            { new: true }
         )
 
-    res.status(200).json({
-        "success": true,
-        "message": "nearest landmark added successfully",
-        "data": newNearestLandmarkObject,
-    })
+        res.status(200).json({
+            "success": true,
+            "message": "nearest landmark added successfully",
+            "data": newNearestLandmarkObject,
+        })
 
-    } catch(error) {
+    } catch (error) {
         return res.status(500).json({
             "success": false,
             "message": error.message

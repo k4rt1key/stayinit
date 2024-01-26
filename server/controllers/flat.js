@@ -18,7 +18,7 @@ async function getFlat(req, res) {
             })
         }
 
-        const flatInDb = await Flat.findOne({uniqueName: flatname})
+        const flatInDb = await Flat.findOne({ uniqueName: flatname })
             .populate("arrayOfImages comments likes nearestLandmarksForSearching")
             .populate({
                 path: "comments",
@@ -54,7 +54,7 @@ async function getAllFlats(req, res) {
 
         // getting filters and sorting options from request query 
         // then creating queryObject
-        const { bhk, furnitureType } = req.query
+        const { bhk, furnitureType, search } = req.query
 
         const minPrice = req.query.minPrice || 0
         const maxPrice = req.query.maxPrice || Infinity
@@ -74,6 +74,10 @@ async function getAllFlats(req, res) {
             queryObj.furnitureType = furnitureType
         }
 
+        if(search){
+            queryObj.$text = { $search: search }
+        }
+
         // finding flats with the queryObject
         const flatsInDb = await Flat.find(queryObj)
             .populate("arrayOfImages comments likes nearestLandmarksForSearching")
@@ -84,18 +88,11 @@ async function getAllFlats(req, res) {
             .where("sqft").gt(minSqft - 1).lt(maxSqft + 1)
             .exec()
 
-        if (flatsInDb.length > 0) {
-            return res.status(200).json({
-                "success": true,
-                "message": "your flats were fetched successfully",
-                "data": flatsInDb
-            })
-        } else {
-            return res.status(404).json({
-                "success": false,
-                "error": "no flats found",
-            })
-        }
+        return res.status(200).json({
+            "success": true,
+            "message": "your flats were fetched successfully",
+            "data": flatsInDb
+        })
 
     } catch (error) {
         res.status(500).json({
@@ -109,7 +106,7 @@ async function addFlat(req, res) {
     try {
         // getting values from request
         const {
-            type, name, uniqueName,price, bhk, sqft, furnitureType, address,
+            type, name, uniqueName, price, bhk, sqft, furnitureType, address,
             locality, city, pincode, addressLink, nearestLandmarks,
             contactNumber, contactEmail, arrayOfImages, atWhichFloor,
             totalFloor, description, bathrooms,
@@ -123,7 +120,7 @@ async function addFlat(req, res) {
             address, locality, city, pincode, addressLink,
             nearestLandmarks, contactNumber, contactEmail,
             addedBy: profile, comments: [], likes: [], arrayOfImages: arrayOfImages || [], atWhichFloor,
-            totalFloor, description, bathrooms, balconies, developer, 
+            totalFloor, description, bathrooms, balconies, developer,
             nearestLandmarksForSearching: []
         })
 
@@ -268,10 +265,10 @@ async function addFlatImage(req, res) {
     }
 }
 
-async function addNearestLandmarks(req, res){
+async function addNearestLandmarks(req, res) {
 
     try {
-        const {distance, place, hostel, flat} = req.body;
+        const { distance, place, hostel, flat } = req.body;
 
         const newNearestLandmarkObject = new NearestLandmarksForSearching({
             distance,
@@ -279,7 +276,7 @@ async function addNearestLandmarks(req, res){
             flat,
         });
 
-        if(!newNearestLandmarkObject) {
+        if (!newNearestLandmarkObject) {
             return res.status(500).json({
                 "success": false,
                 "message": "error in creating object"
@@ -290,8 +287,8 @@ async function addNearestLandmarks(req, res){
 
         await Flat.findByIdAndUpdate(
             flat,
-            { $push: { nearestLandmarksForSearching: newNearestLandmarkObject._id} },
-            { new: true}
+            { $push: { nearestLandmarksForSearching: newNearestLandmarkObject._id } },
+            { new: true }
         )
 
         res.status(200).json({
@@ -300,12 +297,12 @@ async function addNearestLandmarks(req, res){
             "data": newNearestLandmarkObject,
         })
 
-    } catch(error) {
+    } catch (error) {
         return res.status(500).json({
             "success": false,
             "message": error.message
         })
-    }   
+    }
 }
 
 module.exports = {

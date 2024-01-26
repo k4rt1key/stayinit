@@ -1,4 +1,4 @@
-export async function fetchFlatInfo({ request, params }) {
+export async function flatLoader({ request, params }) {
 
     try {
 

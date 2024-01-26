@@ -25,22 +25,31 @@ import ResetPassword from './pages/ResetPassword';
 import FlatListing from './pages/FlatsListing';
 import Likes from './pages/Likes';
 
+import ErrorElement from "./components/ErrorElement"
+
+import { flatsLoader } from './loaders/flatListingLoader'; 
+import { flatLoader } from './loaders/flatLoader'; 
+import { hostelsLoader } from './loaders/hostelListingLoader'; 
+import { hostelLoader } from './loaders/hostelLoader'; 
+import { likesLoader } from './loaders/likesLoader'; 
+
+
 const router = createBrowserRouter(createRoutesFromElements(
-  <Route path="/" element={<Layout />}>
+  <Route path="/" element={<Layout />} errorElement={<ErrorElement/>}>
     <Route index element={<Home />} />
     {/* <Route path="/prediction" element={<Prediction />} /> */}
 
-    <Route path="/hostels" element={<HostelsListing />} />
-    <Route path="/hostels/:hostelname" element={<Hostel />} />
-    <Route path="/flats" element={<FlatListing />} />
-    <Route path="/flats/:flatname" element={<Flat />} />
+    <Route path="/hostels" element={<HostelsListing />} loader={hostelsLoader}/>
+    <Route path="/hostels/:hostelname" element={<Hostel />} loader={hostelLoader}/>
+    <Route path="/flats" element={<FlatListing />} loader={flatsLoader}/>
+    <Route path="/flats/:flatname" element={<Flat />} loader={flatLoader}/>
 
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
 
     <Route path="/login/forgot-password" element={<ForgotPassword />} />
     <Route path="/user/reset-password" element={<ResetPassword />} />
-    <Route path="/user/likes" element={<Likes />} />
+    <Route path="/user/likes" element={<Likes />} loader={likesLoader}/>
 
     <Route path="*" element={<NotFound />} />
   </Route>

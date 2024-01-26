@@ -211,5 +211,6 @@ const Flatschema = new mongoose.Schema({
 }, { timestamps: true })
 
 
+Flatschema.index({'$**': 'text'});
 
 module.exports = mongoose.model("Flat", Flatschema)

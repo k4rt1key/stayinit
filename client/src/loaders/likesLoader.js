@@ -1,4 +1,4 @@
-export async function getlikes({ request, params }) {
+export async function likesLoader({ request, params }) {
     try {
         const requestObject = {
             method: "GET",

@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/Auth'
 import Comment from "./Comment"
 import { Rating } from "@material-tailwind/react";
 
-export default function CommentsDiv({ _id, type, comments, setCommentsLength }) {
+export default function CommentsDiv({ _id, type, comments, setCommentsLength, revalidator }) {
 
     // Get authentication data from the Auth context
     const { authData } = useAuth()
@@ -14,7 +14,7 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength }) 
     const navigate = useNavigate()
 
     // user inputed rating and comment
-    const [rating, setRating] = React.useState(3)
+    const [rating, setRating] = React.useState(0)
     const [comment, setComment] = useState("");
 
     async function handleCommentSubmit(event) {
@@ -47,6 +47,7 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength }) 
                     setComment("")
                     setRating(0)
                     setCommentsLength(prev => prev + 1)
+                    revalidator.revalidate();
                 } else {
                     console.error(jsonResponse.message)
                 }
@@ -79,7 +80,7 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength }) 
                 {/* User input to give rating and comment */}
                 <form onSubmit={handleCommentSubmit} className="flex flex-col gap-4 items-center justify-center">
 
-                    <Rating value={3} onChange={(value) => setRating(value)} />
+                    <Rating value={rating} onChange={(value) => setRating(value)} />
 
                     <textarea
                         className="flex w-[20rem] rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"

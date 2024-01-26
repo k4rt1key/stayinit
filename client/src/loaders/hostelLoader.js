@@ -1,4 +1,4 @@
-export async function fetchHostelInfo({ request, params }) {
+export async function hostelLoader({ request, params }) {
 
     try {
         const requestOptions = {
