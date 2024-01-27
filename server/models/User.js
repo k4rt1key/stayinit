@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 const {
     emailValidator,
     passwordValidator,
@@ -58,9 +61,44 @@ const userSchema = new mongoose.Schema({
         },
     },
 
+    refreshToken: {
+        type: String,
+        default: null,
+    },
 
 }, { timestamps: true }
 );
+
+userSchema.methods.generateRefreshAndAccessTokens = async function(){
+    const user = this;
+
+    const refreshToken = jwt.sign(
+        {
+            _id: user._id,
+        },
+
+        process.env.JWT_REFRESH_SECRET,
+
+        { expiresIn: process.env.JWT_REFRESH_EXPIRY }
+    );
+
+    const accessToken = jwt.sign(
+        {
+            _id: user.profile,
+            userId: user._id,
+            username: user.username,
+        },
+
+        process.env.JWT_SECRET,
+
+        { expiresIn: process.env.JWT_EXPIRY }
+    );
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    return { refreshToken, accessToken };
+}
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

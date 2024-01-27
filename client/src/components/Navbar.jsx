@@ -22,7 +22,7 @@ export default function Navbar() {
     // navbar items list
     const navbarItems = []
     if (isAuthenticate) {
-        navbarItems.push({ key: "Logout", link: "/logout", icon: "login.png", text: "Logout", onClick: logoutContextFunction })
+        navbarItems.push({ key: "Logout", link: "", icon: "login.png", text: "Logout", onClick: logoutContextFunction })
         navbarItems.push({ key: "Likes", link: "/user/likes", icon: "heart.png", text: "Likes", onClick: () => { } })
         navbarItems.push({ key: "User", link: "/user", icon: "user.png", text: profile ? profile.username : "User", onClick: () => { } })
     }

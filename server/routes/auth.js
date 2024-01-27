@@ -8,13 +8,17 @@ const {
     sendOTP,
     verifyOTP,
     sendResetPasswordLink,
-    verifyResetPasswordLink
+    verifyResetPasswordLink,
+    logout,
+    validateRefreshToken,
 } = require("../controllers/auth.js");
 
 // Auth - Routes
 
 router.post('/login', login)
 router.get('/is-authenticate', authMiddlewere, isAuthenticate)
+router.post('/logout', authMiddlewere, logout)
+router.post('/validate-refresh-token', validateRefreshToken)
 
 router.post('/register', register)
 router.post('/register/send-verification-otp', sendOTP)
