@@ -78,19 +78,66 @@ async function getAllHostels(req, res) {
             queryObj.$text = { $search: search }
         }
 
-        const hostelsInDb = await Hostel.find(queryObj).populate('priceAndSharing comments likes arrayOfImages nearestLandmarksForSearching').exec()
+        const hostelsInDb = await Hostel
+        .find(queryObj)
+        .populate('priceAndSharing comments likes arrayOfImages nearestLandmarksForSearching').exec()
+
+        const newQueryObj = {};
+        if (search) {
+            newQueryObj.$text = { $search: search};
+        }
+        
+        
+        const NL = await NearestLandmarksForSearching.find(newQueryObj);
+
+        const FilteredNL = NL.filter((nearestLandmark) => {
+            // if nearestLandmark is not associated with any flat then not adding it to the array
+            // else adding it to the array if it's not already present in the hostelsInDb
+            if (nearestLandmark.hostel) {
+                if (hostelsInDb.length === 0) { return true; }
+                if (hostelsInDb.find((hostel) => hostel._id.toString() !== nearestLandmark.hostel.toString())) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        });
+
+        // now finding flats associated with the nearestLandmarks
+        const HostelsAssociatedWithNL = await Hostel.find({ nearestLandmarksForSearching: { $in: FilteredNL } })
+            .populate("arrayOfImages comments priceAndSharing likes nearestLandmarksForSearching")
+
+        const response = hostelsInDb.concat(HostelsAssociatedWithNL);
+
 
         // Filter hostels by price and then sort them
-        const filteredData = hostelsInDb.filter((hostel) => {
-            const priceAndSharingArray = hostel.priceAndSharing
+        const filteredData = response.filter((hostel) => {
+
+            const priceAndSharingArray = hostel.priceAndSharing;
+
             const minPriceLocal = priceAndSharingArray.reduce((acc, curr) => Math.min(curr.price, acc), Infinity)
             const maxPriceLocal = priceAndSharingArray.reduce((acc, curr) => Math.max(curr.price, acc), 0)
+
             return (minPrice <= maxPriceLocal && maxPrice >= minPriceLocal)
+
         }).sort((hostelA, hostelB) => {
+
             const minPriceLocalA = hostelA.priceAndSharing.reduce((acc, curr) => Math.min(curr.price, acc), Infinity)
             const minPriceLocalB = hostelB.priceAndSharing.reduce((acc, curr) => Math.min(curr.price, acc), Infinity)
+
             return sortByPrice == 1 ? minPriceLocalA - minPriceLocalB : minPriceLocalB - minPriceLocalA
         })
+
+        // console.log("hostelsInDb", hostelsInDb);
+        // console.log("NL", NL);
+        // console.log("FilteredNL", FilteredNL);
+        // console.log("HostelsAssociatedWithNL", HostelsAssociatedWithNL);
+        // console.log("response", response);
+        // console.log("filteredData", filteredData);
+
 
         return res.status(200).json({
             "success": true,

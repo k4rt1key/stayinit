@@ -4,6 +4,7 @@ const Profile = require("../models/Profile")
 const Comment = require("../models/Comment")
 const Like = require("../models/Like")
 const NearestLandmarksForSearching = require("../models/NearestLandmarksForSearching")
+const { isEmpty } = require("update/lib/utils")
 
 // get flat by unique name
 async function getFlat(req, res) {
@@ -74,8 +75,10 @@ async function getAllFlats(req, res) {
             queryObj.furnitureType = furnitureType
         }
 
-        if(search){
-            queryObj.$text = { $search: search }
+        if (search) {
+            queryObj.$text = {
+                $search: search,
+            }
         }
 
         // finding flats with the queryObject
@@ -88,11 +91,42 @@ async function getAllFlats(req, res) {
             .where("sqft").gt(minSqft - 1).lt(maxSqft + 1)
             .exec()
 
+        const newQueryObj = {};
+        if (search) {
+            newQueryObj.$text = { $search: search};
+        }
+        
+        
+        const NL = await NearestLandmarksForSearching.find(newQueryObj);
+
+        const FilteredNL = NL.filter((nearestLandmark) => {
+            // if nearestLandmark is not associated with any flat then not adding it to the array
+            // else adding it to the array if it's not already present in the flatsInDb
+            if (nearestLandmark.flat) {
+                if (flatsInDb.length === 0) { return true; }
+                if (flatsInDb.find((flat) => flat._id.toString() !== nearestLandmark.flat.toString())) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        });
+
+        // now finding flats associated with the nearestLandmarks
+        const FlatsAssociatedWithNL = await Flat.find({ nearestLandmarksForSearching: { $in: FilteredNL } })
+            .populate("arrayOfImages comments likes nearestLandmarksForSearching")
+
+        const response = flatsInDb.concat(FlatsAssociatedWithNL);
+
         return res.status(200).json({
             "success": true,
             "message": "your flats were fetched successfully",
-            "data": flatsInDb
+            "data": response
         })
+
 
     } catch (error) {
         res.status(500).json({

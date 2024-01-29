@@ -10,7 +10,7 @@ const {
 const { NearestLandmarksForSearching } = require("./NearestLandmarksForSearching")
 
 
-const Flatschema = new mongoose.Schema({
+const FlatSchema = new mongoose.Schema({
 
     // >>> mandatory fields
 
@@ -211,6 +211,6 @@ const Flatschema = new mongoose.Schema({
 }, { timestamps: true })
 
 
-Flatschema.index({'$**': 'text'});
+FlatSchema.index({'$**': 'text'});
 
-module.exports = mongoose.model("Flat", Flatschema)
+module.exports = mongoose.model("Flat", FlatSchema)

@@ -9,6 +9,7 @@ const NearestLandmarksForSearchingSchema = new mongoose.Schema({
     place: {
         type: String,
         require: true,
+        text: true,
     },
 
     flat: {
@@ -21,5 +22,10 @@ const NearestLandmarksForSearchingSchema = new mongoose.Schema({
         ref: "Hostel",
     }
 })
+
+
+NearestLandmarksForSearchingSchema.index(
+    {'$**': 'text'},
+);
 
 module.exports = mongoose.model("NearestLandmarksForSearching", NearestLandmarksForSearchingSchema)
