@@ -42,7 +42,7 @@ export default function LikedCard({ flatOrHostel, name, type, locality, city }) 
                 {/* Link to... Hostel.jsx / Flat.jsx  */}
                 {/* Unlike Option */}
                 <div className="flex flex-row gap-4">
-                    <Link to={`/${type}s/${flatOrHostel._id}`} className="bg-colorG rounded-[1rem] text-[#FFFBF2] text-center px-4 py-4">Details</Link>
+                    <Link to={`/${type}s/${flatOrHostel.uniqueName}`} className="bg-colorG rounded-[1rem] text-[#FFFBF2] text-center px-4 py-4">Details</Link>
                     <button onClick={unlike} className="bg-colorG rounded-[1rem] text-[#FFFBF2] text-center px-4 py-4 "> Remove </button>
                 </div>
             </div>
