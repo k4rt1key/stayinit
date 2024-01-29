@@ -46,16 +46,12 @@ async function login(req, res) {
         // getting user profile
         const userProfile = await Profile.findOne({ userId: userInDb._id })
 
-        // generate jwt token and send response
-        const token = jwt.sign({
-            _id: userProfile._id,
-            username: userProfile.username,
-            userId: userProfile.userId,
-        }, process.env.JWT_SECRET, { expiresIn: '1h' })
+        const {accessToken, refreshToken} = await userInDb.generateRefreshAndAccessTokens();
 
         return res.status(200).json({
             "success": true,
-            "token": token,
+            "token": accessToken,
+            "refreshToken": refreshToken,
             "message": "you are logged in successfully",
             "data": userProfile
         })
@@ -160,6 +156,7 @@ async function register(req, res) {
 
         // update user with profile id
         newUser.profile = profile._id;
+        await newUser.save();
 
         res.status(201).json({
             "success": true,
@@ -390,6 +387,64 @@ async function verifyResetPasswordLink(req, res) {
     }
 }
 
+async function logout(req,res){
+    try {
+        const profile = req.profile;
+
+        const user = await User.findById(profile.userId)
+        user.refreshToken = null;
+        await user.save();
+
+        res.status(200).json({
+            "success": true,
+            "message": "you are logged out successfully",
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            "success": false,
+            "message": error.message,
+        });
+    }
+}
+
+async function validateRefreshToken(req,res){
+    try {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return res.status(400).json({
+                "success": false,
+                "message": "refreshToken is required",
+            })
+        }
+
+        const user = await User.findOne({ refreshToken })
+
+        if (!user) {
+            return res.status(404).json({
+                "success": false,
+                "message": "user not found",
+            })
+        }
+
+        const {accessToken, refreshToken: newRefreshToken} = await user.generateRefreshAndAccessTokens();
+
+        return res.status(200).json({
+            "success": true,
+            "message": "token is validated successfully",
+            "token": accessToken,
+            "refreshToken": newRefreshToken,
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            "success": false,
+            "message": error.message,
+        })
+    }
+}
+
 module.exports = {
     login,
     isAuthenticate,
@@ -397,5 +452,7 @@ module.exports = {
     sendOTP,
     verifyOTP,
     sendResetPasswordLink,
-    verifyResetPasswordLink
+    verifyResetPasswordLink,
+    logout,
+    validateRefreshToken,
 }

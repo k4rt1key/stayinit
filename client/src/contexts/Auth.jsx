@@ -44,6 +44,46 @@ function Auth({ children }) {
                         profile: profile
                     })
                 }
+
+                else {
+                    // check if user has refresh token --> if yes then generate new token based on refresh token
+                    const refreshToken = localStorage.getItem('refreshToken')
+
+                    if (refreshToken) {
+                        const requestOptions = {
+                            method: 'POST',
+                            body: JSON.stringify({ refreshToken }),
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        }
+
+                        const response = await fetch("http://localhost:5000/api/v1/auth/validate-refresh-token", requestOptions);
+                        const jsonResponse = await response.json()
+
+                        if(jsonResponse) {
+                            localStorage.setItem('token', jsonResponse.token)
+                            localStorage.setItem('refreshToken', jsonResponse.refreshToken)
+
+                            const isAuthenticate = jsonResponse.success;
+                            const profile = jsonResponse.data.profile;
+
+                            setAuthData({ isAuthenticate, profile })
+                        } 
+
+                        else {
+                            localStorage.removeItem('token')
+                            setAuthData({ isAuthenticate: false, profile: undefined })
+                            navigate('/login');
+                        }
+                    }
+
+                    else {
+                        localStorage.removeItem('token')
+                        setAuthData({ isAuthenticate: false, profile: undefined })
+                        navigate('/login');
+                    }
+                }
             }
         }
 
@@ -53,6 +93,8 @@ function Auth({ children }) {
     function loginContextFunction(jsonResponse) {
 
         localStorage.setItem('token', jsonResponse.token)
+        localStorage.setItem('refreshToken', jsonResponse.refreshToken)
+
         const isAuthenticate = jsonResponse.success;
         const profile = jsonResponse.data.profile;
 
@@ -61,9 +103,33 @@ function Auth({ children }) {
 
     function logoutContextFunction() {
 
-        localStorage.removeItem('token')
-        setAuthData({ isAuthenticate: false, profile: undefined })
-        navigate('/login');
+        
+        const requestOptions = {
+            method: 'POST',
+            body: JSON.stringify({ refreshToken: localStorage.getItem('refreshToken') }),
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${localStorage.getItem('token')} `
+            }
+        }
+
+        async function logout() {
+            const response = await fetch("http://localhost:5000/api/v1/auth/logout", requestOptions);
+            const jsonResponse = await response.json()
+
+            if (jsonResponse.success) {
+                localStorage.removeItem('token')
+                localStorage.removeItem('refreshToken')
+
+                setAuthData({ isAuthenticate: false, profile: undefined })
+                navigate('/login');
+            } else {
+                throw new Error("Logout failed")
+            }
+
+        }
+
+        logout();
 
     }
 
