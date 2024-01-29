@@ -156,6 +156,7 @@ async function register(req, res) {
 
         // update user with profile id
         newUser.profile = profile._id;
+        await newUser.save();
 
         res.status(201).json({
             "success": true,

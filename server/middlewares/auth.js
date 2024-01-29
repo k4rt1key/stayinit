@@ -32,6 +32,7 @@ const auth = async (req, res, next) => {
         }
 
         req.profile = payload;
+        console.log(payload);
 
         next();
 

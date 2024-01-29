@@ -81,7 +81,7 @@ userSchema.methods.generateRefreshAndAccessTokens = async function(){
 
         { expiresIn: process.env.JWT_REFRESH_EXPIRY }
     );
-
+    
     const accessToken = jwt.sign(
         {
             _id: user.profile,
