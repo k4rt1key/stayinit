@@ -40,7 +40,7 @@ export default function ForgotPassword() {
             setLoading(() => false)
 
         } catch (error) {
-            console.error(error)
+            throw new Error(error)
         }
     }
 

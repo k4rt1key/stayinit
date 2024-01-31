@@ -52,7 +52,7 @@ export default function Flat() {
             }
 
         } catch (error) {
-            console.log(error)
+            throw new Error(error.message)
         }
     }
 
@@ -91,7 +91,6 @@ export default function Flat() {
             setLikeLoading(false)
 
             if (jsonResponse.success === true) {
-                console.log("unliked Successfully")
                 setLikedProperty(() => {
                     return (likedProperty.filter((property) => {
                         return property !== flat._id;
@@ -153,25 +152,6 @@ export default function Flat() {
     async function fetchPrediction(flat) {
         try {
             if (authData.isAuthenticate) {
-                console.log(flat.developer)
-                console.log(JSON.stringify({
-                    property_sqft: flat.sqft,
-                    property_bhk: flat.bhk,
-                    property_project: flat.developer.toLowerCase(),
-                    property_city: flat.city.toLowerCase(),
-                    property_locality: flat.locality.toLowerCase(),
-                    is_furnished: flat.furnitureType.toLowerCase(),
-                    num_of_baths: flat.bathrooms,
-                    bachelors_or_family: "bachelors",
-                    floornumber: flat.atWhichFloor,
-                    totalfloor: flat.totalfloor || flat.atWhichFloor,
-                    property_pricenan: 0,
-                    property_bhknan: 0,
-                    property_sqftnan: 0,
-                    num_of_bathsnan: 0,
-                    floornumbernan: 0,
-                    totalfloornan: 0
-                }))
 
                 const response = await fetch('http://localhost:7000/', {
                     method: 'POST',
@@ -208,7 +188,7 @@ export default function Flat() {
         }
 
         catch (error) {
-            console.log(error)
+            throw new Error(error.message)
         }
     }
 
@@ -227,7 +207,7 @@ export default function Flat() {
                 <div className="relative">
                     {/* Like icon */}
                     {isAuthenticate ?
-                        <div className="bg-colorY2H border-2 border-black p-2 rounded-lg z-10 absolute top-8 right-8 flex justify-center items-center">
+                        <div className="bg-colorY2H border-2 border-black p-2 rounded-lg z-[5] absolute top-8 right-8 flex justify-center items-center">
                             {likeLoading ?
                                 <Spinner color="white" size="sm" />
                                 :

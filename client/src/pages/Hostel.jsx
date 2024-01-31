@@ -114,7 +114,6 @@ export default function HostelInfo() {
             const data = jsonResponse.data;
 
             if (jsonResponse.success === true) {
-                console.log("liked Successfully")
 
                 const newList = []
                 data.forEach((like) => {
@@ -126,7 +125,7 @@ export default function HostelInfo() {
             }
 
         } catch (error) {
-            console.log(error)
+            throw new Error(error.message)
         }
     }
 
@@ -165,7 +164,6 @@ export default function HostelInfo() {
             setLikeLoading(false)
 
             if (jsonResponse.success === true) {
-                console.log("unliked Successfully")
                 setLikedProperty(() => {
                     return (likedProperty.filter((property) => {
                         return property !== hostel._id;
@@ -227,7 +225,7 @@ export default function HostelInfo() {
             <div className="relative">
                 {/* Like icon */}
                 {isAuthenticate ?
-                    <div className="bg-colorY2H border-2 border-black p-2 rounded-lg z-10 absolute top-8 right-8 flex justify-center items-center">
+                    <div className="bg-colorY2H border-2 border-black p-2 rounded-lg z-[5] absolute top-8 right-8 flex justify-center items-center">
                         {likeLoading ?
                             <Spinner color="white" size="sm" />
                             :

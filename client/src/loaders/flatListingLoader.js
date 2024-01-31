@@ -27,7 +27,6 @@ export async function flatsLoader({ request, params }) {
 
         else {
             throw new Error(jsonResponse.message)
-
         }
     }
 

@@ -44,15 +44,14 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength, re
                 const jsonResponse = await response.json()
 
                 if (jsonResponse.success === true) {
-                    setComment("")
-                    setRating(0)
+                    setComment("Please Chnage the rating and comment to submit again")
                     setCommentsLength(prev => prev + 1)
                     revalidator.revalidate();
                 } else {
-                    console.error(jsonResponse.message)
+                    throw new Error(jsonResponse.message)
                 }
             } catch (error) {
-                console.error(error)
+                throw new Error(error)
             }
         }
     }
@@ -66,7 +65,7 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength, re
         return sum / comments?.length
     }
 
-
+    console.log(rating)
     return (
         <div className="md-down: justify-items-center grid grid-cols-1 lg:grid-cols-2 gap-8 relative ">
             <div className="cursor-pointer rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center justify-center flex-col w-full gap-6 h-auto min-w-[300px] max-w-[600px]">

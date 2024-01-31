@@ -18,7 +18,6 @@ export default function Navbar() {
     const { authData, logoutContextFunction } = useAuth()
     const { isAuthenticate, profile } = authData
 
-
     // navbar items list
     const navbarItems = []
     if (isAuthenticate) {

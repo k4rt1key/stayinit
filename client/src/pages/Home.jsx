@@ -16,7 +16,7 @@ export default function Home() {
         try {
             navigate('/' + propertyType + 's?search=' + search)
         } catch (error) {
-            console.error(error);
+            throw new Error(error);
         }
     }
 

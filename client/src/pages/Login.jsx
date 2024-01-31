@@ -7,7 +7,11 @@ import { Spinner } from "@material-tailwind/react";
 export default function Login() {
 
     const navigate = useNavigate();
-    const { loginContextFunction } = useAuth()
+    const { loginContextFunction, authData } = useAuth()
+    const { isAuthenticate } = authData;
+    if (isAuthenticate) {
+        navigate("/")
+    }
 
     const [loginData, setLoginData] = React.useState({})
     const [error, setError] = React.useState("")
@@ -52,17 +56,16 @@ export default function Login() {
                 loginContextFunction(jsonResponse)
                 if(returnUrl){
                     navigate(`${returnUrl}`); 
-                } else {
+                }
+                else {
                     navigate("/"); 
                 }
-                window.location.reload();
             } else {
                 setError(jsonResponse.message)
             }
-
             setLoading(false);
         } catch (error) {
-            console.error(error)
+            throw new Error(error)
         }
 
     }

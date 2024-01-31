@@ -1,22 +1,26 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useRouteError, Link } from "react-router-dom";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import { Auth } from "../contexts/Auth";
 
-export default function ErrorElement(){
+export default function ErrorElement() {
 
-    const error = useRouteError()
-
-    console.log("inside error router")
+    const error = useRouteError();
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16 bg-gray-100 text-gray-900">
-          <p className="text-xl text-gray-600 mb-8">
-            {error.message}
-          </p>
-          <Link to="/"
-            className="inline-block px-7 py-3 rounded-lg text-lg font-semibold bg-gray-800 text-white hover:bg-gray-700"
-          >
-            Go back home
-          </Link>
-        </div>
+        <Auth>
+            <Navbar />
+            <div className="flex items-center justify-center h-screen bg-colorY">
+                <div className="text-center flex flex-col gap-10">
+                    <h1 className="text-6xl font-bold text-gray-800">{error.message}</h1>
+                    <p className="text-xl text-gray-600">This might be internal server error</p>
+                    <Link to="/" className="bg-colorG text-white font-bold py-2 px-4 rounded">
+                        Go Home
+                    </Link>
+                </div>
+            </div>
+            <Footer />
+        </Auth>
     );
 }

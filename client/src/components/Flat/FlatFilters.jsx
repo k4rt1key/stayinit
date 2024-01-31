@@ -1,6 +1,7 @@
 import React from "react"
 import { useSearchParams } from "react-router-dom";
 import { genNewSearchParamString } from "../../utils/utilityFunctions";
+import { Slider } from "@material-tailwind/react";
 
 export default function FlatFilters(props) {
 
@@ -22,18 +23,27 @@ export default function FlatFilters(props) {
 
 
     // state for bhk counter and function for increment and decrement bhk's value
-    const [bhk, setBhk] = React.useState(0)
+    const [bhk, setBhk] = React.useState(Number(searchParams.get("bhk")) || 0)
+
 
     function increamentBHK() {
         setBhk((prev) => {
             return prev + 1
         });
     }
-    function decrementBHK() {
 
-        setBhk((prev) => {
-            return prev - 1
-        });
+    function decrementBHK() {
+        if (bhk !== 1) {
+            setBhk((prev) => {
+                return prev - 1
+            });
+        } else {
+            setSearchParams((prev) => {
+                return genNewSearchParamString("bhk", null, searchParams)
+            });
+
+            setBhk(0)
+        }
     }
 
     React.useEffect(() => {
@@ -76,6 +86,7 @@ export default function FlatFilters(props) {
                         <input className={filterStyle} type="number" placeholder="Max Price" name="maxPrice" id="maxPrice" onChange={updateSearchParams} value={Number(searchParams.get("maxPrice")) || null} />
                         <input className={filterStyle} type="number" placeholder="Min Sqft" name="minSqft" id="minSqft" onChange={updateSearchParams} value={Number(searchParams.get("minSqft")) || null} />
                         <input className={filterStyle} type="number" placeholder="Max Sqft" name="maxSqft" id="maxSqft" onChange={updateSearchParams} value={Number(searchParams.get("maxSqft")) || null} />
+
 
                         {/* Clear All filters */}
                         <button className={filterStyle + " text-red-400"} onClick={clearAllFilters}> <u>Clear</u></button>

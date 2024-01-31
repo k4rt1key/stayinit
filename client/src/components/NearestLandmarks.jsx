@@ -2,8 +2,6 @@ import React from "react";
 
 export default function NearestLandmarks({ nearestLandmarksForSearching }) {
 
-    console.log(nearestLandmarksForSearching)
-
     let nearestLandmarksDivs = []
 
     if (nearestLandmarksForSearching) {

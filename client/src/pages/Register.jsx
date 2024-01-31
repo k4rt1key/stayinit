@@ -124,7 +124,7 @@ export default function Signup() {
             setLoading(false)
 
         } catch (error) {
-            console.error(error)
+            throw new Error(error)
         }
     }
 

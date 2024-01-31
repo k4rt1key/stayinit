@@ -40,7 +40,6 @@ export default function Card({ hostel }) {
             const data = jsonResponse.data;
 
             if (jsonResponse.success === true) {
-                console.log("liked Successfully")
 
                 const newList = []
                 data.forEach((like) => {
@@ -52,7 +51,7 @@ export default function Card({ hostel }) {
             }
 
         } catch (error) {
-            console.log(error)
+            throw new Error(error.message)
         }
     }
 
@@ -91,7 +90,6 @@ export default function Card({ hostel }) {
             setLikeLoading(false)
 
             if (jsonResponse.success === true) {
-                console.log("unliked Successfully")
                 setLikedProperty(() => {
                     return (likedProperty.filter((property) => {
                         return property !== hostel._id;

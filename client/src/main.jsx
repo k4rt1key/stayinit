@@ -16,7 +16,8 @@ import Hostel from './pages/Hostel';
 import Flat from './pages/Flat';
 import Login from './pages/Login'
 import Register from './pages/Register'
-// import Prediction from './pages/Prediction'
+// import Prediction from './pages/Prediction'om
+import Test from './pages/Test'
 import Layout from "./pages/Layout"
 import HostelsListing from './pages/HostelsListing';
 import NotFound from './pages/NotFound';
@@ -37,7 +38,6 @@ import { likesLoader } from './loaders/likesLoader';
 const router = createBrowserRouter(createRoutesFromElements(
   <Route path="/" element={<Layout />} errorElement={<ErrorElement/>}>
     <Route index element={<Home />} />
-    {/* <Route path="/prediction" element={<Prediction />} /> */}
 
     <Route path="/hostels" element={<HostelsListing />} loader={hostelsLoader}/>
     <Route path="/hostels/:hostelname" element={<Hostel />} loader={hostelLoader}/>
@@ -51,6 +51,9 @@ const router = createBrowserRouter(createRoutesFromElements(
     <Route path="/user/reset-password" element={<ResetPassword />} />
     <Route path="/user/likes" element={<Likes />} loader={likesLoader}/>
 
+
+    <Route path="/test" element={<Test />} />
+    
     <Route path="*" element={<NotFound />} />
   </Route>
 ))
