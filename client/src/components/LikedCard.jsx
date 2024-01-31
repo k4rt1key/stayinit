@@ -10,23 +10,28 @@ export default function LikedCard({ flatOrHostel, name, type, locality, city }) 
 
     async function unlike() {
 
-        const requestOption = {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "authorization": `Bearer ${localStorage.getItem("token")} `
-            },
-        }
+        try {
+            const requestOption = {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": `Bearer ${localStorage.getItem("token")} `
+                },
+            }
 
-        const response = await fetch(`http://localhost:5000/api/v1/likes/${type}/${flatOrHostel._id}`, requestOption)
-        const jsonResponse = await response.json()
+            const response = await fetch(`http://localhost:5000/api/v1/likes/${type}/${flatOrHostel._id}`, requestOption)
+            const jsonResponse = await response.json()
 
-        if (jsonResponse.success === true) {
-            // if the property is unliked then remove it from the liked property state
-            toast.success("Property removed from liked list");
-            revalidator.revalidate();
-        } else {
-            toast.error(jsonResponse.message);
+            if (jsonResponse.success === true) {
+                // if the property is unliked then remove it from the liked property state
+                toast.success("Property removed from liked list");
+                revalidator.revalidate();
+            } else {
+                toast.error(jsonResponse.message);
+            }
+        } catch (error) {
+            toast.error(error.message);
+            throw new Error(error.message)
         }
     }
 

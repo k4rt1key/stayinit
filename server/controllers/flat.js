@@ -32,13 +32,13 @@ async function getFlat(req, res) {
         if (!flatInDb) {
             return res.status(404).json({
                 "success": false,
-                "message": "your flat was not found",
+                "message": "flat was not found",
             })
         }
 
         res.status(200).json({
             "success": true,
-            "message": "your flat was found",
+            "message": "flat was found",
             "data": flatInDb
         })
 
@@ -123,7 +123,7 @@ async function getAllFlats(req, res) {
 
         return res.status(200).json({
             "success": true,
-            "message": "your flats were fetched successfully",
+            "message": "flats were fetched successfully",
             "data": response
         })
 
@@ -287,7 +287,7 @@ async function addFlatImage(req, res) {
 
         res.status(201).json({
             "success": true,
-            "message": "your image has been added successfully",
+            "message": "image has been added successfully",
             "data": createdFlatImage
         })
 

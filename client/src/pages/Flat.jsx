@@ -49,9 +49,7 @@ export default function Flat() {
 
                 setLikedProperty(newList)
 
-            }
-
-            else {
+            } else {
                 toast.error(jsonResponse.message)
             }
 
@@ -202,20 +200,18 @@ export default function Flat() {
 
                 const jsonResponse = await response.json()
 
-                if (jsonResponse.success === true) {
-                    toast.success(jsonResponse.message)
+                if (response.ok) {
+                    toast.success("Succesfully fetched the prediction")
                     setPrediction(jsonResponse.prediction)
                 } else {
-                    toast.error(jsonResponse.message)
+                    toast.error("Error during fetching the prediction")
                 }
 
             } else {
                 toast.error("Please Login to see the prediction")
                 navigate(`/login?return-url=${window.location.pathname}`)
             }
-        }
-
-        catch (error) {
+        }  catch (error) {
             toast.error(error.message)
             throw new Error(error.message)
         }

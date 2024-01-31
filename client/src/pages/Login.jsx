@@ -55,8 +55,8 @@ export default function Login() {
 
             if (jsonResponse.success === true) {
 
+                toast.success(jsonResponse.message)
                 loginContextFunction(jsonResponse)
-                toast.success("You have successfully logged in")
                 
                 if(returnUrl){
                     navigate(`${returnUrl}`); 
@@ -75,8 +75,8 @@ export default function Login() {
 
         } catch (error) {
 
-            throw new Error(error.message)
             toast.error(error.message)
+            throw new Error(error.message)
 
         }
 

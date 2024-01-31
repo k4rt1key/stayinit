@@ -18,7 +18,7 @@ async function login(req, res) {
         if (!(email && password)) {
             return res.status(400).json({
                 "success": false,
-                "message": "you did not provide email or password",
+                "message": "Please provide both email & password",
             })
         }
 
@@ -28,7 +28,7 @@ async function login(req, res) {
         if (!userInDb) {
             return res.status(404).json({
                 "success": false,
-                "message": "user is not registered with this email",
+                "message": "User not found, Register first to login",
             })
         }
 
@@ -38,7 +38,7 @@ async function login(req, res) {
         if (!isPasswordSame) {
             return res.status(401).json({
                 "success": false,
-                "message": "password is incorrect",
+                "message": "Incorrect password",
             })
         }
 
@@ -51,7 +51,7 @@ async function login(req, res) {
             "success": true,
             "token": accessToken,
             "refreshToken": refreshToken,
-            "message": "you are logged in successfully",
+            "message": "Successfully logged in",
             "data": userProfile
         })
 
@@ -70,7 +70,7 @@ async function isAuthenticate(req, res) {
 
         res.status(200).json({
             "success": true,
-            "message": "authenticated successfully",
+            "message": "Authenticated successfully",
             "data": profile
         })
 
@@ -98,7 +98,7 @@ async function register(req, res) {
         if (!(username && email && password && confirmPassword)) {
             return res.status(400).json({
                 "success": false,
-                "message": "all fields are required",
+                "message": "All fields are required",
             })
         }
 
@@ -106,7 +106,7 @@ async function register(req, res) {
         if (password !== confirmPassword) {
             return res.status(401).json({
                 "success": false,
-                "message": "password and confirm-password are not same",
+                "message": "Password and Confirm-password must be same",
             })
         }
 
@@ -114,7 +114,7 @@ async function register(req, res) {
         if (password.length < 8) {
             return res.status(400).json({
                 "success": false,
-                "message": "password length must be greater than 8",
+                "message": "Password's length must be greater than 8",
             })
         }
 
@@ -124,7 +124,7 @@ async function register(req, res) {
         if (userInDb) {
             return res.status(409).json({
                 "success": false,
-                "message": "user already exists with given email",
+                "message": "User is already exists with given email",
             });
         }
 
@@ -159,7 +159,7 @@ async function register(req, res) {
 
         res.status(201).json({
             "success": true,
-            "message": "you are registered successfully",
+            "message": "User registered successfully",
             "data": newUser
         });
 
@@ -180,7 +180,7 @@ async function sendOTP(req, res) {
         if (!email) {
             return res.status(400).json({
                 "success": false,
-                "message": "email is required",
+                "message": "Please provide email",
             })
         }
 
@@ -190,7 +190,7 @@ async function sendOTP(req, res) {
         if (emailInDB) {
             return res.status(409).json({
                 "success": false,
-                "message": "you are already registered with this email",
+                "message": "User already exists with given emai",
             })
         }
 
@@ -217,7 +217,7 @@ async function sendOTP(req, res) {
 
         return res.status(201).json({
             "success": true,
-            "message": "otp is created successfully",
+            "message": `Otp is sent to : ${email}`,
             "data": newOTP
         })
     } catch (error) {
@@ -238,7 +238,7 @@ async function verifyOTP(req, res) {
         if (!email || !otp) {
             return res.status(400).json({
                 "success": false,
-                "message": "you did not provide email or otp",
+                "message": "Please provide both email & otp",
             })
         }
 
@@ -248,7 +248,7 @@ async function verifyOTP(req, res) {
         if (!OTPinDb) {
             return res.status(404).json({
                 "success": false,
-                "message": "we don't have any otp for this email",
+                "message": "OTP not found or expired",
             })
         }
 
@@ -256,7 +256,7 @@ async function verifyOTP(req, res) {
         if (otp !== OTPinDb.otp) {
             return res.status(400).json({
                 "success": false,
-                "message": "either otp is incorrect or expired",
+                "message": "OTP is incorrect",
             })
         }
 
@@ -265,7 +265,7 @@ async function verifyOTP(req, res) {
 
         res.status(200).json({
             "success": true,
-            "message": "otp verified successfully",
+            "message": "OTP verified successfully",
         })
 
     } catch (error) {
@@ -285,7 +285,7 @@ async function sendResetPasswordLink(req, res) {
         if (!email) {
             return res.status(400).json({
                 "success": false,
-                "message": "email is required",
+                "message": "Please provide email",
             })
         }
 
@@ -295,7 +295,7 @@ async function sendResetPasswordLink(req, res) {
         if (!user) {
             return res.status(404).json({
                 "success": false,
-                "message": "user is not registered with this email",
+                "message": "User is not registered with this email",
             })
         }
 
@@ -318,7 +318,7 @@ async function sendResetPasswordLink(req, res) {
 
         res.status(200).json({
             "success": true,
-            "message": "reset password link sent successfully",
+            "message": `Reset password link sent successfully to : ${email}`,
         })
 
     } catch (error) {
@@ -340,7 +340,7 @@ async function verifyResetPasswordLink(req, res) {
         if (!(password && confirmPassword)) {
             return res.status(400).json({
                 "success": false,
-                "message": "password and confirm-password are required",
+                "message": "Please provide both password & confirmPassword",
             })
         }
 
@@ -350,7 +350,7 @@ async function verifyResetPasswordLink(req, res) {
         if (!tokenInDB) {
             return res.status(404).json({
                 "success": false,
-                "message": "given token is not valid or expired",
+                "message": "Token not found or expired",
             })
         }
 
@@ -358,7 +358,7 @@ async function verifyResetPasswordLink(req, res) {
         if (password !== confirmPassword) {
             return res.status(400).json({
                 "success": false,
-                "message": "password and confirm-password are not same",
+                "message": "Password and Confirm-password must be same",
             })
         }
 
@@ -376,7 +376,7 @@ async function verifyResetPasswordLink(req, res) {
 
         res.status(200).json({
             "success": true,
-            "message": "your password is reset successfully",
+            "message": "Password is reset successfully",
         })
     } catch (error) {
         return res.status(500).json({
@@ -394,7 +394,7 @@ async function logout(req,res){
 
         res.status(200).json({
             "success": true,
-            "message": "you are logged out successfully",
+            "message": "Logged out successfully",
         })
 
     } catch (error) {
@@ -412,7 +412,7 @@ async function validateRefreshToken(req,res){
         if (!refreshToken) {
             return res.status(400).json({
                 "success": false,
-                "message": "refreshToken is required",
+                "message": "Please provide refreshToken",
             })
         }
 
@@ -421,7 +421,7 @@ async function validateRefreshToken(req,res){
         if (!user) {
             return res.status(404).json({
                 "success": false,
-                "message": "user not found",
+                "message": "User not found with given refreshToken",
             })
         }
 
@@ -429,7 +429,7 @@ async function validateRefreshToken(req,res){
 
         return res.status(200).json({
             "success": true,
-            "message": "token is validated successfully",
+            "message": "Successfully logged in with refreshToken",
             "token": accessToken,
             "refreshToken": newRefreshToken,
         })

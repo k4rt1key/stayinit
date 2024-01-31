@@ -33,7 +33,7 @@ async function searchProperties(req, res ) {
 
             return res.status(200).json({
                 "success": true,
-                "message": "searched flats fetched successfully",
+                "message": "Successfully fetched searched flat",
                 "data": response
             })
         }
@@ -52,7 +52,7 @@ async function searchProperties(req, res ) {
 
             return res.status(200).json({
                 "success": true,
-                "message": "searched hostel fetched successfully",
+                "message": "Successfully fetched searched hostel",
                 "data": response
             })
         }
@@ -60,7 +60,7 @@ async function searchProperties(req, res ) {
 
         res.status(500).json({
             "success": false,
-            "message": "please select flat or hostel as catagory or some Error"
+            "message": "Select a valid type (hostel or flat)",
         })
 
     } catch(error){

@@ -42,7 +42,8 @@ export default function Card({ flat }) {
                     like.flat ? newList.push(like.flat._id) : null
                 })
 
-                setLikedProperty(newList)
+                setLikedProperty(newList);
+                
             } else {
                 toast.error(jsonResponse.message);
             }

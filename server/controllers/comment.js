@@ -14,7 +14,7 @@ async function addComment(req, res) {
         if (!rating || !(flat || hostel) || !profile || !type) {
             return res.status(400).json({
                 success: false,
-                message: "you did not provide all the required fields in request",
+                message: "Please provide all the required fields",
             });
         }
 
@@ -22,7 +22,7 @@ async function addComment(req, res) {
         if ((type === "flat" && !flat) || (type === "hostel" && !hostel)) {
             return res.status(400).json({
                 success: false,
-                message: `For type '${type}', '${type}' id is required`,
+                message: `For type '${type}', '${type}'Id is required`,
             });
         }
 
@@ -42,7 +42,7 @@ async function addComment(req, res) {
 
             return res.status(200).json({
                 success: true,
-                message: "your comment has been updated successfully",
+                message: "Successfully updated comment",
                 data: updatedComment,
             });
         }
@@ -84,7 +84,7 @@ async function addComment(req, res) {
 
         res.status(201).json({
             success: true,
-            message: "your comment has been added successfully",
+            message: "Successfully commented",
             data: newComment,
         });
 
@@ -108,7 +108,7 @@ async function deleteComment(req, res) {
         if (!commentId) {
             return res.status(400).json({
                 "success": false,
-                "message": "you did not provide commentId in params",
+                "message": "Please provide commentId",
             })
         }
 
@@ -140,7 +140,7 @@ async function deleteComment(req, res) {
 
         res.status(200).json({
             "success": true,
-            "message": "your comment has been deleted successfully",
+            "message": "Successfully deleted comment",
             "data": deletedComment
         })
 

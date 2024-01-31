@@ -38,7 +38,7 @@ export default function ResetPassword() {
             const jsonResponse = await response.json()
 
             if (jsonResponse.success === true) {
-                toast.success("Password reset successful")
+                toast.success(jsonResponse.message)
                 navigate("/login")
             }
 

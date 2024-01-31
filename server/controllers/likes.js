@@ -19,7 +19,7 @@ async function like(req, res) {
         if (!type || !propertyId) {
             return res.status(400).json({
                 "success": false,
-                "message": "you did not provide all the required fields in request",
+                "message": "Please provide all the required fields in request",
             });
         }
 
@@ -27,7 +27,7 @@ async function like(req, res) {
         if (type !== "flat" && type !== "hostel") {
             return res.status(400).json({
                 "success": false,
-                "message": "unknown type of property, type must be flat or hostel",
+                "message": "Unknown type, must be flat or hostel",
             });
         }
 
@@ -43,7 +43,7 @@ async function like(req, res) {
         if (likeInDb) {
             return res.status(409).json({
                 "success": false,
-                "message": "user has already liked this property",
+                "message": "User has already liked this propert",
             });
         }
 
@@ -82,7 +82,7 @@ async function like(req, res) {
 
         res.status(200).json({
             "success": true,
-            "message": "you have liked this property",
+            "message": "Liked successfully",
             "data": newLike
         });
 
@@ -114,7 +114,7 @@ async function getLikedProperties(req, res) {
 
         res.status(200).json({
             "success": true,
-            "message": "successfully fetched all liked properties",
+            "message": "Successfully fetched liked properties",
             "data": likesInDb,
         });
 
@@ -140,7 +140,7 @@ async function unlike(req, res) {
         if (!type || !propertyId) {
             return res.status(400).json({
                 "success": false,
-                "message": "you did not provide all the required fields in request",
+                "message": "Please provide all the required fields in request",
             });
         }
 
@@ -148,7 +148,7 @@ async function unlike(req, res) {
         if (type !== "flat" && type !== "hostel") {
             return res.status(400).json({
                 "success": false,
-                "message": "unknown type of property, type must be flat or hostel",
+                "message": "Unknown type, must be flat or hostel",
             });
         }
 
@@ -163,7 +163,7 @@ async function unlike(req, res) {
         if (!likeInDb) {
             return res.status(404).json({
                 "success": false,
-                "message": "user has not liked this property",
+                "message": "Property was not liked in first place",
             });
         }
 
@@ -195,7 +195,7 @@ async function unlike(req, res) {
 
         res.status(200).json({
             "success": true,
-            "message": "property unliked successfully",
+            "message": "Unliked successfully",
             "data": likeInDb
         });
 

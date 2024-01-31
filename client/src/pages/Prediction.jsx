@@ -81,8 +81,8 @@ export default function Prediction() {
                 const responseJson = await response.json()
                 const data = responseJson.prediction;
 
-                if (responseJson.success) {
-                    toast.success(responseJson.message)
+                if (response.ok) {
+                    toast.success("Successfully fetched prediction")
                     setPrediction(data)
                 } else {
                     toast.error(responseJson.message)

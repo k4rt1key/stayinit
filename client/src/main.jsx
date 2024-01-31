@@ -62,9 +62,12 @@ const router = createBrowserRouter(createRoutesFromElements(
 ))
 
 export default function App() {
+
   return (
     <ThemeProvider>
-      <ToastContainer />
+      <ToastContainer 
+        position='top-center'
+      />
       <RouterProvider router={router} />
     </ThemeProvider>
   )

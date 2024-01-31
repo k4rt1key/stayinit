@@ -10,7 +10,7 @@ const getOneProfile = async (req, res) => {
         if (!profileId) {
             return res.status(400).json({
                 "success": false,
-                "message": "you did not provide profileId in params",
+                "message": "Please provide profileId",
             });
         }
 
@@ -19,13 +19,13 @@ const getOneProfile = async (req, res) => {
         if (!profileInDb) {
             return res.status(404).json({
                 "success": false,
-                "message": "we don't have any profile with this profileId",
+                "message": "Profile not found",
             });
         }
 
         res.status(200).json({
             "success": true,
-            "message": "profile found successfully",
+            "message": "Successfully fetched profile",
             "data": profileInDb,
         });
 
@@ -66,7 +66,7 @@ const updateProfile = async (req, res) => {
 
         res.status(200).json({
             "success": true,
-            "message": "your profile has been updated successfully",
+            "message": "Profile has been updated successfully",
             "data": updatedProfile,
         });
 

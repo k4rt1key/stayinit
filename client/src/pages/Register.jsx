@@ -41,7 +41,7 @@ export default function Signup() {
         const jsonResponse = await response.json()
 
         if (jsonResponse.success === true) {
-            toast.success("OTP sent to your email" + email)
+            toast.success(jsonResponse.message)
             setIsOtpSent(true)
             setError("")
         }
@@ -73,7 +73,7 @@ export default function Signup() {
         const jsonResponse = await response.json()
 
         if (jsonResponse.success === true) {
-            toast.success("OTP verified")
+            toast.success(jsonResponse.message)
             setIsUserVerified(true)
             setError("")
         }
@@ -120,7 +120,7 @@ export default function Signup() {
             const jsonResponse = await response.json()
 
             if (jsonResponse.success === true) {
-                toast.success("You have successfully registered")
+                toast.success(jsonResponse.message)
                 navigate('/login');
                 setError("")
             }
@@ -133,7 +133,6 @@ export default function Signup() {
             setLoading(false)
 
         } catch (error) {
-
             toast.error(error.message)
             throw new Error(error.message)
         }

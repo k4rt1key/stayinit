@@ -14,7 +14,7 @@ export default function ForgotPassword() {
     const [email, setEmail] = useState('');
 
     async function sendMail(email) {
-
+        
         try {
 
             setLoading(() => true)
@@ -30,12 +30,10 @@ export default function ForgotPassword() {
             const jsonResponse = await response.json()
 
             if (jsonResponse.success === true) {
-                toast.success("Email sent successfully");
+                toast.success(jsonResponse.message);
                 setIsValidEmail(() => true)
                 setError(() => "")
-            }
-
-            else {
+            } else {
                 toast.error(jsonResponse.message);
                 setError(() => jsonResponse.message)
             }
