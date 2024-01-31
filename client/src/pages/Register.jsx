@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Spinner } from "@material-tailwind/react";
+import { toast } from 'react-toastify';
 
 export default function Signup() {
 
@@ -19,7 +20,10 @@ export default function Signup() {
 
     async function handleEmailSubmit(event) {
         event.preventDefault()
-        if (!email) { setError("Please enter your email") }
+        if (!email) { 
+            setError("Please enter your email") 
+            toast.error("Please enter your email")
+        }
 
         // start loading when user submit email
         setLoading(true)
@@ -35,14 +39,15 @@ export default function Signup() {
 
         const response = await fetch('http://localhost:5000/api/v1/auth/register/send-verification-otp', requestOptions);
         const jsonResponse = await response.json()
-        const data = jsonResponse.data;
 
         if (jsonResponse.success === true) {
+            toast.success("OTP sent to your email" + email)
             setIsOtpSent(true)
             setError("")
         }
 
         else {
+            toast.error(jsonResponse.message)
             setIsOtpSent(false)
             setError(jsonResponse.message)
         }
@@ -66,14 +71,15 @@ export default function Signup() {
 
         const response = await fetch('http://localhost:5000/api/v1/auth/register/verify-otp', requestOptions);
         const jsonResponse = await response.json()
-        const data = jsonResponse.data;
 
         if (jsonResponse.success === true) {
+            toast.success("OTP verified")
             setIsUserVerified(true)
             setError("")
         }
 
         else {
+            toast.error(jsonResponse.message)
             setIsUserVerified(false)
             setError(jsonResponse.message)
         }
@@ -112,19 +118,24 @@ export default function Signup() {
 
             const response = await fetch('http://localhost:5000/api/v1/auth/register', requestOptions);
             const jsonResponse = await response.json()
-            const data = jsonResponse.data;
+
             if (jsonResponse.success === true) {
+                toast.success("You have successfully registered")
                 navigate('/login');
                 setError("")
             }
+
             else {
+                toast.error(jsonResponse.message)
                 setError(jsonResponse.message)
             }
 
             setLoading(false)
 
         } catch (error) {
-            throw new Error(error)
+
+            toast.error(error.message)
+            throw new Error(error.message)
         }
     }
 

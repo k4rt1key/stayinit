@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Spinner } from "@material-tailwind/react";
+import { toast } from 'react-toastify';
 
 
 export default function ForgotPassword() {
@@ -29,18 +30,21 @@ export default function ForgotPassword() {
             const jsonResponse = await response.json()
 
             if (jsonResponse.success === true) {
+                toast.success("Email sent successfully");
                 setIsValidEmail(() => true)
                 setError(() => "")
             }
 
             else {
+                toast.error(jsonResponse.message);
                 setError(() => jsonResponse.message)
             }
 
             setLoading(() => false)
 
         } catch (error) {
-            throw new Error(error)
+            toast.error(error.message);
+            throw new Error(error.message)
         }
     }
 

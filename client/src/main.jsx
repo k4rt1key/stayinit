@@ -2,6 +2,9 @@ import './main.css';
 import React from 'react';
 import ReactDOM from "react-dom/client"
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import {
   RouterProvider,
   createBrowserRouter,
@@ -28,32 +31,32 @@ import Likes from './pages/Likes';
 
 import ErrorElement from "./components/ErrorElement"
 
-import { flatsLoader } from './loaders/flatListingLoader'; 
-import { flatLoader } from './loaders/flatLoader'; 
-import { hostelsLoader } from './loaders/hostelListingLoader'; 
-import { hostelLoader } from './loaders/hostelLoader'; 
-import { likesLoader } from './loaders/likesLoader'; 
+import { flatsLoader } from './loaders/flatListingLoader';
+import { flatLoader } from './loaders/flatLoader';
+import { hostelsLoader } from './loaders/hostelListingLoader';
+import { hostelLoader } from './loaders/hostelLoader';
+import { likesLoader } from './loaders/likesLoader';
 
 
 const router = createBrowserRouter(createRoutesFromElements(
-  <Route path="/" element={<Layout />} errorElement={<ErrorElement/>}>
+  <Route path="/" element={<Layout />} errorElement={<ErrorElement />}>
     <Route index element={<Home />} />
 
-    <Route path="/hostels" element={<HostelsListing />} loader={hostelsLoader}/>
-    <Route path="/hostels/:hostelname" element={<Hostel />} loader={hostelLoader}/>
-    <Route path="/flats" element={<FlatListing />} loader={flatsLoader}/>
-    <Route path="/flats/:flatname" element={<Flat />} loader={flatLoader}/>
+    <Route path="/hostels" element={<HostelsListing />} loader={hostelsLoader} />
+    <Route path="/hostels/:hostelname" element={<Hostel />} loader={hostelLoader} />
+    <Route path="/flats" element={<FlatListing />} loader={flatsLoader} />
+    <Route path="/flats/:flatname" element={<Flat />} loader={flatLoader} />
 
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
 
     <Route path="/login/forgot-password" element={<ForgotPassword />} />
     <Route path="/user/reset-password" element={<ResetPassword />} />
-    <Route path="/user/likes" element={<Likes />} loader={likesLoader}/>
+    <Route path="/user/likes" element={<Likes />} loader={likesLoader} />
 
 
     <Route path="/test" element={<Test />} />
-    
+
     <Route path="*" element={<NotFound />} />
   </Route>
 ))
@@ -61,6 +64,7 @@ const router = createBrowserRouter(createRoutesFromElements(
 export default function App() {
   return (
     <ThemeProvider>
+      <ToastContainer />
       <RouterProvider router={router} />
     </ThemeProvider>
   )

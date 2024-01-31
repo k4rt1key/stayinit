@@ -10,6 +10,7 @@ import FlatInfoCard from "../components/Flat/FlatInfoCard";
 import ImageCarousel from "../components/ImageCarousel";
 import CommentsDiv from "../components/CommentsDiv";
 import NearestLandmarks from "../components/NearestLandmarks";
+import { toast } from "react-toastify";
 
 export default function Flat() {
 
@@ -41,7 +42,6 @@ export default function Flat() {
             const data = jsonResponse.data;
 
             if (jsonResponse.success === true) {
-
                 const newList = []
                 data.forEach((like) => {
                     like.flat ? newList.push(like.flat._id) : null
@@ -51,7 +51,12 @@ export default function Flat() {
 
             }
 
+            else {
+                toast.error(jsonResponse.message)
+            }
+
         } catch (error) {
+            toast.error(error.message)
             throw new Error(error.message)
         }
     }
@@ -75,72 +80,88 @@ export default function Flat() {
     }
 
     async function unlike() {
-        if (isAuthenticate) {
+        try {
+            if (isAuthenticate) {
 
-            const responseOptions = {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'authorization': `Bearer ${localStorage.getItem("token")}`
+                const responseOptions = {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'authorization': `Bearer ${localStorage.getItem("token")}`
+                    }
+                }
+
+                setLikeLoading(true)
+                const response = await fetch(`http://localhost:5000/api/v1/likes/flat/${flat._id}`, responseOptions);
+                const jsonResponse = await response.json();
+                setLikeLoading(false)
+
+                if (jsonResponse.success === true) {
+                    toast.success(jsonResponse.message);
+                    setLikedProperty(() => {
+                        return (likedProperty.filter((property) => {
+                            return property !== flat._id;
+                        }))
+                    })
+
+                    setLikesLength((prev) => {
+                        return prev - 1
+                    })
+                }
+
+                else {
+                    toast.error(jsonResponse.message);
                 }
             }
-
-            setLikeLoading(true)
-            const response = await fetch(`http://localhost:5000/api/v1/likes/flat/${flat._id}`, responseOptions);
-            const jsonResponse = await response.json();
-            setLikeLoading(false)
-
-            if (jsonResponse.success === true) {
-                setLikedProperty(() => {
-                    return (likedProperty.filter((property) => {
-                        return property !== flat._id;
-                    }))
-                })
-
-                setLikesLength((prev) => {
-                    return prev - 1
-                })
-            }
-
+        } catch (error) {
+            toast.error(error.message)
+            throw new Error(error.message)
         }
     }
 
     async function like() {
-        if (isAuthenticate) {
+        try {
+            if (isAuthenticate) {
 
-            const bodyData = {
-                "propertyId": flat._id,
-                "type": "flat"
+                const bodyData = {
+                    "propertyId": flat._id,
+                    "type": "flat"
+                }
+
+                const requestObject = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'authorization': `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify(bodyData)
+                }
+
+
+                setLikeLoading(true)
+                const response = await fetch(`http://localhost:5000/api/v1/likes`, requestObject);
+                const jsonResponse = await response.json();
+                setLikeLoading(false)
+
+                if (jsonResponse.success === true) {
+                    toast.success(jsonResponse.message);
+                    setLikedProperty((prev) => {
+                        const newList = [...prev]
+                        newList.push(flat._id)
+                        return newList
+                    })
+
+                    setLikesLength((prev) => {
+                        return prev + 1
+                    })
+
+                } else {
+                    toast.error(jsonResponse.message);
+                }
             }
-
-            const requestObject = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'authorization': `Bearer ${localStorage.getItem("token")}`
-                },
-                body: JSON.stringify(bodyData)
-            }
-
-
-            setLikeLoading(true)
-            const response = await fetch(`http://localhost:5000/api/v1/likes`, requestObject);
-            const jsonResponse = await response.json();
-            setLikeLoading(false)
-
-            if (jsonResponse.success === true) {
-
-                setLikedProperty((prev) => {
-                    const newList = [...prev]
-                    newList.push(flat._id)
-                    return newList
-                })
-
-                setLikesLength((prev) => {
-                    return prev + 1
-                })
-
-            }
+        } catch (error) {
+            toast.error(error.message)
+            throw new Error(error.message)
         }
     }
 
@@ -180,14 +201,22 @@ export default function Flat() {
                 });
 
                 const jsonResponse = await response.json()
-                setPrediction(jsonResponse.prediction)
+
+                if (jsonResponse.success === true) {
+                    toast.success(jsonResponse.message)
+                    setPrediction(jsonResponse.prediction)
+                } else {
+                    toast.error(jsonResponse.message)
+                }
 
             } else {
+                toast.error("Please Login to see the prediction")
                 navigate(`/login?return-url=${window.location.pathname}`)
             }
         }
 
         catch (error) {
+            toast.error(error.message)
             throw new Error(error.message)
         }
     }

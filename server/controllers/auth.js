@@ -390,9 +390,7 @@ async function logout(req,res){
     try {
         const profile = req.profile;
 
-        const user = await User.findById(profile.userId)
-        user.refreshToken = null;
-        await user.save();
+        const user = await User.findByIdAndUpdate(profile.userId, { $unset: { refreshToken: 1 } }, { new: true })
 
         res.status(200).json({
             "success": true,

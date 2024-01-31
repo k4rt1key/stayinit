@@ -3,12 +3,14 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../contexts/Auth';
 
 import { Spinner } from "@material-tailwind/react";
+import { toast } from 'react-toastify';
 
 export default function Login() {
 
     const navigate = useNavigate();
     const { loginContextFunction, authData } = useAuth()
     const { isAuthenticate } = authData;
+
     if (isAuthenticate) {
         navigate("/")
     }
@@ -30,6 +32,7 @@ export default function Login() {
     }
 
     async function handleLoginSubmit(event) {
+
         try {
 
             event.preventDefault()
@@ -48,24 +51,33 @@ export default function Login() {
             }
 
             const response = await fetch('http://localhost:5000/api/v1/auth/login', requestOptions);
-            const jsonResponse = await response.json()
-            const data = jsonResponse.data;
-            const token = jsonResponse.token
+            const jsonResponse = await response.json();
 
             if (jsonResponse.success === true) {
+
                 loginContextFunction(jsonResponse)
+                toast.success("You have successfully logged in")
+                
                 if(returnUrl){
                     navigate(`${returnUrl}`); 
-                }
-                else {
+                } else {
                     navigate("/"); 
                 }
+
             } else {
+
+                toast.error(jsonResponse.message)
                 setError(jsonResponse.message)
+
             }
+
             setLoading(false);
+
         } catch (error) {
-            throw new Error(error)
+
+            throw new Error(error.message)
+            toast.error(error.message)
+
         }
 
     }

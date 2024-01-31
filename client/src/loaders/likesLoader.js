@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 export async function likesLoader({ request, params }) {
     try {
         const requestObject = {
@@ -16,11 +18,13 @@ export async function likesLoader({ request, params }) {
         }
 
         else {
+            toast.error(jsonResponse.message);
             throw new Error(jsonResponse.message)
         }
     }
 
     catch (error) {
+        toast.error(error.message);
         throw new Error(error.message)
     }
 }

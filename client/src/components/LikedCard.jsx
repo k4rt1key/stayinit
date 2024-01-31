@@ -2,6 +2,7 @@
 import React from "react"
 import { Link, useRevalidator } from "react-router-dom"
 import { getFirstImage } from "../utils/utilityFunctions"
+import { toast } from 'react-toastify';
 
 export default function LikedCard({ flatOrHostel, name, type, locality, city }) {
 
@@ -22,7 +23,10 @@ export default function LikedCard({ flatOrHostel, name, type, locality, city }) 
 
         if (jsonResponse.success === true) {
             // if the property is unliked then remove it from the liked property state
+            toast.success("Property removed from liked list");
             revalidator.revalidate();
+        } else {
+            toast.error(jsonResponse.message);
         }
     }
 

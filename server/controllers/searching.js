@@ -19,6 +19,7 @@ async function searchProperties(req, res ) {
 
 
         if (type === "flat") {
+            
             const searchByFlat = await Flat.find({ $text: { $search: search }});
             // const searchByNearestLandmarks = await Flat.find({ nearestLandmarksForSearching: { place: new RegExp(search, "i") } });
 

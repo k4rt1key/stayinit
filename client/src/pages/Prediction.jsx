@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/Auth'
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 
 // import of utility functions
 import { roundToNearestThousand } from '../../utils/utilityFunctions';
@@ -40,49 +42,59 @@ export default function Prediction() {
     // making request to server to predict price for user inputed property data
     async function fetchPrediction() {
 
+        try {
 
-        // convert form data string to lowercase string for accurate prediction in ml model
-        const p_proj = propertyData.property_project.toLowerCase().replace(" ", "_")
-        const p_city = propertyData.property_city.toLowerCase()
-        const p_loc = propertyData.property_locality.toLowerCase()
-        const p_isfun = propertyData.is_furnished.toLowerCase()
+            // convert form data string to lowercase string for accurate prediction in ml model
+            const p_proj = propertyData.property_project.toLowerCase().replace(" ", "_")
+            const p_city = propertyData.property_city.toLowerCase()
+            const p_loc = propertyData.property_locality.toLowerCase()
+            const p_isfun = propertyData.is_furnished.toLowerCase()
 
-        // if user is authenticated... then make api call
-        if (authData.isAuthenticate) {
+            // if user is authenticated... then make api call
+            if (authData.isAuthenticate) {
 
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    property_sqft: propertyData.property_sqft,
-                    property_bhk: propertyData.property_bhk,
-                    property_city: p_city,
-                    property_locality: p_loc,
-                    is_furnished: p_isfun,
-                    property_project: p_proj,
-                    num_of_baths: propertyData.num_of_baths,
-                    bachelors_or_family: "bachelors",
-                    floornumber: propertyData.floornumber,
-                    totalfloor: propertyData.totalfloor || propertyData.atWhichFloor,
-                    property_pricenan: 0,
-                    property_bhknan: 0,
-                    property_sqftnan: 0,
-                    num_of_bathsnan: 0,
-                    floornumbernan: 0,
-                    totalfloornan: 0
-                }),
-            };
-            const response = await fetch('http://localhost:7000/', response)
-            const responseJson = await response.json()
-            const data = responseJson.prediction
+                const options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        property_sqft: propertyData.property_sqft,
+                        property_bhk: propertyData.property_bhk,
+                        property_city: p_city,
+                        property_locality: p_loc,
+                        is_furnished: p_isfun,
+                        property_project: p_proj,
+                        num_of_baths: propertyData.num_of_baths,
+                        bachelors_or_family: "bachelors",
+                        floornumber: propertyData.floornumber,
+                        totalfloor: propertyData.totalfloor || propertyData.atWhichFloor,
+                        property_pricenan: 0,
+                        property_bhknan: 0,
+                        property_sqftnan: 0,
+                        num_of_bathsnan: 0,
+                        floornumbernan: 0,
+                        totalfloornan: 0
+                    }),
+                };
+                const response = await fetch('http://localhost:7000/', response)
+                const responseJson = await response.json()
+                const data = responseJson.prediction;
 
-            setPrediction(data)
-        }
-        // if user is not autheticated... then redirect to "login"
-        else {
-            navigate("/login")
+                if (responseJson.success) {
+                    toast.success(responseJson.message)
+                    setPrediction(data)
+                } else {
+                    toast.error(responseJson.message)
+                }
+            }
+            // if user is not autheticated... then redirect to "login"
+            else {
+                navigate("/login")
+            }
+        } catch (error) {
+            toast.error(error.message);
+            throw new Error(error.message)
         }
     }
 

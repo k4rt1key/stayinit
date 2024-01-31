@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 export async function flatsLoader({ request, params }) {
 
     try {
@@ -26,11 +28,13 @@ export async function flatsLoader({ request, params }) {
         }
 
         else {
+            toast.error(jsonResponse.message);
             throw new Error(jsonResponse.message)
         }
     }
 
     catch (error) {
+        toast.error(error.message);
         throw new Error(error.message)
     }
 }

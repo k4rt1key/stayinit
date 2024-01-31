@@ -30,7 +30,7 @@ async function resetPasswordMailSender(email, token) {
         from: process.env.EMAIL,
         to: email,
         subject: "Reset Password email from Stayinit",
-        text: 'Here is your password reset link:  ' + `http://localhost:3000/user/reset-password?token=${token}&email=${email}` + ' . This Link will expire in 5 minutes.'
+        text: 'Here is your password reset link:  ' + `${process.env.FRONTEND_URL}/user/reset-password?token=${token}&email=${email}` + ' . This Link will expire in 5 minutes.'
     };
 
     await transporter.sendMail(mailOptions)

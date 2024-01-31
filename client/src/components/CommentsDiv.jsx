@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useAuth } from '../contexts/Auth'
 import Comment from "./Comment"
 import { Rating } from "@material-tailwind/react";
+import { toast } from 'react-toastify';
 
 export default function CommentsDiv({ _id, type, comments, setCommentsLength, revalidator }) {
 
@@ -44,14 +45,16 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength, re
                 const jsonResponse = await response.json()
 
                 if (jsonResponse.success === true) {
+                    toast.success(jsonResponse.message);
                     setComment("Please Chnage the rating and comment to submit again")
                     setCommentsLength(prev => prev + 1)
                     revalidator.revalidate();
                 } else {
-                    throw new Error(jsonResponse.message)
+                    toast.error(jsonResponse.message);
                 }
             } catch (error) {
-                throw new Error(error)
+                toast.error(error.message);
+                throw new Error(error.message)
             }
         }
     }

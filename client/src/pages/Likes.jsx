@@ -5,6 +5,8 @@ import { Link, useLoaderData } from "react-router-dom"
 import LikedCard from "../components/LikedCard"
 
 import { getFirstImage } from "../utils/utilityFunctions"
+import { toast } from 'react-toastify';
+
 
 export default function likes() {
 

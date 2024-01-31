@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Spinner } from "@material-tailwind/react";
+import { toast } from "react-toastify";
 
 
 export default function ResetPassword() {
@@ -35,20 +36,22 @@ export default function ResetPassword() {
             }
             const response = await fetch('http://localhost:5000/api/v1/auth/user/verify-reset-password-token', requestOptions);
             const jsonResponse = await response.json()
-            const data = jsonResponse.data;
 
             if (jsonResponse.success === true) {
+                toast.success("Password reset successful")
                 navigate("/login")
             }
 
             else {
+                toast.error(jsonResponse.message);
                 setError(() => jsonResponse.message);
             }
 
             setLoading(() => false)
 
         } catch (error) {
-            throw new Error(error);
+            toast.error(error.message);
+            throw new Error(error.message);
         }
 
     };

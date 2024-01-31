@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/Auth"
 import { getFirstImage } from "../../utils/utilityFunctions";
 import { Spinner } from "@material-tailwind/react";
 import Pricing from "./Pricing"
+import { toast } from "react-toastify";
 
 export default function Card({ hostel }) {
 
@@ -23,8 +24,6 @@ export default function Card({ hostel }) {
     const [likesLength, setLikesLength] = useState(() => likedProperty.length)
     const [likeLoading, setLikeLoading] = useState(false)
 
-
-
     async function getLikes() {
         try {
             const requestOptions = {
@@ -40,7 +39,6 @@ export default function Card({ hostel }) {
             const data = jsonResponse.data;
 
             if (jsonResponse.success === true) {
-
                 const newList = []
                 data.forEach((like) => {
                     like.hostel ? newList.push(like.hostel._id) : null
@@ -50,7 +48,11 @@ export default function Card({ hostel }) {
 
             }
 
+            else {
+                toast.error(jsonResponse.message);
+            }
         } catch (error) {
+            toast.error(error.message);
             throw new Error(error.message)
         }
     }
@@ -74,72 +76,95 @@ export default function Card({ hostel }) {
     }
 
     async function unlike() {
-        if (isAuthenticate) {
 
-            const responseOptions = {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'authorization': `Bearer ${localStorage.getItem("token")}`
+        try {
+
+            if (isAuthenticate) {
+
+                const responseOptions = {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'authorization': `Bearer ${localStorage.getItem("token")}`
+                    }
                 }
+
+                setLikeLoading(true)
+                const response = await fetch(`http://localhost:5000/api/v1/likes/hostel/${hostel._id}`, responseOptions);
+                const jsonResponse = await response.json();
+                setLikeLoading(false)
+
+                if (jsonResponse.success === true) {
+                    toast.success(jsonResponse.message);
+                    setLikedProperty(() => {
+                        return (likedProperty.filter((property) => {
+                            return property !== hostel._id;
+                        }))
+                    })
+
+                    setLikesLength((prev) => {
+                        return prev - 1
+                    })
+                }
+
+                else {
+                    toast.error(jsonResponse.message);
+                }
+
             }
 
-            setLikeLoading(true)
-            const response = await fetch(`http://localhost:5000/api/v1/likes/hostel/${hostel._id}`, responseOptions);
-            const jsonResponse = await response.json();
-            setLikeLoading(false)
-
-            if (jsonResponse.success === true) {
-                setLikedProperty(() => {
-                    return (likedProperty.filter((property) => {
-                        return property !== hostel._id;
-                    }))
-                })
-
-                setLikesLength((prev) => {
-                    return prev - 1
-                })
-            }
-
+        } catch (error) {
+            toast.error(error.message);
+            throw new Error(error.message)
         }
     }
 
     async function like() {
-        if (isAuthenticate) {
 
-            const bodyData = {
-                "propertyId": hostel._id,
-                "type": "hostel"
+        try {
+            if (isAuthenticate) {
+
+                const bodyData = {
+                    "propertyId": hostel._id,
+                    "type": "hostel"
+                }
+
+                const requestObject = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'authorization': `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify(bodyData)
+                }
+
+
+                setLikeLoading(true)
+                const response = await fetch(`http://localhost:5000/api/v1/likes`, requestObject);
+                const jsonResponse = await response.json();
+                setLikeLoading(false)
+
+                if (jsonResponse.success === true) {
+                    toast.success(jsonResponse.message);
+                    setLikedProperty((prev) => {
+                        const newList = [...prev]
+                        newList.push(hostel._id)
+                        return newList
+                    })
+
+                    setLikesLength((prev) => {
+                        return prev + 1
+                    })
+
+                }
+
+                else {
+                    toast.error(jsonResponse.message);
+                }
             }
-
-            const requestObject = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'authorization': `Bearer ${localStorage.getItem("token")}`
-                },
-                body: JSON.stringify(bodyData)
-            }
-
-
-            setLikeLoading(true)
-            const response = await fetch(`http://localhost:5000/api/v1/likes`, requestObject);
-            const jsonResponse = await response.json();
-            setLikeLoading(false)
-
-            if (jsonResponse.success === true) {
-
-                setLikedProperty((prev) => {
-                    const newList = [...prev]
-                    newList.push(hostel._id)
-                    return newList
-                })
-
-                setLikesLength((prev) => {
-                    return prev + 1
-                })
-
-            }
+        } catch (error) {
+            toast.error(error.message);
+            throw new Error(error.message)
         }
     }
 
