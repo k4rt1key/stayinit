@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useParams, useNavigate, useLoaderData, useRevalidator } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, useLoaderData, useRevalidator } from "react-router-dom";
 
 import { useAuth } from '../contexts/Auth'
 import { roundToNearestThousand } from "../utils/utilityFunctions";
@@ -12,10 +12,62 @@ import CommentsDiv from "../components/CommentsDiv";
 import NearestLandmarks from "../components/NearestLandmarks";
 import { toast } from "react-toastify";
 
+
+function useFetch(commentsLength) {
+    try {
+        const params = useParams();
+        const { flatname } = params;
+
+        const [flat, setFlat] = useState({});
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState("");
+
+        async function init(flatname) {
+
+            console.log("inside init")
+            const requestOptions = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+
+            const response = await fetch(`http://localhost:5000/api/v1/flat/${flatname}`, requestOptions);
+            const jsonResponse = await response.json();
+            console.log("jsonResponse: " + jsonResponse)
+            
+            if (jsonResponse.success === true) {
+                console.log(
+                    "flat: " + flat
+                )
+                setFlat(jsonResponse.data);
+            }
+
+            else {
+                setError(jsonResponse.message);
+                toast.error(jsonResponse.message);
+                throw new Error(jsonResponse.message)
+
+            }
+        }
+
+        useEffect(() => {
+            setLoading(true);
+            console.log("inside useEffect")
+            init(flatname);
+            setLoading(false);
+        }, [params, commentsLength]);
+
+        return { flat, loading, error };
+    }
+
+    catch (error) {
+        toast.error(error.message);
+        throw new Error(error.message)
+    }
+}
+
 export default function Flat() {
 
-    const navigate = useNavigate()
-    const revalidator = useRevalidator();
+    const navigate = useNavigate();
 
     // states for "Authentication" and result of "Predicted Prices"
     const { authData } = useAuth()
@@ -24,6 +76,8 @@ export default function Flat() {
     const [likedProperty, setLikedProperty] = useState([])
     const [likesLength, setLikesLength] = useState(() => likedProperty.length)
     const [likeLoading, setLikeLoading] = useState(false)
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
 
     // like releted logic --->
@@ -163,9 +217,9 @@ export default function Flat() {
         }
     }
 
-    const flat = useLoaderData();
-    const [prediction, setPrediction] = useState()
     const [commentsLength, setCommentsLength] = useState(0);
+    const { flat, loading, error } = useFetch(commentsLength);
+    const [prediction, setPrediction] = useState()
 
     // function : to predict flat's price range based on flat's attributes
     async function fetchPrediction(flat) {
@@ -211,11 +265,12 @@ export default function Flat() {
                 toast.error("Please Login to see the prediction")
                 navigate(`/login?return-url=${window.location.pathname}`)
             }
-        }  catch (error) {
+        } catch (error) {
             toast.error(error.message)
             throw new Error(error.message)
         }
     }
+
 
     const {
         _id, type, name, price, bhk, sqft, furnitureType,
@@ -226,7 +281,7 @@ export default function Flat() {
     } = flat
 
     // returning UI component
-    if (flat) {
+    if (!loading) {
         return (
             <div className="mt-4 gap-8 flex flex-col">
                 <div className="relative">
@@ -356,7 +411,6 @@ export default function Flat() {
                         _id={_id}
                         comments={comments}
                         setCommentsLength={setCommentsLength}
-                        revalidator={revalidator}
                     />
                 </div>
 
@@ -364,9 +418,8 @@ export default function Flat() {
         )
     } else {
         return (
-            <div className="flex flex-col h-[100%] justify-center items-center">
-                <img src="/gifs/Pacman.gif" alt="" width="25px" />
-                <h1>Loading...</h1>
+            <div className="flex justify-center items-center h-screen">
+                <Spinner color="black" size="lg" />
             </div>
         )
     }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useParams, Link, useNavigate, useLoaderData, useRevalidator } from "react-router-dom";
+import { useParams, useSearchParams, Link, useNavigate, useLoaderData, useRevalidator } from "react-router-dom";
 
 import { Spinner } from "@material-tailwind/react";
 import { useAuth } from '../contexts/Auth'
@@ -12,11 +12,59 @@ import CommentsDiv from "../components/CommentsDiv";
 import NearestLandmarks from "../components/NearestLandmarks";
 import { toast } from "react-toastify";
 
+
+function useFetch(commentsLength) {
+    try {
+        const params = useParams();
+        const { hostelname } = params;
+
+        const [hostel, setHostel] = useState({});
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState("");
+
+        async function init(hostelname) {
+
+            const requestOptions = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+
+            const response = await fetch(`http://localhost:5000/api/v1/hostel/${hostelname}`, requestOptions);
+            const jsonResponse = await response.json();
+
+            if (jsonResponse.success === true) {
+                setHostel(jsonResponse.data);
+            }
+
+            else {
+                setError(jsonResponse.message);
+                toast.error(jsonResponse.message);
+                throw new Error(jsonResponse.message)
+
+            }
+        }
+
+        useEffect(() => {
+            setLoading(true);
+            init(hostelname);
+            setLoading(false);
+        }, [params, commentsLength]);
+
+        return { hostel, loading, error };
+    }
+
+    catch (error) {
+        toast.error(error.message);
+        throw new Error(error.message)
+    }
+}
+
+
 export default function HostelInfo() {
 
-    const hostel = useLoaderData()
-    const revalidator = useRevalidator()
+    const [searchParams, setSearchParams] = useSearchParams();
     const [commentsLength, setCommentsLength] = useState(0);
+    const { hostel, loading, error } = useFetch(commentsLength);
 
     const {
         _id,
@@ -244,112 +292,119 @@ export default function HostelInfo() {
 
 
 
-    return (
-        <div className="mt-4 gap-8 flex flex-col">
+    if (!loading) {
+        return (
+            <div className="mt-4 gap-8 flex flex-col">
 
-            <div className="relative">
-                {/* Like icon */}
-                {isAuthenticate ?
-                    <div className="bg-colorY2H border-2 border-black p-2 rounded-lg z-[5] absolute top-8 right-8 flex justify-center items-center">
-                        {likeLoading ?
-                            <Spinner color="white" size="sm" />
-                            :
-                            <img src={likedProperty.includes(hostel._id) ? `/icons/red-heart.png` : `/icons/heart.png`} className="w-[2rem]" onClick={toggleLike} alt="" />
-                        }
-                    </div> : null}
+                <div className="relative">
+                    {/* Like icon */}
+                    {isAuthenticate ?
+                        <div className="bg-colorY2H border-2 border-black p-2 rounded-lg z-[5] absolute top-8 right-8 flex justify-center items-center">
+                            {likeLoading ?
+                                <Spinner color="white" size="sm" />
+                                :
+                                <img src={likedProperty.includes(hostel._id) ? `/icons/red-heart.png` : `/icons/heart.png`} className="w-[2rem]" onClick={toggleLike} alt="" />
+                            }
+                        </div> : null}
 
-                <ImageCarousel arrayOfImages={arrayOfImages} />
-            </div>
+                    <ImageCarousel arrayOfImages={arrayOfImages} />
+                </div>
 
 
-            <div className="w-full md-down: justify-items-center px-[2rem] grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                <div className="w-full md-down: justify-items-center px-[2rem] grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
 
-                <div className="bg-colorY cursor-pointer rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col items-start w-full h-auto min-w-[300px] max-w-[600px] relative gap-4 no-scrollbar overflow-x-hidden">
-                    <div className="flex flex-row flex-wrap gap-2 my-3 py-[0.5rem] px-10 w-full" >
-                        {aminitesArr}
+                    <div className="bg-colorY cursor-pointer rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col items-start w-full h-auto min-w-[300px] max-w-[600px] relative gap-4 no-scrollbar overflow-x-hidden">
+                        <div className="flex flex-row flex-wrap gap-2 my-3 py-[0.5rem] px-10 w-full" >
+                            {aminitesArr}
+                        </div>
+                    </div >
+
+                    {/* Pricing */}
+                    <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col items-start w-full h-auto min-w-[300px] max-w-[600px] relative">
+                        <div className=" text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
+                            <h3>
+                                <a href="" rel="noopener noreferrer" target="_blank">
+                                    ROOM BHK &amp; RENT
+                                </a>
+                            </h3>
+                        </div>
+                        <div className="flex-col items-start self-stretch flex w-full justify-between gap-5 mt-4">
+                            {priceAndSharingDivArray}
+                        </div>
                     </div>
+
+
+                    {/* Contact Details */}
+                    <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center flex-col w-full h-auto min-w-[300px] max-w-[600px]">
+                        <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
+                            <h3>
+                                <a href="" rel="noopener noreferrer" target="_blank">
+                                    Contact Details
+                                </a>
+                            </h3>
+                        </div>
+                        <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
+                            <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">Contact Number</div>
+                            <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
+                                <span className="font-bold">{contactNumber}</span>
+                            </div>
+                        </div>
+                        <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
+                            <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">Mail</div>
+                            <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
+                                <span className="font-bold">{contactEmail}</span>
+                            </div>
+                        </div>
+                        <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
+                            <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">Address</div>
+                            <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
+                                <span className="font-bold">{address}</span>
+                            </div>
+                        </div>
+                        <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
+                            <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">Location URL</div>
+                            <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
+                                <a href={addressLink} className="font-bold">View On GoogleMap</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {/* Description */}
+                    <div className="cursor-pointer hover:bg-colorY2H p-6  flex rounded-[1rem] border shadow-sm border-[#F3EADC] flex-col w-full h-auto min-w-[300px] max-w-[600px]">
+                        <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
+                            <h3>
+                                <a href="" target="_blank">
+                                    Description
+                                </a>
+                            </h3>
+                        </div>
+                        <p className="py-2 my-2">{description}</p>
+                    </div>
+
+
+                    {/* Nearest Landmarks */}
+                    <NearestLandmarks nearestLandmarksForSearching={nearestLandmarksForSearching} />
+
                 </div >
 
-                {/* Pricing */}
-                <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col items-start w-full h-auto min-w-[300px] max-w-[600px] relative">
-                    <div className=" text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
-                        <h3>
-                            <a href="" rel="noopener noreferrer" target="_blank">
-                                ROOM BHK &amp; RENT
-                            </a>
-                        </h3>
-                    </div>
-                    <div className="flex-col items-start self-stretch flex w-full justify-between gap-5 mt-4">
-                        {priceAndSharingDivArray}
-                    </div>
+                {/* Comments */}
+                <div className="p-6 w-full">
+                    <CommentsDiv
+                        key={_id}
+                        type="hostel"
+                        _id={_id}
+                        comments={comments}
+                        setCommentsLength={setCommentsLength}
+                    />
                 </div>
-
-
-                {/* Contact Details */}
-                <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center flex-col w-full h-auto min-w-[300px] max-w-[600px]">
-                    <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
-                        <h3>
-                            <a href="" rel="noopener noreferrer" target="_blank">
-                                Contact Details
-                            </a>
-                        </h3>
-                    </div>
-                    <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-                        <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">Contact Number</div>
-                        <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                            <span className="font-bold">{contactNumber}</span>
-                        </div>
-                    </div>
-                    <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-                        <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">Mail</div>
-                        <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                            <span className="font-bold">{contactEmail}</span>
-                        </div>
-                    </div>
-                    <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-                        <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">Address</div>
-                        <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                            <span className="font-bold">{address}</span>
-                        </div>
-                    </div>
-                    <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-                        <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">Location URL</div>
-                        <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                            <a href={addressLink} className="font-bold">View On GoogleMap</a>
-                        </div>
-                    </div>
-
-                </div>
-
-                {/* Description */}
-                <div className="cursor-pointer hover:bg-colorY2H p-6  flex rounded-[1rem] border shadow-sm border-[#F3EADC] flex-col w-full h-auto min-w-[300px] max-w-[600px]">
-                    <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
-                        <h3>
-                            <a href="" target="_blank">
-                                Description
-                            </a>
-                        </h3>
-                    </div>
-                    <p className="py-2 my-2">{description}</p>
-                </div>
-
-
-                {/* Nearest Landmarks */}
-                <NearestLandmarks nearestLandmarksForSearching={nearestLandmarksForSearching} />
-
-            </div >
-
-            {/* Comments */}
-            <div className="p-6 w-full">
-                <CommentsDiv
-                    key={_id}
-                    type="hostel"
-                    _id={_id}
-                    comments={comments}
-                    setCommentsLength={setCommentsLength}
-                    revalidator={revalidator}
-                />
             </div>
-        </div>
-    )
+        )
+    } else {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Spinner color="black" size="sm" />
+            </div>
+        )
+    }
 }

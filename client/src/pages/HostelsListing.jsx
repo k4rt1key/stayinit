@@ -1,54 +1,70 @@
 import React, { useState, useEffect } from "react"
 import { useLoaderData, useSearchParams } from "react-router-dom";
-
 import { Spinner } from "@material-tailwind/react";
-
-import HostelFilters from "../components/Hostel/HostelFilters"
 import Cards from "../components/Hostel/Cards"
+
+
+function useFetch(searchParams) {
+    try {
+
+        const [hostels, setHostels] = useState([]);
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState("");
+
+        async function init(searchParams) {
+            const search = searchParams.get("search");
+            let searchQuery = "";
+            if (search) {
+                searchQuery = "?search=" + search;
+            } else {
+                searchQuery = "";
+            }
+
+            const requestOptions = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            };
+
+            const response = await fetch("http://localhost:5000/api/v1/hostel" + searchQuery, requestOptions);
+            const jsonResponse = await response.json();
+
+            if (jsonResponse.success === true) {
+                setHostels(jsonResponse.data);
+            }
+
+            else {
+                toast.error(jsonResponse.message);
+                throw new Error(jsonResponse.message)
+            }
+        }
+
+        useEffect(() => {
+            setLoading(true);
+            init(searchParams);
+            setLoading(false);
+        }, []);
+
+        return { hostels, loading, error };
+    }
+
+    catch (error) {
+        toast.error(error.message);
+        throw new Error(error.message)
+    }
+}
 
 export default function HostelListing() {
 
-    const [searchParams, setSearchParams] = useSearchParams()
-    const hostels = useLoaderData()
+    const [searchParams, setSearchParams] = useSearchParams();
+    const {hostels, loading, error} = useFetch(searchParams)
    
-    const filters = {
-        "minPrice": Number(searchParams.get("minPrice")),
-        "maxPrice": Number(searchParams.get("maxPrice")),
-
-        "BoysOrGirls": searchParams.get("BoysOrGirls")?.toLowerCase()
-    }
-
-    const filteredHostels = hostels.filter((hostel) => {
-
-        const {
-            priceAndSharing, forWhichGender, acFacility, wifiFacility, gymFacility, freeLaundry
-        } = hostel
-
-        let minPrice = Infinity;
-        let maxPrice = 0;
-
-        minPrice = priceAndSharing.reduce((acc, curr) => {
-            return (Math.min(minPrice, curr.price))
-        }, Infinity)
-
-        maxPrice = priceAndSharing.reduce((acc, curr) => {
-            return (Math.max(maxPrice, curr.price))
-        }, 0)
-
-        const exp =
-            (((filters.BoysOrGirls !== "None" && filters.BoysOrGirls)) ? forWhichGender === filters.BoysOrGirls : true) &&
-            (filters.minPrice ? filters.minPrice <= maxPrice : true) &&
-            (filters.maxPrice ? filters.maxPrice >= minPrice : true)
-
-        return exp;
-
-    })
-
-
     return (
         <div>
-            <HostelFilters />
-            <Cards hostels={filteredHostels} />
+               {loading ?
+                <div className="flex justify-center items-center h-screen">
+                    <Spinner color="black" size="lg" />
+                </div>
+                : <Cards hostels={hostels} />}
         </div>
     );
 

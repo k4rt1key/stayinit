@@ -6,7 +6,7 @@ import Comment from "./Comment"
 import { Rating } from "@material-tailwind/react";
 import { toast } from 'react-toastify';
 
-export default function CommentsDiv({ _id, type, comments, setCommentsLength, revalidator }) {
+export default function CommentsDiv({ _id, type, comments, setCommentsLength }) {
 
     // Get authentication data from the Auth context
     const { authData } = useAuth()
@@ -48,7 +48,6 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength, re
                     toast.success(jsonResponse.message);
                     setComment("Please Chnage the rating and comment to submit again")
                     setCommentsLength(prev => prev + 1)
-                    revalidator.revalidate();
                 } else {
                     toast.error(jsonResponse.message);
                 }
@@ -68,7 +67,6 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength, re
         return sum / comments?.length
     }
 
-    console.log(rating)
     return (
         <div className="md-down: justify-items-center grid grid-cols-1 lg:grid-cols-2 gap-8 relative ">
             <div className="cursor-pointer rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center justify-center flex-col w-full gap-6 h-auto min-w-[300px] max-w-[600px]">

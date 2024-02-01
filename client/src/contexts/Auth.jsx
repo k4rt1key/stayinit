@@ -61,7 +61,7 @@ function Auth({ children }) {
                         const response = await fetch("http://localhost:5000/api/v1/auth/validate-refresh-token", requestOptions);
                         const jsonResponse = await response.json()
 
-                        if(jsonResponse) {
+                        if(jsonResponse.success) {
                             localStorage.setItem('token', jsonResponse.token)
                             localStorage.setItem('refreshToken', jsonResponse.refreshToken)
 
@@ -74,7 +74,7 @@ function Auth({ children }) {
                         else {
                             localStorage.removeItem('token')
                             setAuthData({ isAuthenticate: false, profile: undefined })
-                            navigate('/login');
+
                         }
                     }
 
