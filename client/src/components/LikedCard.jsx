@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 
 export default function LikedCard({ flatOrHostel, name, type, locality, city }) {
 
-    const revalidator = useRevalidator();
 
     async function unlike() {
 
@@ -24,8 +23,8 @@ export default function LikedCard({ flatOrHostel, name, type, locality, city }) 
 
             if (jsonResponse.success === true) {
                 // if the property is unliked then remove it from the liked property state
+                window.location.reload()
                 toast.success("Property removed from liked list");
-                revalidator.revalidate();
             } else {
                 toast.error(jsonResponse.message);
             }

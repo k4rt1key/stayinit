@@ -56,16 +56,20 @@ function useFetch(searchParams) {
 export default function HostelListing() {
 
     const [searchParams, setSearchParams] = useSearchParams();
-    const {hostels, loading, error} = useFetch(searchParams)
-   
-    return (
-        <div>
-               {loading ?
-                <div className="flex justify-center items-center h-screen">
-                    <Spinner color="black" size="lg" />
-                </div>
-                : <Cards hostels={hostels} />}
-        </div>
-    );
+    const { hostels, loading, error } = useFetch(searchParams)
+
+    if (!loading) {
+        return (
+            <div>
+                <Cards hostels={hostels} />
+            </div>
+        );
+    } else {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Spinner color="green" className="h-16 w-16" />
+            </div>
+        )
+    }
 
 }

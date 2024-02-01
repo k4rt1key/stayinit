@@ -17,7 +17,10 @@ export default function Cards({ hostels }) {
 
     return (
         <>
-            <p className="px-4 w-full text-center font-bold text-xl">Showing {length} result</p>
+            <div className="flex flex-row justify-center items-center">
+                <button className="bg-colorG rounded-[1rem] text-[#FFFBF2] text-center px-4 py-4">Filters</button>
+                <p className="px-4 font-bold text-xl">Showing {length} {length === 1 ? "property" : "properties"} </p>
+            </div>
             <div>
                 {hostelsCard}
             </div>

@@ -60,14 +60,18 @@ export default function FlatListing() {
     const [searchParams, setSearchParams] = useSearchParams();
     const { flats, loading, error } = useFetch(searchParams);
 
-    return (
-        <div>
-            {loading ?
-                <div className="flex justify-center items-center h-screen">
-                    <Spinner color="black" size="lg" />
-                </div>
-                : <Cards flats={flats} />}
-        </div>
-    );
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Spinner color="green" className="h-16 w-16" />
+            </div>
+        )
+    } else {
+        return (
+            <div>
+                <Cards flats={flats} />
+            </div>
+        )
+    }
 
 }

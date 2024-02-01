@@ -30,16 +30,12 @@ import Likes from './pages/Likes';
 
 import ErrorElement from "./components/ErrorElement"
 
-import { hostelLoader } from './loaders/hostelLoader';
-import { likesLoader } from './loaders/likesLoader';
-
-
 const router = createBrowserRouter(createRoutesFromElements(
   <Route path="/" element={<Layout />} errorElement={<ErrorElement />}>
     <Route index element={<Home />} />
 
     <Route path="/hostels" element={<HostelsListing />} />
-    <Route path="/hostels/:hostelname" element={<Hostel />} loader={hostelLoader} />
+    <Route path="/hostels/:hostelname" element={<Hostel />} />
     <Route path="/flats" element={<FlatListing />}/>
     <Route path="/flats/:flatname" element={<Flat />} />
 
@@ -48,7 +44,7 @@ const router = createBrowserRouter(createRoutesFromElements(
 
     <Route path="/login/forgot-password" element={<ForgotPassword />} />
     <Route path="/user/reset-password" element={<ResetPassword />} />
-    <Route path="/user/likes" element={<Likes />} loader={likesLoader} />
+    <Route path="/user/likes" element={<Likes />} />
 
 
     <Route path="/test" element={<Test />} />

@@ -403,7 +403,7 @@ export default function HostelInfo() {
     } else {
         return (
             <div className="flex justify-center items-center h-screen">
-                <Spinner color="black" size="sm" />
+                <Spinner color="green" className="h-16 w-16" />
             </div>
         )
     }

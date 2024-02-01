@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-
 import { useAuth } from '../contexts/Auth'
 import Comment from "./Comment"
 import { Rating } from "@material-tailwind/react";
 import { toast } from 'react-toastify';
+import { Spinner } from "@material-tailwind/react";
 
 export default function CommentsDiv({ _id, type, comments, setCommentsLength }) {
 
@@ -12,11 +12,13 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength }) 
     const { authData } = useAuth()
     const { profile, isAuthenticate } = authData
 
+
     const navigate = useNavigate()
 
     // user inputed rating and comment
-    const [rating, setRating] = React.useState(0)
+    const [rating, setRating] = React.useState(0);
     const [comment, setComment] = useState("");
+    const [loading, setLoading] = useState(false);
 
     async function handleCommentSubmit(event) {
         event.preventDefault()
@@ -26,6 +28,7 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength }) 
         }
         else {
             try {
+                setLoading(true)
                 const response = await fetch('http://localhost:5000/api/v1/comment', {
                     method: 'POST',
                     headers: {
@@ -44,6 +47,7 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength }) 
 
                 const jsonResponse = await response.json()
 
+                setLoading(false)
                 if (jsonResponse.success === true) {
                     toast.success(jsonResponse.message);
                     setComment("Please Chnage the rating and comment to submit again")
@@ -66,6 +70,7 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength }) 
 
         return sum / comments?.length
     }
+
 
     return (
         <div className="md-down: justify-items-center grid grid-cols-1 lg:grid-cols-2 gap-8 relative ">
@@ -94,9 +99,10 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength }) 
             {/* All Comments */}
             <div className="cursor-pointer rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center flex-col w-full h-[20rem] no-scrollbar overflow-y-scroll min-w-[300px] max-w-[600px]">
                 <div className="flex flex-col gap-4 mt-[2rem]">
-                    {comments ? comments.map((singleComment) => {
-                        return (
-                            <>
+
+                    {comments ?
+                        comments.map((singleComment) => {
+                            return (
                                 <Comment
                                     key={singleComment._id}
                                     id={singleComment._id}
@@ -104,13 +110,14 @@ export default function CommentsDiv({ _id, type, comments, setCommentsLength }) 
                                     rating={singleComment.rating}
                                     profile={singleComment.profile}
                                     createdAt={singleComment.createdAt}
-                                />
-                                <hr />
-                            </>
-                        )
-                    }) : <></>}
+                                />)
+                        }) :
+                        <></>
+                    }
+
                 </div>
             </div>
-        </div>
+        </div >
     )
+
 }

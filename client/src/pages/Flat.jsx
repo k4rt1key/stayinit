@@ -280,6 +280,8 @@ export default function Flat() {
         totalFloor, description, bathrooms, balconies, developer, nearestLandmarksForSearching,
     } = flat
 
+    console.log(flat);
+
     // returning UI component
     if (!loading) {
         return (
@@ -419,7 +421,7 @@ export default function Flat() {
     } else {
         return (
             <div className="flex justify-center items-center h-screen">
-                <Spinner color="black" size="lg" />
+                <Spinner color="green" className="h-16 w-16" />
             </div>
         )
     }
