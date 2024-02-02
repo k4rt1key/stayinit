@@ -66,7 +66,7 @@ function Auth({ children }) {
                             localStorage.setItem('refreshToken', jsonResponse.refreshToken)
 
                             const isAuthenticate = jsonResponse.success;
-                            const profile = jsonResponse.data.profile;
+                            const profile = jsonResponse.data;
 
                             setAuthData({ isAuthenticate, profile })
                         } 

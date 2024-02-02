@@ -44,6 +44,7 @@ async function getAllHostels(req, res) {
         // getting various filters and sorting options from request query
         const {
             forWhichGender,
+
             liftFacility,
             wifiFacility,
             gymFacility,
@@ -54,7 +55,9 @@ async function getAllHostels(req, res) {
             filterWater,
             cctv,
             cleaning,
+
             sortByPrice,
+
             minPrice = 0,
             maxPrice = Infinity,
             search
@@ -79,39 +82,40 @@ async function getAllHostels(req, res) {
         }
 
         const hostelsInDb = await Hostel
-        .find(queryObj)
-        .populate('priceAndSharing comments likes arrayOfImages nearestLandmarksForSearching').exec()
+            .find(queryObj)
+            .populate('priceAndSharing comments likes arrayOfImages nearestLandmarksForSearching').exec()
+
+        let response = hostelsInDb;
 
         const newQueryObj = {};
         if (search) {
-            newQueryObj.$text = { $search: search};
-        }
-        
-        
-        const NL = await NearestLandmarksForSearching.find(newQueryObj);
+            newQueryObj.$text = { $search: search };
 
-        const FilteredNL = NL.filter((nearestLandmark) => {
-            // if nearestLandmark is not associated with any flat then not adding it to the array
-            // else adding it to the array if it's not already present in the hostelsInDb
-            if (nearestLandmark.hostel) {
-                if (hostelsInDb.length === 0) { return true; }
-                if (hostelsInDb.find((hostel) => hostel._id.toString() !== nearestLandmark.hostel.toString())) {
-                    return true;
-                } else {
+            const NL = await NearestLandmarksForSearching.find(newQueryObj);
+
+            const FilteredNL = NL.filter((nearestLandmark) => {
+                // if nearestLandmark is not associated with any flat then not adding it to the array
+                // else adding it to the array if it's not already present in the hostelsInDb
+                if (nearestLandmark.hostel) {
+                    if (hostelsInDb.length === 0) { return true; }
+                    if (hostelsInDb.find((hostel) => hostel._id.toString() !== nearestLandmark.hostel.toString())) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                else {
                     return false;
                 }
-            }
-            else {
-                return false;
-            }
-        });
+            });
 
-        // now finding flats associated with the nearestLandmarks
-        const HostelsAssociatedWithNL = await Hostel.find({ nearestLandmarksForSearching: { $in: FilteredNL } })
-            .populate("arrayOfImages comments priceAndSharing likes nearestLandmarksForSearching")
+            // now finding flats associated with the nearestLandmarks
+            const HostelsAssociatedWithNL = await Hostel.find({ nearestLandmarksForSearching: { $in: FilteredNL } })
+                .populate("arrayOfImages comments priceAndSharing likes nearestLandmarksForSearching")
 
-        const response = hostelsInDb.concat(HostelsAssociatedWithNL);
+            response = hostelsInDb.concat(HostelsAssociatedWithNL);
 
+        }
 
         // Filter hostels by price and then sort them
         const filteredData = response.filter((hostel) => {
@@ -130,14 +134,6 @@ async function getAllHostels(req, res) {
 
             return sortByPrice == 1 ? minPriceLocalA - minPriceLocalB : minPriceLocalB - minPriceLocalA
         })
-
-        // console.log("hostelsInDb", hostelsInDb);
-        // console.log("NL", NL);
-        // console.log("FilteredNL", FilteredNL);
-        // console.log("HostelsAssociatedWithNL", HostelsAssociatedWithNL);
-        // console.log("response", response);
-        // console.log("filteredData", filteredData);
-
 
         return res.status(200).json({
             "success": true,

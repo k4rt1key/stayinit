@@ -91,35 +91,39 @@ async function getAllFlats(req, res) {
             .where("sqft").gt(minSqft - 1).lt(maxSqft + 1)
             .exec()
 
-        const newQueryObj = {};
-        if (search) {
-            newQueryObj.$text = { $search: search};
-        }
-        
-        
-        const NL = await NearestLandmarksForSearching.find(newQueryObj);
 
-        const FilteredNL = NL.filter((nearestLandmark) => {
-            // if nearestLandmark is not associated with any flat then not adding it to the array
-            // else adding it to the array if it's not already present in the flatsInDb
-            if (nearestLandmark.flat) {
-                if (flatsInDb.length === 0) { return true; }
-                if (flatsInDb.find((flat) => flat._id.toString() !== nearestLandmark.flat.toString())) {
-                    return true;
-                } else {
+        let response = flatsInDb;
+        const newQueryObj = {};
+
+        if (search) {
+            newQueryObj.$text = { $search: search };
+
+
+            const NL = await NearestLandmarksForSearching.find(newQueryObj);
+
+            const FilteredNL = NL.filter((nearestLandmark) => {
+                // if nearestLandmark is not associated with any flat then not adding it to the array
+                // else adding it to the array if it's not already present in the flatsInDb
+                if (nearestLandmark.flat) {
+                    if (flatsInDb.length === 0) { return true; }
+                    if (flatsInDb.find((flat) => flat._id.toString() !== nearestLandmark.flat.toString())) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                else {
                     return false;
                 }
-            }
-            else {
-                return false;
-            }
-        });
+            });
 
-        // now finding flats associated with the nearestLandmarks
-        const FlatsAssociatedWithNL = await Flat.find({ nearestLandmarksForSearching: { $in: FilteredNL } })
-            .populate("arrayOfImages comments likes nearestLandmarksForSearching")
+            // now finding flats associated with the nearestLandmarks
+            const FlatsAssociatedWithNL = await Flat.find({ nearestLandmarksForSearching: { $in: FilteredNL } })
+                .populate("arrayOfImages comments likes nearestLandmarksForSearching")
 
-        const response = flatsInDb.concat(FlatsAssociatedWithNL);
+            response = flatsInDb.concat(FlatsAssociatedWithNL);
+
+        }
 
         return res.status(200).json({
             "success": true,

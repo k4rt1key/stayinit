@@ -14,20 +14,13 @@ function useFetch(searchParams) {
         const [error, setError] = useState("");
 
         async function init(searchParams) {
-            const search = searchParams.get("search");
-            let searchQuery = "";
-            if (search) {
-                searchQuery = "?search=" + search;
-            } else {
-                searchQuery = "";
-            }
 
             const requestOptions = {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             };
 
-            const response = await fetch("http://localhost:5000/api/v1/flat" + searchQuery, requestOptions);
+            const response = await fetch("http://localhost:5000/api/v1/flat?" + searchParams.toString(), requestOptions);
             const jsonResponse = await response.json();
 
             if (jsonResponse.success === true) {
@@ -44,7 +37,7 @@ function useFetch(searchParams) {
             setLoading(true);
             init(searchParams);
             setLoading(false);
-        }, []);
+        }, [searchParams]);
 
         return { flats, loading, error };
     }

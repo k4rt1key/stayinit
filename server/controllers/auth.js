@@ -432,6 +432,7 @@ async function validateRefreshToken(req,res){
             "message": "Successfully logged in with refreshToken",
             "token": accessToken,
             "refreshToken": newRefreshToken,
+            "data": user.profile
         })
 
     } catch (error) {
