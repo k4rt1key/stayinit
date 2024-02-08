@@ -15,7 +15,7 @@ export default function Signup() {
     const [otp, setOtp] = React.useState("")
     const [isUserVerified, setIsUserVerified] = React.useState(false);
     const [signupData, setSignupData] = React.useState({})
-    const [error, setError] = React.useState("")
+    const [error, setError] = React.useState("");
 
 
     async function handleEmailSubmit(event) {

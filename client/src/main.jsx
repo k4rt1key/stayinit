@@ -27,6 +27,11 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import FlatListing from './pages/FlatsListing';
 import Likes from './pages/Likes';
+import Admin from './pages/Admin';
+import AdminHostels from './pages/AdminHostels';
+// import AdminFlats from './pages/AdminFlats';
+// import AdminUsers from './pages/AdminUsers';
+// import User from './pages/User';
 
 import ErrorElement from "./components/ErrorElement"
 
@@ -49,6 +54,12 @@ const router = createBrowserRouter(createRoutesFromElements(
 
     <Route path="/test" element={<Test />} />
 
+    <Route path="/admin" element={<Admin />} />
+    <Route path="/admin/hostels" element={<AdminHostels />} />
+    {/* <Route path="/admin/flats" element={<AdminFlats />} /> */}
+    {/* <Route path="/admin/users" element={<AdminUsers />} /> */}
+    {/* <Route path="/user/:username" element={<User />} /> */}
+    
     <Route path="*" element={<NotFound />} />
   </Route>
 ))
