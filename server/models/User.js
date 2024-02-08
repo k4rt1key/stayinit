@@ -69,6 +69,7 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true }
 );
 
+
 userSchema.methods.generateRefreshAndAccessTokens = async function(){
     const user = this;
 
