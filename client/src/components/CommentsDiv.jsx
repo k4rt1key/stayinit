@@ -1,123 +1,132 @@
-import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { useAuth } from '../contexts/Auth'
-import Comment from "./Comment"
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/Auth";
+import Comment from "./Comment";
 import { Rating } from "@material-tailwind/react";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { Spinner } from "@material-tailwind/react";
 
-export default function CommentsDiv({ _id, type, comments, setCommentsLength }) {
+export default function CommentsDiv({
+  _id,
+  type,
+  comments,
+  setCommentsLength,
+}) {
+  // Get authentication data from the Auth context
+  const { authData } = useAuth();
+  const { profile, isAuthenticate } = authData;
 
-    // Get authentication data from the Auth context
-    const { authData } = useAuth()
-    const { profile, isAuthenticate } = authData
+  const navigate = useNavigate();
 
+  // user inputed rating and comment
+  const [rating, setRating] = React.useState(0);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const navigate = useNavigate()
+  async function handleCommentSubmit(event) {
+    event.preventDefault();
 
-    // user inputed rating and comment
-    const [rating, setRating] = React.useState(0);
-    const [comment, setComment] = useState("");
-    const [loading, setLoading] = useState(false);
+    if (!isAuthenticate) {
+      navigate(`/login?return-url=${window.location.pathname}`);
+    } else {
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:5000/api/v1/comment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
 
-    async function handleCommentSubmit(event) {
-        event.preventDefault()
+          body: JSON.stringify({
+            rating,
+            comment,
+            type,
+            flat: type === "flat" ? _id : null,
+            hostel: type === "hostel" ? _id : null,
+          }),
+        });
 
-        if (!isAuthenticate) {
-            navigate(`/login?return-url=${window.location.pathname}`)
+        const jsonResponse = await response.json();
+
+        setLoading(false);
+        if (jsonResponse.success === true) {
+          toast.success(jsonResponse.message);
+          setComment("Please Chnage the rating and comment to submit again");
+          setCommentsLength((prev) => prev + 1);
+        } else {
+          toast.error(jsonResponse.message);
         }
-        else {
-            try {
-                setLoading(true)
-                const response = await fetch('http://localhost:5000/api/v1/comment', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-
-                    body: JSON.stringify({
-                        rating,
-                        comment,
-                        type,
-                        flat: type === "flat" ? _id : null,
-                        hostel: type === "hostel" ? _id : null,
-                    })
-                })
-
-                const jsonResponse = await response.json()
-
-                setLoading(false)
-                if (jsonResponse.success === true) {
-                    toast.success(jsonResponse.message);
-                    setComment("Please Chnage the rating and comment to submit again")
-                    setCommentsLength(prev => prev + 1)
-                } else {
-                    toast.error(jsonResponse.message);
-                }
-            } catch (error) {
-                toast.error(error.message);
-                throw new Error(error.message)
-            }
-        }
+      } catch (error) {
+        toast.error(error.message);
+        throw new Error(error.message);
+      }
     }
+  }
 
-    function averageRating() {
-        let sum = 0;
-        comments?.map((singleComment) => {
-            sum += singleComment.rating
-        })
+  function averageRating() {
+    let sum = 0;
+    comments?.map((singleComment) => {
+      sum += singleComment.rating;
+    });
 
-        return sum / comments?.length
-    }
+    return sum / comments?.length;
+  }
 
+  return (
+    <div className="flex flex-col gap-10 border-2 shadow-sm rounded-lg border-[#F3EADC] p-6">
+      {/* User input to give rating and comment */}
+      <div className="flex flex-col justify-center items-center gap-6">
+        <span className="text-lg flex flex-row justify-center item-center gap-1">
+          AverageRating of : {averageRating()}{" "}
+          <img src="/icons/yellow-star.png" className="w-6 h-6 inline" alt="" />
+        </span>
+        <form
+          onSubmit={handleCommentSubmit}
+          className="flex flex-col md:flex-row gap-4 items-center justify-center"
+        >
+          <textarea
+            type="text"
+            className="flex w-[15rem] h-[5rem] rounded-[1rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
+            placeholder="Enter your Review about this Flat/Hostel"
+            value={comment}
+            name="comment"
+            id="comment"
+            onChange={(event) => setComment(event.target.value)}
+          />
+          <div className="flex flex-col gap-4">
+            <Rating value={rating} onChange={(value) => setRating(value)} />
+            <button
+              type="submit"
+              className="text-xs bg-colorG text-[#FFFBF2] px-3 py-3 rounded-[3rem] w-full"
+            >
+              {" "}
+              Comment
+            </button>
+          </div>
+        </form>
+      </div>
 
-    return (
-        <div className="md-down: justify-items-center grid grid-cols-1 lg:grid-cols-2 gap-8 relative ">
-            <div className="cursor-pointer rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center justify-center flex-col w-full gap-6 h-auto min-w-[300px] max-w-[600px]">
-
-                {/* Avrage Rating */}
-                <div className="flex text-lg flex-row gap-2">
-                    <span>Average Rating of </span><span className="">{averageRating()}</span><span><img className="w-[1.5rem]" src="/icons/yellow-star.png" alt="" /></span>
-                </div>
-                <p>With Total : {comments?.length} Ratings </p>
-
-                {/* User input to give rating and comment */}
-                <form onSubmit={handleCommentSubmit} className="flex flex-col gap-4 items-center justify-center">
-
-                    <Rating value={rating} onChange={(value) => setRating(value)} />
-
-                    <textarea
-                        className="flex w-[20rem] rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
-                        placeholder="Enter your Review about this Flat/Hostel"
-                        value={comment} name="comment" id="comment" onChange={(event) => setComment(event.target.value)} />
-
-                    <button type="submit" className="text-xs bg-colorG text-[#FFFBF2] px-3 py-3 rounded-[3rem] w-full"> Submit your Review {profile ? " as " + profile.username : " ( Login to comment ) "}</button>
-                </form>
-            </div>
-
-            {/* All Comments */}
-            <div className="cursor-pointer rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center flex-col w-full h-[20rem] no-scrollbar overflow-y-scroll min-w-[300px] max-w-[600px]">
-                <div className="flex flex-col gap-4 mt-[2rem]">
-
-                    {comments ?
-                        comments.map((singleComment) => {
-                            return (
-                                <Comment
-                                    key={singleComment._id}
-                                    id={singleComment._id}
-                                    comment={singleComment.comment}
-                                    rating={singleComment.rating}
-                                    profile={singleComment.profile}
-                                    createdAt={singleComment.createdAt}
-                                />)
-                        }) :
-                        <></>
-                    }
-
-                </div>
-            </div>
-        </div >
-    )
-
+      <div className="flex justify-center items-center">
+        <div className="h-[15rem] w-[30rem] overflow-y-scroll flex flex-col gap-5">
+          {comments ? (
+            comments.map((singleComment) => {
+              return (
+                <Comment
+                  key={singleComment._id}
+                  id={singleComment._id}
+                  comment={singleComment.comment}
+                  rating={singleComment.rating}
+                  profile={singleComment.profile}
+                  createdAt={singleComment.createdAt}
+                />
+              );
+            })
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }

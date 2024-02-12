@@ -1,71 +1,67 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import { useLoaderData, useSearchParams } from "react-router-dom";
 import { Spinner } from "@material-tailwind/react";
-import Cards from "../components/Hostel/Cards"
-
+import Cards from "../components/Hostel/Cards";
 
 function useFetch(searchParams) {
-    try {
+  try {
+    const [hostels, setHostels] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-        const [hostels, setHostels] = useState([]);
-        const [loading, setLoading] = useState(true);
-        const [error, setError] = useState("");
+    async function init(searchParams) {
+      setLoading(true);
 
-        async function init(searchParams) {
+      const requestOptions = {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      };
 
-            const requestOptions = {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-            };
+      const str =
+        "http://localhost:5000/api/v1/hostel?" + searchParams.toString();
+      console.log(str);
 
-            const str = "http://localhost:5000/api/v1/hostel?" + searchParams.toString();
-            console.log(str);
+      const response = await fetch(
+        "http://localhost:5000/api/v1/hostel?" + searchParams.toString(),
+        requestOptions
+      );
+      const jsonResponse = await response.json();
 
-            const response = await fetch("http://localhost:5000/api/v1/hostel?" + searchParams.toString(), requestOptions);
-            const jsonResponse = await response.json();
-
-            if (jsonResponse.success === true) {
-                setHostels(jsonResponse.data);
-            }
-
-            else {
-                toast.error(jsonResponse.message);
-                throw new Error(jsonResponse.message)
-            }
-        }
-
-        useEffect(() => {
-            setLoading(true);
-            init(searchParams);
-            setLoading(false);
-        }, [searchParams]);
-
-        return { hostels, loading, error };
+      if (jsonResponse.success === true) {
+        setHostels(jsonResponse.data);
+        setLoading(false);
+      } else {
+        toast.error(jsonResponse.message);
+        throw new Error(jsonResponse.message);
+      }
     }
 
-    catch (error) {
-        toast.error(error.message);
-        throw new Error(error.message)
-    }
+    useEffect(() => {
+      init(searchParams);
+    }, [searchParams]);
+
+    return { hostels, loading, error };
+  } catch (error) {
+    toast.error(error.message);
+    throw new Error(error.message);
+  }
 }
 
 export default function HostelListing() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { hostels, loading, error } = useFetch(searchParams);
 
-    const [searchParams, setSearchParams] = useSearchParams();
-    const { hostels, loading, error } = useFetch(searchParams)
-
-    if (!loading) {
-        return (
-            <div>
-                <Cards hostels={hostels} />
-            </div>
-        );
-    } else {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <Spinner color="green" className="h-16 w-16" />
-            </div>
-        )
-    }
-
+  if (!loading) {
+    return (
+      <div>
+        <Cards hostels={hostels} />
+      </div>
+    );
+  } else {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner color="green" className="h-16 w-16" />
+      </div>
+    );
+  }
 }
