@@ -3,7 +3,7 @@ import React from "react";
 export default function Comment({ comment, profile, createdAt, rating, id }) {
   return (
     <div className="w-full shadow-sm shadow-deep-orange-50">
-      <div className="flex flex-col gap-2 overflow-y-scroll w-full">
+      <div className="flex flex-col gap-2 overflow-y-scroll no-scrollbar w-full">
         <div className="">
           {/* Username & CommentedAt */}
           <div className="flex flex-row gap-4 text-xl w-full">

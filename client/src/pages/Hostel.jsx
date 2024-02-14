@@ -78,6 +78,7 @@ export default function HostelInfo() {
     city,
     pincode,
     contactNumber,
+    developer,
     contactEmail,
     addedBy,
     nearestLandmarks,
@@ -286,13 +287,48 @@ export default function HostelInfo() {
     }
   }
 
+  const hostelInfoList = [
+    {
+      name: "Developer",
+      value: developer,
+    },
+    {
+      name: "ForWhichGender",
+      value: forWhichGender,
+    },
+  ];
+
+  const hostelContactAndAdress = [
+    {
+      name: "Address",
+      value: `${address}`,
+    },
+    {
+      name: "Locality",
+      value: `${locality}, ${city} (${pincode})`,
+    },
+    {
+      name: "Contact Number",
+      value: contactNumber,
+    },
+    {
+      name: "Contact Email",
+      value: contactEmail,
+    },
+    {
+      name: "Address Link",
+      value: "AddressLink",
+      url: addressLink,
+    },
+  ];
+
   if (!loading) {
     return (
       <div className="mt-4 gap-8  p-8 flex flex-col">
         <div className="relative">
           {/* Like icon */}
           {isAuthenticate ? (
-            <div className="w-[3.5rem] h-[3.5rem] bg-colorY border-2 border-[#073937] p-2 rounded-lg z-[5] absolute top-8 right-8 flex justify-center items-center">
+            <div className="w-[3rem] h-[3rem] bg-colorY border-2 border-[#073937] p-2 rounded-lg z-[5] absolute top-8 right-8 flex justify-center items-center">
               {likeLoading ? (
                 <Spinner color="red" size="lg" className="w-full h-full" />
               ) : (
@@ -321,62 +357,69 @@ export default function HostelInfo() {
           </div>
 
           {/* Pricing */}
-          <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col items-start w-full h-auto  relative">
-            <div className=" text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
-              <h3>
-                <a href="" rel="noopener noreferrer" target="_blank">
-                  ROOM BHK &amp; RENT
-                </a>
-              </h3>
-            </div>
+          <div className=" cursor-pointer  hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col items-start justify-evenly w-full h-auto  relative">
             <div className="flex-col items-start self-stretch flex w-full justify-between gap-5 mt-4">
+              <div className=" text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
+                <h3>
+                  <a href="" rel="noopener noreferrer" target="_blank">
+                    ROOM BHK &amp; RENT
+                  </a>
+                </h3>
+              </div>
               {priceAndSharingDivArray}
+            </div>
+            {/* Hostel Details */}
+            <div className="w-full">
+              <div className="flex-col items-start self-stretch flex w-full justify-between gap-5 mt-4">
+                <div className=" text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
+                  <h3>
+                    <a href="" rel="noopener noreferrer" target="_blank">
+                      Hostel Info
+                    </a>
+                  </h3>
+                </div>
+                {hostelInfoList.map((x) => {
+                  return (
+                    <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
+                      <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
+                        {x.name}
+                      </div>
+                      <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
+                        <a
+                          href={x.url ? x.url : ""}
+                          target="_blank"
+                          className="font-bold"
+                        >
+                          {x.value}
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
           {/* Contact Details */}
           <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center flex-col w-full h-auto ">
-            <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
-              <h3>
-                <a href="" rel="noopener noreferrer" target="_blank">
-                  Contact Details
-                </a>
-              </h3>
-            </div>
-            <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-              <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
-                Contact Number
-              </div>
-              <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                <span className="font-bold">{contactNumber}</span>
-              </div>
-            </div>
-            <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-              <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
-                Mail
-              </div>
-              <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                <span className="font-bold">{contactEmail}</span>
-              </div>
-            </div>
-            <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-              <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
-                Address
-              </div>
-              <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                <span className="font-bold">{address}</span>
-              </div>
-            </div>
-            <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-              <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
-                Location URL
-              </div>
-              <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                <a href={addressLink} className="font-bold">
-                  View On GoogleMap
-                </a>
-              </div>
-            </div>
+            {hostelContactAndAdress.map((x) => {
+              return (
+                <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
+                  <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
+                    {x.name}
+                  </div>
+                  <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
+                    <a
+                      href={x.url ? x.url : ""}
+                      target="_blank"
+                      className="font-bold"
+                    >
+                      {x.value}
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           {/* Description */}

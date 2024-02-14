@@ -295,8 +295,48 @@ export default function Flat() {
     nearestLandmarksForSearching,
   } = flat;
 
-  console.log(flat);
+  const flatsInfoList = [
+    { name: "Sqft", value: sqft },
+    { name: "Balconies", value: balconies },
+    { name: "Furniture Type", value: furnitureType },
+    { name: "Developer", value: developer },
+    {
+      name: "Floor",
+      value: `${atWhichFloor} / ${totalFloor}`,
+    },
+    {
+      name: "Bathrooms",
+      value: bathrooms,
+    },
+    {
+      name: "Balconies",
+      value: balconies,
+    },
+  ];
 
+  const flatContactAndAddress = [
+    {
+      name: "Address",
+      value: `${address}`,
+    },
+    {
+      name: "Locality",
+      value: `${locality}, ${city} (${pincode})`,
+    },
+    {
+      name: "Contact Number",
+      value: contactNumber,
+    },
+    {
+      name: "Contact Email",
+      value: contactEmail,
+    },
+    {
+      name: "AdressLink",
+      value: "AddressLink",
+      url: addressLink,
+    },
+  ];
   // returning UI component
   if (!loading) {
     return (
@@ -304,7 +344,7 @@ export default function Flat() {
         <div className="relative">
           {/* Like icon */}
           {isAuthenticate ? (
-            <div className="w-[3.5rem] h-[3.5rem] bg-colorY border-2 border-[#073937] p-2 rounded-lg z-[5] absolute top-8 right-8 flex justify-center items-center">
+            <div className="w-[3rem] h-[3rem] bg-colorY border-2 border-[#073937] p-2 rounded-lg z-[5] absolute top-8 right-8 flex justify-center items-center">
               {likeLoading ? (
                 <Spinner color="red" size="lg" className="h-full w-full" />
               ) : (
@@ -327,7 +367,7 @@ export default function Flat() {
 
         <div className="md-down: justify-items-center  grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Flat Information */}
-          <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border border-[#F3EADC] p-6 flex items-center flex-col w-full h-auto ">
+          <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border border-[#F3EADC] p-6 flex items-center justify-evenly flex-col w-full h-auto ">
             <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
               <h3>
                 <a href="" rel="noopener noreferrer" target="_blank">
@@ -335,11 +375,37 @@ export default function Flat() {
                 </a>
               </h3>
             </div>
-            <FlatInfoCard property={"Sqft"} value={sqft} />
-            <FlatInfoCard property={"Floor"} value={atWhichFloor} />
-            <FlatInfoCard property={"Balconies"} value={balconies} />
-            <FlatInfoCard property={"Furniture Type"} value={furnitureType} />
-            <FlatInfoCard property={"Num of Baths"} value={bathrooms} />
+            {flatsInfoList.map((info) => {
+              return (
+                <FlatInfoCard
+                  key={info.name}
+                  name={info.name}
+                  value={info.value}
+                  url={info.url}
+                />
+              );
+            })}
+          </div>
+
+          {/* Contact Information */}
+          <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border border-[#F3EADC] p-6 flex items- justify-evenly flex-col w-full h-auto ">
+            <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
+              <h3>
+                <a href="" rel="noopener noreferrer" target="_blank">
+                  Flat Information
+                </a>
+              </h3>
+            </div>
+            {flatContactAndAddress.map((info) => {
+              return (
+                <FlatInfoCard
+                  key={info.name}
+                  name={info.name}
+                  value={info.value}
+                  url={info.url}
+                />
+              );
+            })}
           </div>
 
           {/* Description */}
@@ -401,50 +467,6 @@ export default function Flat() {
             nearestLandmarksForSearching={nearestLandmarksForSearching}
           />
 
-          {/* Contact Details */}
-          <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center flex-col w-full h-auto ">
-            <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
-              <h3>
-                <a href="" rel="noopener noreferrer" target="_blank">
-                  Contact Details
-                </a>
-              </h3>
-            </div>
-            <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-              <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
-                Contact Number
-              </div>
-              <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                <span className="font-bold">{contactNumber}</span>
-              </div>
-            </div>
-            <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-              <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
-                Mail
-              </div>
-              <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                <span className="font-bold">{contactEmail}</span>
-              </div>
-            </div>
-            <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-              <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
-                Address
-              </div>
-              <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                <span className="font-bold">{address}</span>
-              </div>
-            </div>
-            <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-              <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
-                Location URL
-              </div>
-              <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                <a href={addressLink} className="font-bold">
-                  View On GoogleMap
-                </a>
-              </div>
-            </div>
-          </div>
           <div>MAPS</div>
           {/* Comments */}
           <div className="w-full">

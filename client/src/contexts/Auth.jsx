@@ -29,6 +29,7 @@ async function getAccessTokenFromRefreshToken() {
       const profile = jsonResponse.data;
 
       setAuthData({ isAuthenticate, profile });
+      window.location.reload();
     } else {
       localStorage.removeItem("token");
       setAuthData({ isAuthenticate: false, profile: undefined });

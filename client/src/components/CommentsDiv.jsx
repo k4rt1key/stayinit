@@ -108,7 +108,7 @@ export default function CommentsDiv({
       </div>
 
       <div className="flex justify-center items-center">
-        <div className="h-[15rem] w-[30rem] overflow-y-scroll flex flex-col gap-5">
+        <div className="min-h-[5rem] max-h-[15rem] w-[30rem] overflow-y-scroll no-scrollbar flex flex-col gap-5">
           {comments ? (
             comments.map((singleComment) => {
               return (

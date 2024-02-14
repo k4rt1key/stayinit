@@ -45,7 +45,7 @@ async function login(req, res) {
         // getting user profile
         const userProfile = await Profile.findOne({ userId: userInDb._id })
 
-        const {accessToken, refreshToken} = await userInDb.generateRefreshAndAccessTokens();
+        const { accessToken, refreshToken } = await userInDb.generateRefreshAndAccessTokens();
 
         return res.status(200).json({
             "success": true,
@@ -386,7 +386,7 @@ async function verifyResetPasswordLink(req, res) {
     }
 }
 
-async function logout(req,res){
+async function logout(req, res) {
     try {
         const profile = req.profile;
 
@@ -405,7 +405,7 @@ async function logout(req,res){
     }
 }
 
-async function validateRefreshToken(req,res){
+async function validateRefreshToken(req, res) {
     try {
         const { refreshToken } = req.body;
 
@@ -425,7 +425,7 @@ async function validateRefreshToken(req,res){
             })
         }
 
-        const {accessToken, refreshToken: newRefreshToken} = await user.generateRefreshAndAccessTokens();
+        const { accessToken, refreshToken: newRefreshToken } = await user.generateRefreshAndAccessTokens();
 
         return res.status(200).json({
             "success": true,
