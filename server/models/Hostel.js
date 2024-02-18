@@ -1,5 +1,6 @@
-const mongoose = require('mongoose')
-const Pricing = require('./PriceAndSharing')
+const mongoose = require("mongoose")
+
+
 
 const {
     emailValidator,
@@ -40,6 +41,14 @@ const HostelSchema = new mongoose.Schema({
         required: true,
         enum: ["boys", "girls", "both"],
     },
+
+    images: [{
+        type: String,
+        validate: {
+            validator: linkValidator,
+            message: props => `${props.value} is not a valid url link!`
+        }
+    }],
 
     // >>> Address Fields -- mandatory
     addressLink: {
@@ -85,11 +94,6 @@ const HostelSchema = new mongoose.Schema({
         },
     },
 
-    // >>> Address Fields -- optional
-    nearestLandmarks: {
-        type: [String]
-    },
-
     nearestLandmarksForSearching: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "NearestLandmarksForSearching",
@@ -133,11 +137,6 @@ const HostelSchema = new mongoose.Schema({
         ref: "Like",
     },
 
-    arrayOfImages: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: "Image"
-    },
-
     description: {
         type: String,
         trim: true,
@@ -167,6 +166,23 @@ const HostelSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
-HostelSchema.index({'$**': 'text'});
+HostelSchema.index({ '$**': 'text' });
+
+HostelSchema.pre("remove", async function () {
+    try {
+
+        const Comment = require("./Comment")
+        const Like = require("./Like")
+        const NearestLandmarksForSearching = require("./NearestLandmarksForSearching")
+
+        await Pricing.deleteMany({ hostel: this._id })
+        await NearestLandmarksForSearching.deleteMany({ _id: { $in: this.nearestLandmarksForSearching } })
+        await Comment.deleteMany({ hostel: this._id })
+        await Like.deleteMany({ hostel: this._id })
+    } catch (error) {
+        throw new Error(`backend: ${error.message}`);
+    }
+});
+
 
 module.exports = mongoose.model("Hostel", HostelSchema)

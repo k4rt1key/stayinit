@@ -1,6 +1,6 @@
 function getFirstImage(flatOrHostel) {
-    if (Array.isArray(flatOrHostel.arrayOfImages) && flatOrHostel.arrayOfImages.length > 0) {
-        return flatOrHostel.arrayOfImages[0].url;
+    if (Array.isArray(flatOrHostel.images) && flatOrHostel.images.length > 0) {
+        return flatOrHostel.images[0];
     } else {
         return undefined;
     }

@@ -1,4 +1,7 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose")
+
+const User = require("./User")
+
 const { mailSender } = require('../config/nodemailer');
 
 const {
@@ -31,18 +34,22 @@ const OtpSchema = new mongoose.Schema({
 
 
 OtpSchema.pre("save", async function (next) {
+    try {
 
-    async function sendVerificationMail(email, otp) {
-        try {
-            const mailResponse = await mailSender(email, otp);
-        } catch (error) {
-            throw error;
+        async function sendVerificationMail(email, otp) {
+            try {
+                const mailResponse = await mailSender(email, otp);
+            } catch (error) {
+                throw error;
+            }
         }
+
+        await sendVerificationMail(this.email, this.otp);
+
+        next();
+    } catch (error) {
+        throw new Error(`backend: ${error.message}`);
     }
-
-    await sendVerificationMail(this.email, this.otp);
-
-    next();
 })
 
 module.exports = mongoose.model("Otp", OtpSchema)

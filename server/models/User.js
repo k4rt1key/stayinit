@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose")
+
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -9,7 +10,7 @@ const {
     usernameValidator,
 } = require('../validator/modelValidator');
 
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
 
     profile: {
         type: mongoose.Schema.Types.ObjectId,
@@ -29,7 +30,7 @@ const userSchema = new mongoose.Schema({
 
     role: {
         type: String,
-        enum: ["user", "admin"],
+        enum: ["user", "admin", "property-owner"],
         default: "user"
     },
 
@@ -40,15 +41,6 @@ const userSchema = new mongoose.Schema({
         validate: {
             validator: emailValidator,
             message: props => `${props.value} is not a valid email!`
-        },
-    },
-
-    phoneNumber: {
-        type: String,
-        unique: true,
-        validate: {
-            validator: phoneNumberValidator,
-            message: props => `${props.value} is not a valid contact number!`
         },
     },
 
@@ -70,36 +62,99 @@ const userSchema = new mongoose.Schema({
 );
 
 
-userSchema.methods.generateRefreshAndAccessTokens = async function(){
-    const user = this;
+UserSchema.methods.generateRefreshAndAccessTokens = async function () {
+    try {
 
-    const refreshToken = jwt.sign(
-        {
-            _id: user._id,
-        },
+        const user = this;
 
-        process.env.JWT_REFRESH_SECRET,
+        const refreshToken = jwt.sign(
+            {
+                _id: user._id,
+            },
 
-        { expiresIn: process.env.JWT_REFRESH_EXPIRY }
-    );
-    
-    const accessToken = jwt.sign(
-        {
-            _id: user.profile,
-            userId: user._id,
-            username: user.username,
-        },
+            process.env.JWT_REFRESH_SECRET,
 
-        process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_REFRESH_EXPIRY }
+        );
 
-        { expiresIn: process.env.JWT_EXPIRY }
-    );
+        const accessToken = jwt.sign(
+            {
+                _id: user.profile,
+                userId: user._id,
+                username: user.username,
+            },
 
-    user.refreshToken = refreshToken;
-    await user.save();
+            process.env.JWT_SECRET,
 
-    return { refreshToken, accessToken };
+            { expiresIn: process.env.JWT_EXPIRY }
+        );
+
+        user.refreshToken = refreshToken;
+        await user.save();
+
+        return { refreshToken, accessToken };
+    } catch (error) {
+        throw new Error(`backend: model: generateRefreshAndAccessTokens: ${error.message}`);
+    }
 }
 
-const User = mongoose.model("User", userSchema);
+
+UserSchema.pre('save', async function () {
+    try {
+
+        const Comment = require("./Comment")
+        const Flat = require("./Flat")
+        const Hostel = require("./Hostel")
+        const Like = require("./Like")
+        const Profile = require("./Profile")
+
+        if (this.isNew) {
+            await Profile.findOneAndUpdate(
+                { _id: this.profile },
+                {
+                    $set: { userId: this._id },
+                    $set: { username: this.username }
+                },
+                { new: true, runValidators: true }
+            )
+        }
+    } catch (error) {
+        throw new Error(`backend: model: pre: save: ${error.message}`);
+    }
+});
+
+UserSchema.pre('remove', async function () {
+    try {
+
+        const Comment = require("./Comment")
+        const Flat = require("./Flat")
+        const Hostel = require("./Hostel")
+        const Like = require("./Like")
+        const Profile = require("./Profile")
+
+        await Comment.deleteMany(
+            { profile: this.profile }
+        );
+
+        await Like.deleteMany(
+            { profile: this.profile }
+        );
+
+        await Flat.deleteMany(
+            { addedBy: this.profile }
+        );
+
+        await Hostel.deleteMany(
+            { addedBy: this.profile }
+        );
+
+        await Profile.findOneAndDelete(
+            { userId: this._id }
+        )
+    } catch (error) {
+        throw new Error(`backend: model: pre: remove: ${error.message}`);
+    }
+});
+
+const User = mongoose.model("User", UserSchema);
 module.exports = User;

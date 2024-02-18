@@ -32,7 +32,7 @@ const getOneProfile = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         });
     }
 }
@@ -73,7 +73,7 @@ const updateProfile = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         });
     }
 }

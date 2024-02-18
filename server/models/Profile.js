@@ -1,8 +1,7 @@
-const mongoose = require("mongoose");
-const {
-    usernameValidator,
-    linkValidator,
-} = require('../validator/modelValidator');
+const mongoose = require("mongoose")
+const { usernameValidator, linkValidator } = require("../validator/modelValidator")
+
+const User = require("./User")
 
 const ProfileSchema = new mongoose.Schema({
 
@@ -50,5 +49,6 @@ const ProfileSchema = new mongoose.Schema({
     },
 
 }, { timestamps: true });
+
 
 module.exports = mongoose.model("Profile", ProfileSchema);

@@ -8,7 +8,7 @@ export default function NearestLandmarks({ nearestLandmarksForSearching }) {
       const km = oneLandmark.distance;
       const location = oneLandmark.place;
       return (
-        <div className="items-start self-stretch flex w-full items-evenly justify-between gap-5 mt-4">
+        <div className="items-start  self-stretch flex w-full items-evenly justify-between gap-5 mt-4">
           <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
             <span className="text-xs">from </span>
             <span className="font-bold">{location}</span>
@@ -22,7 +22,7 @@ export default function NearestLandmarks({ nearestLandmarksForSearching }) {
   }
 
   return (
-    <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center flex-col w-full h-auto ">
+    <div className=" cursor-pointer hover:bg-[#FCF5EB] rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center flex-col w-full h-auto ">
       <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
         <h3>
           <a href="" rel="noopener noreferrer" target="_blank">

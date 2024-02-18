@@ -59,7 +59,9 @@ export default function likes() {
         key={property._id}
         flatOrHostel={property.flat || property.hostel}
         name={property.flat ? property.flat.name : property.hostel.name}
-        locality={property.flat ? property.flat.locality : property.locality}
+        locality={
+          property.flat ? property.flat.locality : property.hostel.locality
+        }
         city={property.flat ? property.flat.city : property.hostel.city}
         type={property.flat ? "flat" : "hostel"}
       />

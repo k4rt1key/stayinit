@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
-async function getAccessTokenFromRefreshToken() {
+async function getAccessTokenFromRefreshToken(setAuthData, navigate) {
   // check if user has refresh token --> if yes then generate new token based on refresh token
   const refreshToken = localStorage.getItem("refreshToken");
   if (refreshToken) {
@@ -25,12 +25,14 @@ async function getAccessTokenFromRefreshToken() {
       localStorage.setItem("token", jsonResponse.token);
       localStorage.setItem("refreshToken", jsonResponse.refreshToken);
 
+      window.location.reload();
+
       const isAuthenticate = jsonResponse.success;
       const profile = jsonResponse.data;
 
       setAuthData({ isAuthenticate, profile });
-      window.location.reload();
     } else {
+      navigate("/login");
       localStorage.removeItem("token");
       setAuthData({ isAuthenticate: false, profile: undefined });
     }
@@ -73,6 +75,7 @@ function Auth({ children }) {
           "http://localhost:5000/api/v1/auth/is-authenticate",
           requestOptions
         );
+
         const jsonResponse = await response.json();
         const data = jsonResponse.data;
 
@@ -85,10 +88,10 @@ function Auth({ children }) {
             profile: profile,
           });
         } else {
-          getAccessTokenFromRefreshToken();
+          getAccessTokenFromRefreshToken(setAuthData, navigate);
         }
       } else {
-        getAccessTokenFromRefreshToken();
+        getAccessTokenFromRefreshToken(setAuthData, navigate);
       }
     }
 

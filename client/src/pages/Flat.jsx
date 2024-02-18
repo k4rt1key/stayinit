@@ -340,13 +340,22 @@ export default function Flat() {
   // returning UI component
   if (!loading) {
     return (
-      <div className="mt-4 gap-8  p-8 flex flex-col">
-        <div className="relative">
-          {/* Like icon */}
-          {isAuthenticate ? (
-            <div className="w-[3rem] h-[3rem] bg-colorY border-2 border-[#073937] p-2 rounded-lg z-[5] absolute top-8 right-8 flex justify-center items-center">
+      <div className="flex flex-col p-8 gap-8">
+        {/* Title */}
+        <div className="flex flex-col lg:flex-row justify-center gap-2 bg-[#FCF5EB] border border-[#F3EADC] rounded-xl p-4 w-full">
+          {/* Title Content */}
+          <div className="w-full lg:w-[90%] flex justify-start items-center flex-row gap-3">
+            <h1 className="leading-3 text-xl lg:text-3xl">{flat.name}</h1>
+            <p className="leading-3 text-sm lg:text-lg flex justify-center items-center">
+              {flat.locality}, {flat.city}
+            </p>
+          </div>
+
+          {/* Like Icon */}
+          {isAuthenticate && (
+            <div className="w-[2rem] flex justify-center items-center">
               {likeLoading ? (
-                <Spinner color="red" size="lg" className="h-full w-full" />
+                <Spinner color="red" size="l" />
               ) : (
                 <img
                   src={
@@ -354,20 +363,34 @@ export default function Flat() {
                       ? `/icons/red-heart.png`
                       : `/icons/heart.png`
                   }
-                  className="w-full h-full"
                   onClick={toggleLike}
                   alt=""
                 />
               )}
             </div>
-          ) : null}
-
-          <ImageCarousel arrayOfImages={arrayOfImages} />
+          )}
         </div>
 
         <div className="md-down: justify-items-center  grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Images */}
+          <div className="relative">
+            <ImageCarousel images={flat.images} />
+          </div>
+
+          {/* Maps */}
+          <div className="w-full h-auto">
+            <iframe
+              className="w-full h-full"
+              loading="lazy"
+              allowfullscrehover:bg-colorY2Hen
+              referrerpolicy="no-referrer-when-downgrade"
+              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4
+          &q=${name}+${locality}+${city}+WA`}
+            ></iframe>
+          </div>
+
           {/* Flat Information */}
-          <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border border-[#F3EADC] p-6 flex items-center justify-evenly flex-col w-full h-auto ">
+          <div className="cursor-pointer hover:bg-[#FCF5EB] rounded-[1rem] border border-[#F3EADC] p-6 flex items-center justify-evenly flex-col w-full h-auto">
             <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
               <h3>
                 <a href="" rel="noopener noreferrer" target="_blank">
@@ -375,41 +398,37 @@ export default function Flat() {
                 </a>
               </h3>
             </div>
-            {flatsInfoList.map((info) => {
-              return (
-                <FlatInfoCard
-                  key={info.name}
-                  name={info.name}
-                  value={info.value}
-                  url={info.url}
-                />
-              );
-            })}
+            {flatsInfoList.map((info) => (
+              <FlatInfoCard
+                key={info.name}
+                name={info.name}
+                value={info.value}
+                url={info.url}
+              />
+            ))}
           </div>
 
           {/* Contact Information */}
-          <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border border-[#F3EADC] p-6 flex items- justify-evenly flex-col w-full h-auto ">
+          <div className="cursor-pointer hover:bg-[#FCF5EB] rounded-[1rem] border border-[#F3EADC] p-6 flex justify-evenly flex-col w-full h-auto">
             <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
               <h3>
                 <a href="" rel="noopener noreferrer" target="_blank">
-                  Flat Information
+                  Contact Information
                 </a>
               </h3>
             </div>
-            {flatContactAndAddress.map((info) => {
-              return (
-                <FlatInfoCard
-                  key={info.name}
-                  name={info.name}
-                  value={info.value}
-                  url={info.url}
-                />
-              );
-            })}
+            {flatContactAndAddress.map((info) => (
+              <FlatInfoCard
+                key={info.name}
+                name={info.name}
+                value={info.value}
+                url={info.url}
+              />
+            ))}
           </div>
 
           {/* Description */}
-          <div className="cursor-pointer hover:bg-colorY2H p-6  flex rounded-[1rem] border shadow-sm border-[#F3EADC] flex-col w-full h-auto ">
+          <div className="cursor-pointer hover:bg-[#FCF5EB] p-6 flex rounded-[1rem] border shadow-sm border-[#F3EADC] flex-col w-full h-auto">
             <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
               <h3>
                 <a href="" target="_blank">
@@ -421,7 +440,7 @@ export default function Flat() {
           </div>
 
           {/* Pricing */}
-          <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col items-start w-full h-auto  relative">
+          <div className="cursor-pointer hover:bg-[#FCF5EB] rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col items-start w-full h-auto relative">
             <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
               <h3>
                 <a href="" rel="noopener noreferrer" target="_blank">
@@ -453,7 +472,7 @@ export default function Flat() {
                   fetchPrediction(flat);
                 }}
               >
-                <div className=" text-[#FFFBF2] bg-colorG px-3 py-3 md-down: my-5 rounded-[1rem]">
+                <div className="text-[#FFFBF2] bg-colorG px-3 py-3 md-down:my-5 rounded-[1rem]">
                   <div className="text-base text-center leading-6 self-center whitespace-nowrap">
                     See Expected Price
                   </div>
@@ -467,9 +486,8 @@ export default function Flat() {
             nearestLandmarksForSearching={nearestLandmarksForSearching}
           />
 
-          <div>MAPS</div>
           {/* Comments */}
-          <div className="w-full">
+          <div className="hover:bg-[#FCF5EB] w-full">
             <CommentsDiv
               type="flat"
               key={_id}

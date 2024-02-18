@@ -22,14 +22,13 @@ const HostelRouter = require("./routes/hostel")
 const ProfileRouter = require("./routes/profile")
 const LikesRouter = require("./routes/likes")
 const SearchingRouter = require("./routes/searching")
+
 // >> Importing Models
 const Hostel = require("./models/Hostel")
 const Flat = require("./models/Flat")
-const Image = require("./models/Image")
 const NearestLandmarksForSearching = require("./models/NearestLandmarksForSearching")
 const PriceAndSharing = require("./models/PriceAndSharing")
 const Comment = require("./models/Comment")
-const File = require("./models/File")
 const Like = require("./models/Like")
 const Profile = require("./models/Profile")
 const Otp = require("./models/Otp")
@@ -60,10 +59,7 @@ const adminBro = new AdminBro({
                         type: 'reference',
                         reference: 'NearestLandmarksForSearching',
                     },
-                    arrayOfImages: {
-                        type: 'reference',
-                        reference: 'Image',
-                    },
+
                     comments: {
                         type: 'reference',
                         reference: 'Comment',
@@ -89,10 +85,7 @@ const adminBro = new AdminBro({
                         type: 'reference',
                         reference: 'NearestLandmarksForSearching',
                     },
-                    arrayOfImages: {
-                        type: 'reference',
-                        reference: 'Image',
-                    },
+
                     comments: {
                         type: 'reference',
                         reference: 'Comment',
@@ -106,16 +99,6 @@ const adminBro = new AdminBro({
                         reference: 'Profile',
                     },
                 }
-            }
-        },
-
-        // Image
-        {
-            resource: Image,
-            options: {
-                propertyId: {
-                    type: 'mixed'
-                },
             }
         },
 
@@ -283,7 +266,6 @@ app.use("/api/v1/file", FileRouter)
 app.use("/api/v1/search", SearchingRouter)
 
 
-
 // >>> starting and connecting with server and db
 async function runServer() {
     try {
@@ -304,7 +286,7 @@ async function runServer() {
             console.log(`Listing on port ${process.env.PORT || 5000}`)
         })
     } catch (error) {
-        console.log(error.message)
+        console.log(`backend: ${error.message}`)
     }
 }
 

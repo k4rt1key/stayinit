@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose")
 
 const {
     emailValidator,
@@ -6,8 +6,6 @@ const {
     linkValidator,
     pincodeValidator,
 } = require('../validator/modelValidator');
-
-const { NearestLandmarksForSearching } = require("./NearestLandmarksForSearching")
 
 
 const FlatSchema = new mongoose.Schema({
@@ -40,13 +38,6 @@ const FlatSchema = new mongoose.Schema({
         required: true,
     },
 
-    uniqueName: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-    },
-
     price: {
         type: Number,
         required: true,
@@ -73,7 +64,13 @@ const FlatSchema = new mongoose.Schema({
         required: true
     },
 
-
+    images: [{
+        type: String,
+        validate: {
+            validator: linkValidator,
+            message: props => `${props.value} is not a valid url link!`
+        }
+    }],
 
     // >>> Address Fields -- mandatory
 
@@ -123,11 +120,6 @@ const FlatSchema = new mongoose.Schema({
     },
 
     // >>> Address Fields -- optional
-
-    nearestLandmarks: {
-        type: [String]
-    },
-
     nearestLandmarksForSearching: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "NearestLandmarksForSearching",
@@ -172,11 +164,6 @@ const FlatSchema = new mongoose.Schema({
         ref: "Like",
     },
 
-    arrayOfImages: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: "Image"
-    },
-
     atWhichFloor: {
         type: Number,
         min: 0,
@@ -210,7 +197,21 @@ const FlatSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
+FlatSchema.pre('remove', async function () {
+    try {
 
-FlatSchema.index({'$**': 'text'});
+        const Comment = require("./Comment")
+        const Like = require("./Like")
+        const NearestLandmarksForSearching = require("./NearestLandmarksForSearching")
+
+        await NearestLandmarksForSearching.deleteMany({ _id: { $in: this.nearestLandmarksForSearching } })
+        await Comment.deleteMany({ _id: { $in: this.comments } })
+        await Like.deleteMany({ _id: { $in: this.likes } })
+    } catch (error) {
+        throw new Error(`backend: ${error.message}`);
+    }
+});
+
+FlatSchema.index({ '$**': 'text' });
 
 module.exports = mongoose.model("Flat", FlatSchema)

@@ -1,4 +1,3 @@
-const File = require("../models/File");
 const cloudinary = require('cloudinary').v2
 
 const localFileUpload = (req, res) => {
@@ -17,7 +16,7 @@ const localFileUpload = (req, res) => {
             return res.status(500).json({
                 success: false,
                 message: "Failed to upload file",
-                error: error.message,
+                error: `backend: ${error.message}`,
             });
         } else {
             // Return success response with file details
@@ -82,7 +81,7 @@ async function cloudinaryUpload(req, res) {
         return res.status(500).json({
             success: false,
             message: "Failed to upload file to Cloudinary",
-            error: error.message,
+            error: `backend: ${error.message}`,
         });
     }
 }

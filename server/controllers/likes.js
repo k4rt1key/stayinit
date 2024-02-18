@@ -58,27 +58,27 @@ async function like(req, res) {
 
 
         // push like to profile's likes array
-        await Profile.findOneAndUpdate(
-            { _id: profile },
-            { $push: { likes: newLike._id } },
-            { new: true }
-        )
+        // await Profile.findOneAndUpdate(
+        //     { _id: profile },
+        //     { $push: { likes: newLike._id } },
+        //     { new: true }
+        // )
 
-        // push like to property's likes array
-        if (type === "flat") {
-            await Flat.findOneAndUpdate(
-                { _id: propertyId },
-                { $push: { likes: newLike._id } },
-                { new: true }
-            )
-        }
-        else if (type === "hostel") {
-            await Hostel.findOneAndUpdate(
-                { _id: propertyId },
-                { $push: { likes: newLike._id } },
-                { new: true }
-            )
-        }
+        // // push like to property's likes array
+        // if (type === "flat") {
+        //     await Flat.findOneAndUpdate(
+        //         { _id: propertyId },
+        //         { $push: { likes: newLike._id } },
+        //         { new: true }
+        //     )
+        // }
+        // else if (type === "hostel") {
+        //     await Hostel.findOneAndUpdate(
+        //         { _id: propertyId },
+        //         { $push: { likes: newLike._id } },
+        //         { new: true }
+        //     )
+        // }
 
         res.status(200).json({
             "success": true,
@@ -90,7 +90,7 @@ async function like(req, res) {
         // If an error occurs, return a 500 Internal Server Error status and the error message
         res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         });
     }
 }
@@ -103,14 +103,7 @@ async function getLikedProperties(req, res) {
 
         // find all likes of the given profile
         const likesInDb = await Like.find({ profile })
-            .populate({
-                path: 'flat',
-                populate: { path: 'arrayOfImages' }
-            })
-            .populate({
-                path: 'hostel',
-                populate: { path: 'arrayOfImages' }
-            });
+            .populate('flat hostel')
 
         res.status(200).json({
             "success": true,
@@ -121,7 +114,7 @@ async function getLikedProperties(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         });
     }
 }
@@ -168,27 +161,27 @@ async function unlike(req, res) {
         }
 
         // remove like from profile's likes array
-        await Profile.findOneAndUpdate(
-            { _id: profile },
-            { $pull: { likes: likeInDb._id } },
-            { new: true }
-        )
+        // await Profile.findOneAndUpdate(
+        //     { _id: profile },
+        //     { $pull: { likes: likeInDb._id } },
+        //     { new: true }
+        // )
 
-        // remove like from property's likes array
-        if (type === "flat") {
-            await Flat.findOneAndUpdate(
-                { _id: propertyId },
-                { $pull: { likes: likeInDb._id } },
-                { new: true }
-            )
-        }
-        else if (type === "hostel") {
-            await Hostel.findOneAndUpdate(
-                { _id: propertyId },
-                { $pull: { likes: likeInDb._id } },
-                { new: true }
-            )
-        }
+        // // remove like from property's likes array
+        // if (type === "flat") {
+        //     await Flat.findOneAndUpdate(
+        //         { _id: propertyId },
+        //         { $pull: { likes: likeInDb._id } },
+        //         { new: true }
+        //     )
+        // }
+        // else if (type === "hostel") {
+        //     await Hostel.findOneAndUpdate(
+        //         { _id: propertyId },
+        //         { $pull: { likes: likeInDb._id } },
+        //         { new: true }
+        //     )
+        // }
 
         // now unlike the property
         await likeInDb.deleteOne();
@@ -202,7 +195,7 @@ async function unlike(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         });
     }
 }

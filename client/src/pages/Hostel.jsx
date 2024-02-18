@@ -81,11 +81,10 @@ export default function HostelInfo() {
     developer,
     contactEmail,
     addedBy,
-    nearestLandmarks,
     nearestLandmarksForSearching,
     comments,
     likes,
-    arrayOfImages,
+    images,
     description,
     liftFacility,
     wifiFacility,
@@ -324,13 +323,22 @@ export default function HostelInfo() {
 
   if (!loading) {
     return (
-      <div className="mt-4 gap-8  p-8 flex flex-col">
-        <div className="relative">
+      <div className="gap-8 p-6 flex flex-col">
+        {/* Title */}
+        <div className="flex bg-[#FCF5EB] rounded-xl border border-[#F3EADC] p-4 flex-row lg:justify-between justify-center gap-2 w-full">
+          {/* Title Content */}
+          <div className="w-[90%] flex justify-start items-center flex-row gap-3">
+            <h1 className="leading-3 text-xl lg:text-3xl">{hostel.name}</h1>
+            <p className="leading-3 text-sm lg:text-lg flex justify-center items-center">
+              {hostel.locality}, {hostel.city}
+            </p>
+          </div>
+
           {/* Like icon */}
-          {isAuthenticate ? (
-            <div className="w-[3rem] h-[3rem] bg-colorY border-2 border-[#073937] p-2 rounded-lg z-[5] absolute top-8 right-8 flex justify-center items-center">
+          {isAuthenticate && (
+            <div className="w-[2rem] flex justify-center items-center">
               {likeLoading ? (
-                <Spinner color="red" size="lg" className="w-full h-full" />
+                <Spinner color="red" size="l" />
               ) : (
                 <img
                   src={
@@ -338,28 +346,45 @@ export default function HostelInfo() {
                       ? `/icons/red-heart.png`
                       : `/icons/heart.png`
                   }
-                  className="w-full h-full"
                   onClick={toggleLike}
                   alt=""
                 />
               )}
             </div>
-          ) : null}
-
-          <ImageCarousel arrayOfImages={arrayOfImages} />
+          )}
         </div>
 
-        <div className="md-down: justify-items-center  grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-colorY cursor-pointer rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col items-start w-full h-auto relative gap-4 no-scrollbar overflow-x-hidden">
+        {/* Grid Layout */}
+        <div className="md-down:justify-items-center grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Images */}
+          <div className="relative">
+            <ImageCarousel images={images} />
+          </div>
+
+          {/* Maps */}
+          <div className="w-full h-auto">
+            <iframe
+              className="w-full h-full"
+              loading="lazy"
+              allowfullscrehover:bg-colorY2Hen
+              referrerpolicy="no-referrer-when-downgrade"
+              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4
+                &q=${name}+${locality}+${city}+WA`}
+            ></iframe>
+          </div>
+
+          {/* Amenities Array */}
+          <div className="bg-colorY hover:bg-[#FCF5EB] cursor-pointer rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col items-start w-full h-auto relative gap-4 no-scrollbar overflow-x-hidden">
             <div className="flex flex-row flex-wrap gap-2 my-3 py-[0.5rem] px-10 w-full">
               {aminitesArr}
             </div>
           </div>
 
           {/* Pricing */}
-          <div className=" cursor-pointer  hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col items-start justify-evenly w-full h-auto  relative">
+          <div className="cursor-pointer hover:bg-[#FCF5EB] rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex flex-col gap-4 items-start justify-evenly w-full h-auto relative">
+            {/* Price and Sharing Details */}
             <div className="flex-col items-start self-stretch flex w-full justify-between gap-5 mt-4">
-              <div className=" text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
+              <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
                 <h3>
                   <a href="" rel="noopener noreferrer" target="_blank">
                     ROOM BHK &amp; RENT
@@ -368,42 +393,17 @@ export default function HostelInfo() {
               </div>
               {priceAndSharingDivArray}
             </div>
-            {/* Hostel Details */}
-            <div className="w-full">
-              <div className="flex-col items-start self-stretch flex w-full justify-between gap-5 mt-4">
-                <div className=" text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
-                  <h3>
-                    <a href="" rel="noopener noreferrer" target="_blank">
-                      Hostel Info
-                    </a>
-                  </h3>
-                </div>
-                {hostelInfoList.map((x) => {
-                  return (
-                    <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
-                      <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
-                        {x.name}
-                      </div>
-                      <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
-                        <a
-                          href={x.url ? x.url : ""}
-                          target="_blank"
-                          className="font-bold"
-                        >
-                          {x.value}
-                        </a>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
 
-          {/* Contact Details */}
-          <div className=" cursor-pointer hover:bg-colorY2H rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center flex-col w-full h-auto ">
-            {hostelContactAndAdress.map((x) => {
-              return (
+            {/* Hostel Information */}
+            <div className="flex-col items-start self-stretch flex w-full justify-between gap-5 mt-4">
+              <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
+                <h3>
+                  <a href="" rel="noopener noreferrer" target="_blank">
+                    Hostel Info
+                  </a>
+                </h3>
+              </div>
+              {hostelInfoList.map((x) => (
                 <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
                   <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
                     {x.name}
@@ -418,12 +418,32 @@ export default function HostelInfo() {
                     </a>
                   </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
+          </div>
+
+          {/* Contact Details */}
+          <div className="cursor-pointer hover:bg-[#FCF5EB] rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center flex-col w-full h-auto ">
+            {hostelContactAndAdress.map((x) => (
+              <div className="items-start self-stretch flex w-full justify-between gap-5 mt-4">
+                <div className="text-teal-950 text-l leading-5 tracking-normal self-stretch">
+                  {x.name}
+                </div>
+                <div className="text-teal-950 text-l font-bold leading-5 tracking-normal self-stretch whitespace-nowrap">
+                  <a
+                    href={x.url ? x.url : ""}
+                    target="_blank"
+                    className="font-bold"
+                  >
+                    {x.value}
+                  </a>
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Description */}
-          <div className="cursor-pointer hover:bg-colorY2H p-6  flex rounded-[1rem] border shadow-sm border-[#F3EADC] flex-col w-full h-auto ">
+          <div className="cursor-pointer hover:bg-[#FCF5EB] p-6 flex rounded-[1rem] border shadow-sm border-[#F3EADC] flex-col w-full h-auto ">
             <div className="text-teal-950 text-xs leading-3 tracking-wide self-start whitespace-nowrap">
               <h3>
                 <a href="" target="_blank">
@@ -439,10 +459,8 @@ export default function HostelInfo() {
             nearestLandmarksForSearching={nearestLandmarksForSearching}
           />
 
-          <div>MAPS</div>
-
           {/* Comments */}
-          <div className="w-full">
+          <div className="w-full hover:bg-[#FCF5EB]">
             <CommentsDiv
               key={_id}
               type="hostel"

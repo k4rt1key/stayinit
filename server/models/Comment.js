@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose")
 
-const commentSchema = new mongoose.Schema({
+
+const CommentSchema = new mongoose.Schema({
 
     type: {
         type: String,
@@ -38,4 +39,83 @@ const commentSchema = new mongoose.Schema({
 }, { timestamps: true },
 );
 
-module.exports = mongoose.model('Comment', commentSchema)
+CommentSchema.pre('save', async function () {
+    try {
+        const Flat = require("./Flat")
+        const Hostel = require("./Hostel")
+        const Profile = require("./Profile")
+        if (this.isNew) {
+            if (this.type === 'flat') {
+                this.hostel = undefined;
+                await Flat.findOneAndUpdate(
+                    { _id: this.flat },
+                    {
+                        $push: { comments: this._id },
+                    },
+                    { new: true, runValidators: true }
+                )
+            }
+
+            if (this.type === 'hostel') {
+                this.flat = undefined;
+                await Hostel.findOneAndUpdate(
+                    { _id: this.hostel },
+                    {
+                        $push: { comments: this._id },
+                    },
+                    { new: true, runValidators: true }
+                )
+            }
+
+            await Profile.findOneAndUpdate(
+                { _id: this.profile },
+                {
+                    $push: { comments: this._id },
+                },
+                { new: true, runValidators: true }
+            )
+        }
+    } catch (error) {
+        throw new Error(`backend: ${error.message}`);
+    }
+});
+
+
+CommentSchema.pre('remove', async function () {
+    try {
+        const Flat = require("./Flat")
+        const Hostel = require("./Hostel")
+        const Profile = require("./Profile")
+        if (this.type === 'flat') {
+            await Flat.findOneAndUpdate(
+                { _id: this.flat },
+                {
+                    $pull: { comments: this._id },
+                },
+                { new: true, runValidators: true }
+            )
+        }
+
+        if (this.type === 'hostel') {
+            await Hostel.findOneAndUpdate(
+                { _id: this.hostel },
+                {
+                    $pull: { comments: this._id },
+                },
+                { new: true, runValidators: true }
+            )
+        }
+
+        await Profile.findOneAndUpdate(
+            { _id: this.profile },
+            {
+                $pull: { comments: this._id },
+            },
+            { new: true, runValidators: true }
+        )
+    } catch (error) {
+        throw new Error(`backend: ${error.message}`);
+    }
+});
+
+module.exports = mongoose.model('Comment', CommentSchema)

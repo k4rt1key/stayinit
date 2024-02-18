@@ -1,4 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
+
+
 const { resetPasswordMailSender } = require("../config/nodemailer");
 const {
     emailValidator,
@@ -30,16 +32,28 @@ const PasswordResetTokenSchema = new mongoose.Schema({
 
 PasswordResetTokenSchema.pre("save", async function (next) {
 
-    async function sendPasswordResetMail(email, token) {
-        try {
-            const mailResponse = await resetPasswordMailSender(email, token);
-        } catch (error) {
-            throw error;
-        }
-    }
+    try {
 
-    await sendPasswordResetMail(this.email, this.token);
-    next();
+        const User = require("./User")
+
+
+        if (!await User.findOne({ email: this.email })) {
+            throw new Error("User not found");
+        }
+
+        async function sendPasswordResetMail(email, token) {
+            try {
+                const mailResponse = await resetPasswordMailSender(email, token);
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        await sendPasswordResetMail(this.email, this.token);
+        next();
+    } catch (error) {
+        throw new Error(`backend: ${error.message}`);
+    }
 });
 
 module.exports = mongoose.model("PasswordResetToken", PasswordResetTokenSchema);

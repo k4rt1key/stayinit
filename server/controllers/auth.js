@@ -23,7 +23,7 @@ async function login(req, res) {
         }
 
         // user exists check
-        const userInDb = await User.findOne({ email })
+        const userInDb = await User.findOne({ email: email })
 
         if (!userInDb) {
             return res.status(404).json({
@@ -58,7 +58,7 @@ async function login(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         });
     }
 }
@@ -77,7 +77,7 @@ async function isAuthenticate(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         });
     }
 }
@@ -89,7 +89,6 @@ async function register(req, res) {
             username,
             role,
             email,
-            phoneNumber,
             password,
             confirmPassword
         } = req.body;
@@ -119,7 +118,7 @@ async function register(req, res) {
         }
 
         // check if user already exists with given email 
-        const userInDb = await User.findOne({ email })
+        const userInDb = await User.findOne({ email: email })
 
         if (userInDb) {
             return res.status(409).json({
@@ -136,7 +135,6 @@ async function register(req, res) {
             username,
             role,
             email,
-            phoneNumber,
             password: hash
         });
 
@@ -166,7 +164,7 @@ async function register(req, res) {
     } catch (error) {
         return res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${`backend: ${error.message}`}`,
         });
     }
 }
@@ -223,7 +221,7 @@ async function sendOTP(req, res) {
     } catch (error) {
         return res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         })
     }
 }
@@ -271,7 +269,7 @@ async function verifyOTP(req, res) {
     } catch (error) {
         return res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         })
     }
 }
@@ -325,7 +323,7 @@ async function sendResetPasswordLink(req, res) {
         // If an error occurs, return a 500 Internal Server Error status and the error message
         return res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         })
     }
 }
@@ -381,7 +379,7 @@ async function verifyResetPasswordLink(req, res) {
     } catch (error) {
         return res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         })
     }
 }
@@ -400,7 +398,7 @@ async function logout(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         });
     }
 }
@@ -438,7 +436,7 @@ async function validateRefreshToken(req, res) {
     } catch (error) {
         return res.status(500).json({
             "success": false,
-            "message": error.message,
+            "message": `backend: ${error.message}`,
         })
     }
 }

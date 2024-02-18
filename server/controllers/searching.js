@@ -1,7 +1,7 @@
 const Hostel = require("../models/Hostel")
 const Flat = require("../models/Flat")
 
-async function searchProperties(req, res ) {
+async function searchProperties(req, res) {
 
     try {
         const {
@@ -19,8 +19,8 @@ async function searchProperties(req, res ) {
 
 
         if (type === "flat") {
-            
-            const searchByFlat = await Flat.find({ $text: { $search: search }});
+
+            const searchByFlat = await Flat.find({ $text: { $search: search } });
             // const searchByNearestLandmarks = await Flat.find({ nearestLandmarksForSearching: { place: new RegExp(search, "i") } });
 
             if (searchByFlat) {
@@ -39,7 +39,7 @@ async function searchProperties(req, res ) {
         }
 
         if (type === "hostel") {
-            const searchByHostel = await Hostel.find({ $text: { $search: search}});
+            const searchByHostel = await Hostel.find({ $text: { $search: search } });
             // const searchByNearestLandmarks = await Hostel.find({ nearestLandmarksForSearching: { place: new RegExp(search, "i") } });
 
             if (searchByHostel) {
@@ -63,13 +63,13 @@ async function searchProperties(req, res ) {
             "message": "Select a valid type (hostel or flat)",
         })
 
-    } catch(error){
+    } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": error.message
+            "message": `backend: ${error.message}`
         })
     }
-   
+
 }
 
 module.exports = {
