@@ -76,14 +76,14 @@ export default function CommentsDiv({
   return (
     <div className="flex flex-col gap-10 border-2 shadow-sm rounded-lg border-[#F3EADC] p-6">
       {/* User input to give rating and comment */}
-      <div className="flex flex-col justify-center items-center gap-6">
-        <span className="text-lg flex flex-row justify-center item-center gap-1">
+      <div className="flex flex-col gap-6">
+        <span className="text-lg flex flex-row  gap-1">
           AverageRating of : {averageRating()}{" "}
           <img src="/icons/yellow-star.png" className="w-6 h-6 inline" alt="" />
         </span>
         <form
           onSubmit={handleCommentSubmit}
-          className="flex flex-col md:flex-row gap-4 items-center justify-center"
+          className="flex flex-col md:flex-row gap-4"
         >
           <textarea
             type="text"
@@ -107,7 +107,7 @@ export default function CommentsDiv({
         </form>
       </div>
 
-      <div className="flex justify-center items-center">
+      <div className="flex">
         <div className="min-h-[5rem] max-h-[15rem] w-[30rem] overflow-y-scroll no-scrollbar flex flex-col gap-5">
           {comments ? (
             comments.map((singleComment) => {

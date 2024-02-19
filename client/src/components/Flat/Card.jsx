@@ -310,9 +310,14 @@ export default function Card2({ flat }) {
         {/* Heading & Star Rating */}
         <div className="mb-3 flex items-center justify-between">
           {/* City-Locality */}
-          <Typography variant="h5" color="blue-gray" className="font-medium">
-            {flat.city}, {flat.locality}
-          </Typography>
+          <div>
+            <Typography variant="h5" color="blue-gray" className="font-medium">
+              <p>{flat.name}</p>
+            </Typography>
+            <p>
+              {flat.city}, {flat.locality}
+            </p>
+          </div>
           {/* Rating */}
           <Typography
             color="blue-gray"
@@ -337,12 +342,10 @@ export default function Card2({ flat }) {
         {/* Card Body */}
         <Typography className="w-full">
           <div className="flex flex-col justify-between">
-            <Typography variant="h6" color="blue-gray" className="font-medium">
-              This <b className="text-lg">{flat.bhk} BHK</b>, flat in{" "}
-              <b className="font-Classy text-lg">{flat.location}</b> seamlessly
-              combines style and comfort, at
-              <b className="text-lg"> {flat.price} Rs</b> rent
-            </Typography>
+            <div className="flex justify-between">
+              <p className="">{flat.bhk} bhk.</p>
+              <p className="font-bold">{flat.price} Rs.</p>
+            </div>
           </div>
         </Typography>
 

@@ -293,9 +293,14 @@ export default function Card2({ hostel }) {
         {/* Heading & Star Rating */}
         <div className="mb-3 flex items-center justify-between">
           {/* City-Locality */}
-          <Typography variant="h5" color="blue-gray" className="font-medium">
-            {hostel.city}, {hostel.locality}
-          </Typography>
+          <div>
+            <Typography variant="h5" color="blue-gray" className="font-medium">
+              <p>{hostel.name}</p>
+            </Typography>
+            <p>
+              {hostel.city}, {hostel.locality}
+            </p>
+          </div>
           {/* Rating */}
           <Typography
             color="blue-gray"

@@ -81,7 +81,7 @@ async function getAllHostels(req, res) {
         }
 
         const hostelsInDb = await Hostel
-            .find(queryObj)
+            .find()
             .populate('priceAndSharing comments likes nearestLandmarksForSearching').exec()
 
         let response = hostelsInDb;

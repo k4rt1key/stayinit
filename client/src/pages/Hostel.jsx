@@ -324,36 +324,6 @@ export default function HostelInfo() {
   if (!loading) {
     return (
       <div className="gap-8 p-6 flex flex-col">
-        {/* Title */}
-        <div className="flex bg-[#FCF5EB] rounded-xl border border-[#F3EADC] p-4 flex-row lg:justify-between justify-center gap-2 w-full">
-          {/* Title Content */}
-          <div className="w-[90%] flex justify-start items-center flex-row gap-3">
-            <h1 className="leading-3 text-xl lg:text-3xl">{hostel.name}</h1>
-            <p className="leading-3 text-sm lg:text-lg flex justify-center items-center">
-              {hostel.locality}, {hostel.city}
-            </p>
-          </div>
-
-          {/* Like icon */}
-          {isAuthenticate && (
-            <div className="w-[2rem] flex justify-center items-center">
-              {likeLoading ? (
-                <Spinner color="red" size="l" />
-              ) : (
-                <img
-                  src={
-                    likedProperty.includes(hostel._id)
-                      ? `/icons/red-heart.png`
-                      : `/icons/heart.png`
-                  }
-                  onClick={toggleLike}
-                  alt=""
-                />
-              )}
-            </div>
-          )}
-        </div>
-
         {/* Grid Layout */}
         <div className="md-down:justify-items-center grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Images */}
