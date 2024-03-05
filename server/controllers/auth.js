@@ -58,7 +58,7 @@ async function login(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         });
     }
 }
@@ -77,7 +77,7 @@ async function isAuthenticate(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         });
     }
 }
@@ -164,7 +164,7 @@ async function register(req, res) {
     } catch (error) {
         return res.status(500).json({
             "success": false,
-            "message": `backend: ${`backend: ${error.message}`}`,
+            "message": `Backend: ${`backend: ${error.message}`}`,
         });
     }
 }
@@ -221,7 +221,7 @@ async function sendOTP(req, res) {
     } catch (error) {
         return res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         })
     }
 }
@@ -269,7 +269,7 @@ async function verifyOTP(req, res) {
     } catch (error) {
         return res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         })
     }
 }
@@ -323,7 +323,7 @@ async function sendResetPasswordLink(req, res) {
         // If an error occurs, return a 500 Internal Server Error status and the error message
         return res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         })
     }
 }
@@ -379,7 +379,7 @@ async function verifyResetPasswordLink(req, res) {
     } catch (error) {
         return res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         })
     }
 }
@@ -398,7 +398,7 @@ async function logout(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         });
     }
 }
@@ -436,7 +436,7 @@ async function validateRefreshToken(req, res) {
     } catch (error) {
         return res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         })
     }
 }

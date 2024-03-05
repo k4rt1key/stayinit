@@ -8,46 +8,42 @@ import ImageGallary from "../components/ImageGallary";
 import { useAuth } from "../contexts/Auth";
 import { toast } from "react-toastify";
 
-function useFetch(searchParams) {
-  try {
-    const [property, setProperty] = useState({});
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+function useFetch() {
+  const [property, setProperty] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    const { type, propertyname } = useParams();
-
-    async function init(type, propertyname) {
-      console.log("inside init");
-      setLoading(true);
-      const requestOptions = {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      };
-
-      const response = await fetch(
-        `http://localhost:5000/api/v1/${type}/${propertyname}`,
-        requestOptions
-      );
-      const jsonResponse = await response.json();
-
-      if (jsonResponse.success === true) {
-        setProperty(jsonResponse.data);
-        setLoading(false);
-      } else {
-        // toast.error(jsonResponse.message);
-        throw new Error(jsonResponse.message);
-      }
+  const { type, propertyname } = useParams();
+  async function init(type, propertyname) {
+    if (type == "undefined" || propertyname == "undefined") {
+      setError("Invalid URL");
     }
+    setLoading(true);
+    const requestOptions = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
 
-    useEffect(() => {
-      init(type, propertyname);
-    }, []);
+    const response = await fetch(
+      `http://localhost:5000/api/v1/${type}/${propertyname}`,
+      requestOptions
+    );
+    const jsonResponse = await response.json();
 
-    return [property, loading, error];
-  } catch (error) {
-    // toast.error(error.message);
-    throw new Error(error.message);
+    if (jsonResponse.success === true) {
+      setProperty(jsonResponse.data);
+      setLoading(false);
+    } else {
+      toast.error(jsonResponse.message);
+      // throw new Error(jsonResponse.message);
+    }
   }
+
+  useEffect(() => {
+    init(type, propertyname);
+  }, [type, propertyname]);
+
+  return [property, loading, error];
 }
 
 export default function PropertyPage() {
@@ -208,9 +204,11 @@ export default function PropertyPage() {
 
   const { type } = useParams();
   const [property, loading, error] = useFetch();
+  if (error !== "") {
+    throw new Error(error);
+  }
 
   let PropertyInfo = [];
-
   if (type === "hostel") {
     PropertyInfo = [
       {
@@ -283,20 +281,6 @@ export default function PropertyPage() {
         <div className="flex flex-col gap-10 items-start justify-start w-full">
           {/* images */}
           <div className="w-full relative">
-            <button
-              onClick={() => toggleLike(property._id)}
-              className="flex flex-col justify-center absolute top-2 right-2 border-2 p-2 border-black bg-gray-200 items-center text-black font-semibold rounded-lg"
-            >
-              <img
-                className="h-8 w-8 lg:h-12 lg:w-12"
-                src={
-                  likedProperty.includes(property._id)
-                    ? "/images/liked.png"
-                    : "/images/like.png"
-                }
-                alt=""
-              />
-            </button>
             <ImageGallary images={property?.images} />
           </div>
           {/* property's info cards */}
@@ -317,6 +301,22 @@ export default function PropertyPage() {
                         , {property.pincode}
                       </Text>
                     </div>
+                    {/* wishlist button */}
+                    <button
+                      onClick={() => toggleLike(property._id)}
+                      className="flex flex-row gap-4 w-full justify-center border-2 p-1 border-black bg-gray-200 items-center text-black font-semibold rounded-lg"
+                    >
+                      <img
+                        className="h-8 w-8 lg:h-12 lg:w-12"
+                        src={
+                          likedProperty.includes(property._id)
+                            ? "/images/liked.png"
+                            : "/images/like.png"
+                        }
+                        alt=""
+                      />
+                      {"Add to Wishlist"}
+                    </button>
                     {/* pricing */}
                     <div className="flex flex-row flex-wrap gap-4 items-start justify-start w-full">
                       {type === "flat" ? (
@@ -331,9 +331,9 @@ export default function PropertyPage() {
                           </div>
                         </div>
                       ) : (
-                        property?.priceAndSharing?.map((x) => {
-                          return (
-                            <>
+                        <>
+                          {property?.priceAndSharing?.map((x) => {
+                            return (
                               <div
                                 key={nanoid()}
                                 className="bg-white border border-gray-600 border-solid flex flex-1 flex-col items-center justify-center sm:px-5 px-6 py-[7px] rounded-[10px] w-full"
@@ -347,9 +347,9 @@ export default function PropertyPage() {
                                   </Text>
                                 </div>
                               </div>
-                            </>
-                          );
-                        })
+                            );
+                          })}
+                        </>
                       )}
                     </div>
                   </div>
@@ -460,7 +460,10 @@ export default function PropertyPage() {
                     <div className="grid grid-cols-1 2xl:grid-cols-2 gap-x-[2rem] gap-y-2 items-between justify-between w-full">
                       {PropertyInfo.map((x) => {
                         return (
-                          <div className="flex flex-row gap-4 items-center justify-between w-full">
+                          <div
+                            key={x.name + Math.random()}
+                            className="flex flex-row gap-4 items-center justify-between w-full"
+                          >
                             <Text className="text-gray-800 text-md lg:text-xl">
                               {x.name}
                             </Text>

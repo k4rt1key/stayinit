@@ -90,7 +90,7 @@ async function like(req, res) {
         // If an error occurs, return a 500 Internal Server Error status and the error message
         res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         });
     }
 }
@@ -114,7 +114,7 @@ async function getLikedProperties(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         });
     }
 }
@@ -195,7 +195,7 @@ async function unlike(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         });
     }
 }

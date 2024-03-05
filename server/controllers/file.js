@@ -16,7 +16,7 @@ const localFileUpload = (req, res) => {
             return res.status(500).json({
                 success: false,
                 message: "Failed to upload file",
-                error: `backend: ${error.message}`,
+                error: `Backend: ${error.message}`,
             });
         } else {
             // Return success response with file details
@@ -81,7 +81,7 @@ async function cloudinaryUpload(req, res) {
         return res.status(500).json({
             success: false,
             message: "Failed to upload file to Cloudinary",
-            error: `backend: ${error.message}`,
+            error: `Backend: ${error.message}`,
         });
     }
 }

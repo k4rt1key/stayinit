@@ -32,14 +32,14 @@ async function getAccessTokenFromRefreshToken(setAuthData, navigate) {
 
       setAuthData({ isAuthenticate, profile });
     } else {
-      navigate("/login");
+      // navigate("/login");
       localStorage.removeItem("token");
       setAuthData({ isAuthenticate: false, profile: undefined });
     }
   } else {
     localStorage.removeItem("token");
     setAuthData({ isAuthenticate: false, profile: undefined });
-    navigate("/login");
+    // navigate("/login");
   }
 }
 

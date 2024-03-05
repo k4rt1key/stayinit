@@ -51,157 +51,13 @@ function useFetch(likesLength) {
 }
 
 export default function likes() {
-  const [likeLoading, setLikeLoading] = useState(false);
-
   const { authData } = useAuth();
   const { isAuthenticate, profile } = authData;
+
+  const [likeLoading, setLikeLoading] = useState(false);
   const [likedProperty, setLikedProperty] = useState([]);
   const [likesLength, setLikesLength] = useState(() => likedProperty.length);
   const { likes, loading, error } = useFetch(likesLength);
-
-  async function getLikes() {
-    try {
-      const requestOptions = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      };
-
-      const response = await fetch(
-        `http://localhost:5000/api/v1/likes`,
-        requestOptions
-      );
-      const jsonResponse = await response.json();
-      const data = jsonResponse.data;
-
-      if (jsonResponse.success === true) {
-        const newList = [];
-        data.forEach((like) => {
-          if (like?.hostel !== undefined || like?.hostel !== null) {
-            like.hostel ? newList.push(like?.hostel?._id) : null;
-          }
-          if (like?.flat !== undefined || like?.flat !== null) {
-            like.flat ? newList.push(like?.flat?._id) : null;
-          }
-        });
-
-        setLikedProperty(newList);
-      } else {
-        toast.error(jsonResponse.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-      throw new Error(error.message);
-    }
-  }
-
-  React.useEffect(() => {
-    if (isAuthenticate) {
-      getLikes();
-    }
-  }, [likesLength, isAuthenticate]);
-
-  function toggleLike(_id, type) {
-    if (isAuthenticate) {
-      if (likedProperty.includes(_id)) {
-        unlike(_id, type);
-      } else {
-        like(_id, type);
-      }
-    }
-  }
-
-  async function unlike(_id, type) {
-    console.log("type", type);
-
-    try {
-      if (isAuthenticate) {
-        const responseOptions = {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        };
-
-        setLikeLoading(true);
-
-        const response = await fetch(
-          `http://localhost:5000/api/v1/likes/${type}/${_id}`,
-          responseOptions
-        );
-        const jsonResponse = await response.json();
-        setLikeLoading(false);
-
-        if (jsonResponse.success === true) {
-          toast.success(jsonResponse.message);
-          setLikedProperty(() => {
-            return likedProperty.filter((property) => {
-              return property !== _id;
-            });
-          });
-
-          setLikesLength((prev) => {
-            return prev - 1;
-          });
-        } else {
-          toast.error(jsonResponse.message);
-        }
-      }
-    } catch (error) {
-      toast.error(error.message);
-      throw new Error(error.message);
-    }
-  }
-
-  async function like(_id, type) {
-    console.log("type", type);
-    try {
-      if (isAuthenticate) {
-        const bodyData = {
-          propertyId: _id,
-          type: type,
-        };
-
-        const requestObject = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(bodyData),
-        };
-
-        setLikeLoading(true);
-        const response = await fetch(
-          `http://localhost:5000/api/v1/likes`,
-          requestObject
-        );
-        const jsonResponse = await response.json();
-        setLikeLoading(false);
-
-        if (jsonResponse.success === true) {
-          toast.success(jsonResponse.message);
-          setLikedProperty((prev) => {
-            const newList = [...prev];
-            newList.push(_id);
-            return newList;
-          });
-
-          setLikesLength((prev) => {
-            return prev + 1;
-          });
-        } else {
-          toast.error(jsonResponse.message);
-        }
-      }
-    } catch (error) {
-      toast.error(error.message);
-      throw new Error(error.message);
-    }
-  }
 
   const likeArrayProps = likes.map((l) => {
     if (l?.hostel !== null && l?.hostel !== undefined) {
@@ -218,6 +74,13 @@ export default function likes() {
         wifiFacility: l?.hostel?.wifiFacility,
         forWhichGender: l?.hostel?.forWhichGender,
         type: "hostel",
+
+        likeLoading,
+        setLikeLoading,
+        likedProperty,
+        setLikedProperty,
+        likesLength,
+        setLikesLength,
       };
     } else {
       return {
@@ -233,6 +96,13 @@ export default function likes() {
         sqft: l?.flat?.sqft,
         balconies: l?.flat?.balconies,
         type: "flat",
+
+        likeLoading,
+        setLikeLoading,
+        likedProperty,
+        setLikedProperty,
+        likesLength,
+        setLikesLength,
       };
     }
   });
@@ -265,20 +135,6 @@ export default function likes() {
                             key={`LandingPageCard${index}`}
                           >
                             <LandingPageCard {...props} />
-                            <button
-                              onClick={() => toggleLike(props._id, props.type)}
-                              className="flex flex-col justify-center absolute top-2 right-2 border-2 p-2 border-black bg-gray-200 items-center text-black font-semibold rounded-lg"
-                            >
-                              <img
-                                className="h-8 w-8"
-                                src={
-                                  likedProperty.includes(props._id)
-                                    ? "/images/liked.png"
-                                    : "/images/like.png"
-                                }
-                                alt=""
-                              />
-                            </button>
                           </div>
                         ))}
                       </div>

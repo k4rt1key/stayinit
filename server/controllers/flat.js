@@ -10,7 +10,7 @@ async function getFlat(req, res) {
         if (!flatname) {
             return res.status(400).json({
                 "success": false,
-                "message": "you must provide flat-name",
+                "message": "You must provide flat-name",
             })
         }
 
@@ -27,13 +27,13 @@ async function getFlat(req, res) {
         if (!flatInDb) {
             return res.status(404).json({
                 "success": false,
-                "message": "flat was not found",
+                "message": "Flat not found",
             })
         }
 
         res.status(200).json({
             "success": true,
-            "message": "flat was found",
+            "message": "Flat not found",
             "data": flatInDb
         })
 
@@ -121,7 +121,7 @@ async function getAllFlats(req, res) {
 
 
         const flatsInDb = await Flat.find(queryObj)
-            .populate("comments addedBy likes nearestLandmarksForSearching")
+            .populate("likes")
             .where("price").gt(minPrice - 1).lt(maxPrice + 1)
             .where("sqft").gt(minSqft - 1).lt(maxSqft + 1)
             .sort(
@@ -131,7 +131,7 @@ async function getAllFlats(req, res) {
 
         return res.status(200).json({
             "success": true,
-            "message": "flats were fetched successfully",
+            "message": "Flats were fetched successfully",
             "data": flatsInDb
         })
 
@@ -139,7 +139,7 @@ async function getAllFlats(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "error": `backend: ${error.message}`,
+            "error": `Backend: ${error.message}`,
         })
     }
 }

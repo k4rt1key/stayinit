@@ -91,7 +91,7 @@ async function addComment(req, res) {
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: `backend: ${error.message}`,
+            message: `Backend: ${error.message}`,
         });
     }
 }
@@ -147,7 +147,7 @@ async function deleteComment(req, res) {
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         })
     }
 }

@@ -134,7 +134,7 @@ async function addImage(req, res) {
     } catch (error) {
         res.status(500).json({
             success: false,
-            error: `backend: ${error.message}`,
+            error: `Backend: ${error.message}`,
         });
     }
 }

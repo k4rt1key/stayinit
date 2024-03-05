@@ -19,13 +19,13 @@ async function getHostel(req, res) {
         if (!hostelInDb) {
             return res.status(404).json({
                 "success": false,
-                "message": "hostel not found",
+                "message": "Hostel not found",
             })
         }
 
         res.status(200).json({
             "success": true,
-            "message": "get hostel successful",
+            "message": "Get hostel successful",
             "data": hostelInDb
         })
 
@@ -33,7 +33,7 @@ async function getHostel(req, res) {
         // If an error occurs, return a 500 Internal Server Error status and the error message
         res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         })
     }
 }
@@ -98,14 +98,14 @@ async function getAllHostels(req, res) {
 
         return res.status(200).json({
             "success": true,
-            "message": "all hostels fetched successfully",
+            "message": "All hostels fetched successfully",
             "data": filteredData
         })
 
     } catch (error) {
         res.status(500).json({
             "success": false,
-            "message": `backend: ${error.message}`,
+            "message": `Backend: ${error.message}`,
         })
     }
 }

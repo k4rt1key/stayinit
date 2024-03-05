@@ -1,9 +1,14 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
-import { Button, Img, Text } from "../";
-import { useSearchParams, Link } from "react-router-dom";
+import React, { useState } from "react";
+import {} from "react-router-dom";
+import { toast } from "react-toastify";
+import { useAuth } from "../../contexts/Auth";
+
+import { Img, Text } from "../";
 
 const LandingPageCard = ({
+  _id,
   className,
   type,
   image,
@@ -22,7 +27,157 @@ const LandingPageCard = ({
   bathrooms,
   sqft,
   balconies,
+
+  likeLoading,
+  setLikeLoading,
+  likedProperty,
+  setLikedProperty,
+  likesLength,
+  setLikesLength,
 }) => {
+  const { authData } = useAuth();
+  const { isAuthenticate, profile } = authData;
+
+  async function getLikes() {
+    try {
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      };
+
+      const response = await fetch(
+        `http://localhost:5000/api/v1/likes`,
+        requestOptions
+      );
+      const jsonResponse = await response.json();
+      const data = jsonResponse.data;
+
+      if (jsonResponse.success === true) {
+        const newList = [];
+        data.forEach((like) => {
+          if (type === "hostel") {
+            like.hostel ? newList.push(like?.hostel?._id) : null;
+          } else {
+            like.flat ? newList.push(like?.flat?._id) : null;
+          }
+        });
+
+        setLikedProperty(newList);
+      } else {
+        toast.error(jsonResponse.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+      throw new Error(error.message);
+    }
+  }
+
+  React.useEffect(() => {
+    if (isAuthenticate) {
+      setLikeLoading(true);
+      getLikes();
+      setLikeLoading(false);
+    }
+  }, [likesLength, isAuthenticate]);
+
+  function toggleLike(_id) {
+    if (isAuthenticate) {
+      if (likedProperty.includes(_id)) {
+        unlike(_id);
+      } else {
+        like(_id);
+      }
+    }
+  }
+
+  async function unlike(_id) {
+    try {
+      if (isAuthenticate) {
+        const responseOptions = {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        };
+
+        setLikeLoading(true);
+        const response = await fetch(
+          `http://localhost:5000/api/v1/likes/${type}/${_id}`,
+          responseOptions
+        );
+        const jsonResponse = await response.json();
+        setLikeLoading(false);
+
+        if (jsonResponse.success === true) {
+          toast.success(jsonResponse.message);
+          setLikedProperty(() => {
+            return likedProperty.filter((property) => {
+              return property !== _id;
+            });
+          });
+
+          setLikesLength((prev) => {
+            return prev - 1;
+          });
+        } else {
+          toast.error(jsonResponse.message);
+        }
+      }
+    } catch (error) {
+      toast.error(error.message);
+      throw new Error(error.message);
+    }
+  }
+
+  async function like(_id) {
+    try {
+      if (isAuthenticate) {
+        const bodyData = {
+          propertyId: _id,
+          type: type,
+        };
+
+        const requestObject = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(bodyData),
+        };
+
+        setLikeLoading(true);
+        const response = await fetch(
+          `http://localhost:5000/api/v1/likes`,
+          requestObject
+        );
+        const jsonResponse = await response.json();
+        setLikeLoading(false);
+
+        if (jsonResponse.success === true) {
+          toast.success(jsonResponse.message);
+          setLikedProperty((prev) => {
+            const newList = [...prev];
+            newList.push(_id);
+            return newList;
+          });
+
+          setLikesLength((prev) => {
+            return prev + 1;
+          });
+        } else {
+          toast.error(jsonResponse.message);
+        }
+      }
+    } catch (error) {
+      toast.error(error.message);
+      throw new Error(error.message);
+    }
+  }
   return (
     <>
       <div className={className}>
@@ -164,13 +319,28 @@ const LandingPageCard = ({
               </div>
             </div>
             {/* price and details button */}
-            <div className="flex flex-row gap-[31px] items-center justify-between w-full">
+            <div className="flex flex-col gap-3 items-center justify-between w-full">
               <Link
                 to={`/listing/${type}/${uniqueName}`}
                 className="bg-gray-900 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
               >
                 {"Details"}
               </Link>
+              <button
+                onClick={() => toggleLike(_id)}
+                className="flex w-full flex-row gap-4 justify-center border-2 p-2 border-black bg-gray-200 items-center text-black font-semibold rounded-lg"
+              >
+                <img
+                  className="h-8 w-8"
+                  src={
+                    likedProperty?.includes(_id)
+                      ? "/images/liked.png"
+                      : "/images/like.png"
+                  }
+                  alt=""
+                />
+                {"Wishlist"}
+              </button>
               <Text className="text-2xl font-semibold" size="">
                 {price} ₹
               </Text>
@@ -193,6 +363,12 @@ LandingPageCard.defaultProps = {
   bathrooms: 3,
   balconies: 3,
   price: "9999",
+  likeLoading: false,
+  setLikeLoading: () => {},
+  likedProperty: [],
+  setLikedProperty: () => {},
+  likesLength: 0,
+  setLikesLength: () => {},
 };
 
 export default LandingPageCard;
