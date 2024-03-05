@@ -7,7 +7,7 @@ async function getHostel(req, res) {
         const { hostelname } = req.params
 
         const hostelInDb = await Hostel.findOne({ uniqueName: hostelname })
-            .populate('priceAndSharing comments likes nearestLandmarksForSearching')
+            .populate('priceAndSharing addedBy comments likes nearestLandmarksForSearching')
             .populate({
                 path: "comments",
                 populate: {
@@ -43,37 +43,29 @@ async function getAllHostels(req, res) {
         // getting various filters and sorting options from request query
         const {
             forWhichGender,
-
-            liftFacility,
-            wifiFacility,
-            gymFacility,
-            acFacility,
-            gamingRoom,
-            freeLaundry,
-            securityGuard,
-            filterWater,
-            cctv,
-            cleaning,
-
             sortByPrice,
-
-            minPrice = 0,
-            maxPrice = Infinity,
-            search
+            search,
+            priceRange,
         } = req.query
 
-        const queryObj = {
-            ...(liftFacility && { liftFacility }),
-            ...(wifiFacility && { wifiFacility }),
-            ...(gymFacility && { gymFacility }),
-            ...(acFacility && { acFacility }),
-            ...(gamingRoom && { gamingRoom }),
-            ...(freeLaundry && { freeLaundry }),
-            ...(securityGuard && { securityGuard }),
-            ...(filterWater && { filterWater }),
-            ...(cctv && { cctv }),
-            ...(cleaning && { cleaning }),
-            ...(forWhichGender && { forWhichGender })
+        let minPrice = 0, maxPrice = Infinity
+        if (priceRange == 1) {
+            minPrice = 0;
+            maxPrice = 7000;
+        } else if (priceRange == 2) {
+            minPrice = 7000;
+            maxPrice = 15000;
+        } else if (priceRange == 3) {
+            minPrice = 15000;
+            maxPrice = 25000;
+        } else if (priceRange == 4) {
+            minPrice = 25000;
+            maxPrice = Infinity;
+        }
+
+        const queryObj = {}
+        if (forWhichGender) {
+            queryObj.forWhichGender = forWhichGender
         }
 
         if (search) {
@@ -81,40 +73,10 @@ async function getAllHostels(req, res) {
         }
 
         const hostelsInDb = await Hostel
-            .find()
-            .populate('priceAndSharing comments likes nearestLandmarksForSearching').exec()
+            .find(queryObj)
+            .populate('priceAndSharing comments addedBy likes nearestLandmarksForSearching').exec()
 
         let response = hostelsInDb;
-
-        const newQueryObj = {};
-        if (search) {
-            newQueryObj.$text = { $search: search };
-
-            const NL = await NearestLandmarksForSearching.find(newQueryObj);
-
-            const FilteredNL = NL.filter((nearestLandmark) => {
-                // if nearestLandmark is not associated with any flat then not adding it to the array
-                // else adding it to the array if it's not already present in the hostelsInDb
-                if (nearestLandmark.hostel) {
-                    if (hostelsInDb.length === 0) { return true; }
-                    if (hostelsInDb.find((hostel) => hostel._id.toString() !== nearestLandmark.hostel.toString())) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                else {
-                    return false;
-                }
-            });
-
-            // now finding flats associated with the nearestLandmarks
-            const HostelsAssociatedWithNL = await Hostel.find({ nearestLandmarksForSearching: { $in: FilteredNL } })
-                .populate("comments priceAndSharing likes nearestLandmarksForSearching")
-
-            response = hostelsInDb.concat(HostelsAssociatedWithNL);
-
-        }
 
         // Filter hostels by price and then sort them
         const filteredData = response.filter((hostel) => {

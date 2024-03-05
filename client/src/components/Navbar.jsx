@@ -36,8 +36,9 @@ export default function Navbar() {
     });
     navbarItems.push({
       key: "User",
-      link: "/",
       icon: "user.png",
+      link: "/",
+      target: "_blank",
       text: profile ? profile.username : "User",
       onClick: () => {},
     });
@@ -64,7 +65,7 @@ export default function Navbar() {
     return (
       <div key={item.key} onClick={item.onClick}>
         <Link to={item.link} target={`${item.target || ""}`} className="">
-          <div className="text-xl flex flex-row gap-3 py-2 px-5 items-center hover:bg-colorYH rounded-[2rem]">
+          <div className="text-xl flex flex-row gap-3 py-3 px-6 items-center hover:bg-colorYH rounded-[0.5rem]">
             <img src={`/icons/${item.icon}`} className="w-5 h-5" alt="" />{" "}
             <span>{item.text}</span>
           </div>
@@ -74,12 +75,19 @@ export default function Navbar() {
   });
 
   return (
-    <div className="w-full px-[2rem] py-[0.5rem] shadow-sm md:px-[6rem] bg-[#FFFBF2] sticky top-0 z-10">
-      <div className="mx-auto flex max-w-7xl items-center justify-between py-1">
+    <div
+      className="w-full px-[2rem] lg:px-[10rem] py-[0.5rem] 
+                shadow-sm bg-[#FFFBF2] 
+                sticky top-0 z-10"
+    >
+      <div
+        className="flex items-center justify-between 
+                   max-w-7xl py-1"
+      >
         {/* logo */}
         <div className="inline-flex">
           <Link to="/" className=" cursor-pointer">
-            <div className="flex flex-row gap-3 items-center text-2xl font-Classy font-bold">
+            <div className="flex flex-row gap-3 items-center text-2xl font-1 font-bold">
               Stayinit
             </div>
           </Link>
@@ -104,7 +112,7 @@ export default function Navbar() {
                   {/* logo */}
                   <div className="inline-flex items-center space-x-2">
                     <span className="font-bold">
-                      <div className="flex flex-row gap-3 items-center text-2xl font-Classy font-bold">
+                      <div className="flex flex-row gap-3 items-center text-2xl font-1 font-bold">
                         Stayinit
                       </div>
                     </span>

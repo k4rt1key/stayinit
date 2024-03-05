@@ -1,13 +1,14 @@
 const mongoose = require("mongoose")
 
-
-
 const {
     emailValidator,
     phoneNumberValidator,
     linkValidator,
     pincodeValidator,
 } = require('../validator/modelValidator');
+const Searching = require("./Searching");
+
+require("dotenv").config();
 
 const HostelSchema = new mongoose.Schema({
 
@@ -166,7 +167,26 @@ const HostelSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
-HostelSchema.index({ '$**': 'text' });
+// HostelSchema.index({ '$**': 'text' });
+HostelSchema.index({ 'city': 'text' });
+HostelSchema.index({ 'locality': 'text' });
+HostelSchema.index({ 'uniqueName': 'text' });
+HostelSchema.index({ 'name': 'text' });
+
+HostelSchema.pre("save", async function () {
+
+    if (this.isNew) {
+        try {
+            const Searching = require("./Searching")
+
+            await Searching.create({ keyword: this.name, type: "hostel" })
+            await Searching.create({ keyword: this.locality, type: "locality" })
+            await Searching.create({ keyword: this.city, type: "city" })
+        } catch (error) {
+            throw new Error("backend: " + error.message)
+        }
+    }
+});
 
 HostelSchema.pre("remove", async function () {
     try {
@@ -179,6 +199,7 @@ HostelSchema.pre("remove", async function () {
         await NearestLandmarksForSearching.deleteMany({ _id: { $in: this.nearestLandmarksForSearching } })
         await Comment.deleteMany({ hostel: this._id })
         await Like.deleteMany({ hostel: this._id })
+
     } catch (error) {
         throw new Error(`backend: ${error.message}`);
     }

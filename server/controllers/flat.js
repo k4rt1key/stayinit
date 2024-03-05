@@ -15,7 +15,7 @@ async function getFlat(req, res) {
         }
 
         const flatInDb = await Flat.findOne({ uniqueName: flatname })
-            .populate("comments likes nearestLandmarksForSearching")
+            .populate("comments likes addedBy nearestLandmarksForSearching")
             .populate({
                 path: "comments",
                 populate: {
@@ -50,17 +50,60 @@ async function getAllFlats(req, res) {
 
         // getting filters and sorting options from request query 
         // then creating queryObject
-        const { bhk, furnitureType, search } = req.query
+        const { bhk, furnitureType, search, priceRange, sqftRange, city, locality } = req.query
 
-        const minPrice = req.query.minPrice || 0
-        const maxPrice = req.query.maxPrice || Infinity
-        const minSqft = req.query.minSqft || 0
-        const maxSqft = req.query.maxSqft || Infinity
+        let minSqft = 0, maxSqft = Infinity, minPrice = 0, maxPrice = Infinity;
+        if (priceRange === "1") {
+            minPrice = 0;
+            maxPrice = 10000;
+        }
+        if (priceRange === "2") {
+            minPrice = 10000;
+            maxPrice = 20000;
+        }
+        if (priceRange === "3") {
+            minPrice = 20000;
+            maxPrice = 30000;
+        }
+        if (priceRange === "4") {
+            minPrice = 30000;
+            maxPrice = Infinity;
+        }
+
+
+        if (sqftRange === "1") {
+            minSqft = 0;
+            maxSqft = 500;
+        }
+        if (sqftRange === "2") {
+            minSqft = 500;
+            maxSqft = 1000;
+        }
+        if (sqftRange === "3") {
+            minSqft = 1000;
+            maxSqft = 1500;
+        }
+        if (sqftRange === "4") {
+            minSqft = 1500;
+            maxSqft = 2000;
+        }
+        if (sqftRange === "5") {
+            minSqft = 2000;
+            maxSqft = Infinity;
+        }
 
         const sortByPrice = req.query.sortByPrice;
         const sortBySqft = req.query.sortBySqft;
 
         queryObj = {}
+
+        if (city) {
+            queryObj.city = city.toLowerCase()
+        }
+
+        if (locality) {
+            queryObj.locality = locality.toUpperCase()
+        }
 
         if (bhk) {
             queryObj.bhk = bhk
@@ -76,54 +119,20 @@ async function getAllFlats(req, res) {
             }
         }
 
-        // finding flats with the queryObject
+
         const flatsInDb = await Flat.find(queryObj)
-            .populate("comments likes nearestLandmarksForSearching")
+            .populate("comments addedBy likes nearestLandmarksForSearching")
+            .where("price").gt(minPrice - 1).lt(maxPrice + 1)
+            .where("sqft").gt(minSqft - 1).lt(maxSqft + 1)
             .sort(
                 sortByPrice ? { "price": sortByPrice } : sortBySqft ? { "sqft": sortBySqft } : null
             )
-            .where("price").gt(minPrice - 1).lt(maxPrice + 1)
-            .where("sqft").gt(minSqft - 1).lt(maxSqft + 1)
             .exec()
-
-
-        let response = flatsInDb;
-        const newQueryObj = {};
-
-        if (search) {
-            newQueryObj.$text = { $search: search };
-
-
-            const NL = await NearestLandmarksForSearching.find(newQueryObj);
-
-            const FilteredNL = NL.filter((nearestLandmark) => {
-                // if nearestLandmark is not associated with any flat then not adding it to the array
-                // else adding it to the array if it's not already present in the flatsInDb
-                if (nearestLandmark.flat) {
-                    if (flatsInDb.length === 0) { return true; }
-                    if (flatsInDb.find((flat) => flat._id.toString() !== nearestLandmark.flat.toString())) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                else {
-                    return false;
-                }
-            });
-
-            // now finding flats associated with the nearestLandmarks
-            const FlatsAssociatedWithNL = await Flat.find({ nearestLandmarksForSearching: { $in: FilteredNL } })
-                .populate("comments likes nearestLandmarksForSearching")
-
-            response = flatsInDb.concat(FlatsAssociatedWithNL);
-
-        }
 
         return res.status(200).json({
             "success": true,
             "message": "flats were fetched successfully",
-            "data": response
+            "data": flatsInDb
         })
 
 

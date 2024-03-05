@@ -7,6 +7,7 @@ const {
     pincodeValidator,
 } = require('../validator/modelValidator');
 
+require("dotenv").config();
 
 const FlatSchema = new mongoose.Schema({
 
@@ -197,6 +198,23 @@ const FlatSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
+
+FlatSchema.pre("save", async function () {
+
+    if (this.isNew) {
+        try {
+            const Searching = require("./Searching")
+
+            await Searching.create({ keyword: this.name, type: "hostel" })
+            await Searching.create({ keyword: this.locality, type: "locality" })
+            await Searching.create({ keyword: this.city, type: "city" })
+
+        } catch (error) {
+            throw new Error("backend: " + error.message)
+        }
+    }
+});
+
 FlatSchema.pre('remove', async function () {
     try {
 
@@ -212,6 +230,11 @@ FlatSchema.pre('remove', async function () {
     }
 });
 
-FlatSchema.index({ '$**': 'text' });
+// FlatSchema.index({ '$**': 'text' });
+FlatSchema.index({ 'city': 'text' });
+FlatSchema.index({ 'locality': 'text' });
+FlatSchema.index({ 'uniqueName': 'text' });
+FlatSchema.index({ 'name': 'text' });
+
 
 module.exports = mongoose.model("Flat", FlatSchema)

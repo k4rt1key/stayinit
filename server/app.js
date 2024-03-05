@@ -263,7 +263,7 @@ app.use("/api/v1/hostel", HostelRouter)
 app.use("/api/v1/likes", LikesRouter)
 app.use("/api/v1/comment", CommentRouter)
 app.use("/api/v1/file", FileRouter)
-app.use("/api/v1/search", SearchingRouter)
+app.use("/api/v1/searching", SearchingRouter)
 
 
 // >>> starting and connecting with server and db

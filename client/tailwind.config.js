@@ -11,16 +11,14 @@ module.exports = withMT({
       backgroundColor: {
         'colorY': '#FFFBF2',
         'colorYH': '#F3EADC',
-
         'colorG': '#073937',
-
         'colorY2': '#FCF5EB',
         'colorY2H': '#F3EADC',
       },
 
       fontFamily: {
-        Classy: ['Bodoni Moda', 'serif'],
-        Secondary: ['Poppins', 'sans-serif'],
+        1: ['Libre Baskerville', 'serif'],
+        2: ['Montserrat', 'sans-serif'],
       },
     },
   },

@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router()
 
-const { searchProperties } = require("../controllers/searching");
+const { searchCity, searchLocality } = require("../controllers/searching");
 
-router.get("/", searchProperties)
+router.get("/city", searchCity)
+router.get("/locality", searchLocality)
 
-module.exports =  router;
+
+module.exports = router;
