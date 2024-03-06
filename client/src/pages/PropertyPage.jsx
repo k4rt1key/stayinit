@@ -7,6 +7,9 @@ import LandingPageCard from "../components/LandingPageCard";
 import ImageGallary from "../components/ImageGallary";
 import { useAuth } from "../contexts/Auth";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
+import { roundToNearestThousand } from "../utils/utilityFunctions";
 
 function useFetch() {
   const [property, setProperty] = useState({});
@@ -52,6 +55,8 @@ export default function PropertyPage() {
   const [likedProperty, setLikedProperty] = useState([]);
   const [likesLength, setLikesLength] = useState(() => likedProperty.length);
   const [likeLoading, setLikeLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   async function getLikes() {
     try {
@@ -194,13 +199,7 @@ export default function PropertyPage() {
     }
   }
 
-  const landingPageCardPropList = [
-    { image: "/images/img_image_1.png" },
-    { image: "/images/img_image_2.png" },
-    { image: "/images/img_image_3.png" },
-    { image: "/images/img_image_4.png" },
-    { image: "/images/img_image_5.png" },
-  ];
+  const landingPageCardPropList = [{}, {}, {}, {}, {}];
 
   const { type } = useParams();
   const [property, loading, error] = useFetch();
@@ -274,6 +273,113 @@ export default function PropertyPage() {
   );
   const [mapQueryNumber, setMapQueryNumber] = React.useState(1);
 
+  // output prediction price state which we will be show to users
+  const [prediction, setPrediction] = React.useState("");
+  const predictionText = `Price Should be between ${roundToNearestThousand(
+    prediction * 0.95
+  )} - ${roundToNearestThousand(prediction * 1.05)} Rupees`;
+
+  // property data in form
+
+  const [propertyData, setPropertyData] = useState({
+    property_sqft: property.sqft,
+    property_bhk: property.bhk,
+    property_city: property.city,
+    property_locality: property.locality,
+    is_furnished: property.furnitureType,
+    property_project: property.name,
+    num_of_baths: property.bathrooms,
+    bachelors_or_family: "bachelors",
+    floornumber: property.atWhichFloor,
+    totalfloor: property.totalFloor,
+
+    property_pricenan: 0,
+    property_bhknan: 0,
+    property_sqftnan: 0,
+    num_of_bathsnan: 0,
+    floornumbernan: 0,
+    totalfloornan: 0,
+  });
+  React.useEffect(() => {
+    setPropertyData({
+      property_sqft: property.sqft,
+      property_bhk: property.bhk,
+      property_city: property.city,
+      property_locality: property.locality,
+      is_furnished: property.furnitureType,
+      property_project: property.name,
+      num_of_baths: property.bathrooms,
+      bachelors_or_family: "bachelors",
+      floornumber: property.atWhichFloor,
+      totalfloor: property.totalFloor,
+
+      property_pricenan: 0,
+      property_bhknan: 0,
+      property_sqftnan: 0,
+      num_of_bathsnan: 0,
+      floornumbernan: 0,
+      totalfloornan: 0,
+    });
+  }, [property]);
+
+  // making request to server to predict price for user inputed property data
+  async function fetchPrediction() {
+    try {
+      // convert form data string to lowercase string for accurate prediction in ml model
+      const p_proj = propertyData.property_project
+        .toLowerCase()
+        .replace(" ", "_");
+      const p_city = propertyData.property_city.toLowerCase();
+      const p_loc = propertyData.property_locality.toLowerCase();
+      const p_isfun = propertyData.is_furnished.toLowerCase();
+
+      // if user is authenticated... then make api call
+      if (authData.isAuthenticate) {
+        const options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            property_sqft: propertyData.property_sqft,
+            property_bhk: propertyData.property_bhk,
+            property_city: p_city,
+            property_locality: p_loc,
+            is_furnished: p_isfun,
+            property_project: p_proj,
+            num_of_baths: propertyData.num_of_baths,
+            bachelors_or_family: "bachelors",
+            floornumber: propertyData.floornumber,
+            totalfloor: propertyData.totalfloor || propertyData.atWhichFloor,
+            property_pricenan: 0,
+            property_bhknan: 0,
+            property_sqftnan: 0,
+            num_of_bathsnan: 0,
+            floornumbernan: 0,
+            totalfloornan: 0,
+          }),
+        };
+        const response = await fetch("http://localhost:7000/", options);
+        const responseJson = await response.json();
+        const data = responseJson.prediction;
+
+        if (response.ok) {
+          toast.success("Successfully fetched prediction");
+          setPrediction(data);
+        } else {
+          toast.error(responseJson.message);
+        }
+      }
+      // if user is not autheticated... then redirect to "login"
+      else {
+        navigate("/login");
+      }
+    } catch (error) {
+      toast.error(error.message);
+      throw new Error(error.message);
+    }
+  }
+
   return (
     <>
       <div className="px-[0.7rem] lg:px-[10rem] py-[0.5rem] flex flex-col gap-10 items-start justify-start w-full">
@@ -316,6 +422,14 @@ export default function PropertyPage() {
                         alt=""
                       />
                       {"Add to Wishlist"}
+                    </button>
+                    <button
+                      className="flex flex-row gap-4 w-full justify-center
+                    border-2 p-2 border-black bg-gray-200 items-center
+                    text-black font-semibold rounded-lg"
+                      onClick={fetchPrediction}
+                    >
+                      {prediction == "" ? "See Expected Price" : predictionText}
                     </button>
                     {/* pricing */}
                     <div className="flex flex-row flex-wrap gap-4 items-start justify-start w-full">

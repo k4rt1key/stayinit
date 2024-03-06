@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 // import of utility functions
-import { roundToNearestThousand } from "../../utils/utilityFunctions";
+import { roundToNearestThousand } from "../utils/utilityFunctions";
 
 const filterStyle =
   "py-2 px-4 w-full focus:outline-none placeholder:text-[#073937] hover:bg-colorY2H focus:placeholder-[#FFFBF2] focus:bg-[#073937] focus:text-[#D8D4CD] bg-colorY2 rounded-[3rem] border border-[#D8D4CD]";
@@ -15,6 +15,9 @@ export default function Prediction() {
 
   // output prediction price state which we will be show to users
   const [prediction, setPrediction] = React.useState();
+  const predictionText = `Price Should be between ${roundToNearestThousand(
+    prediction
+  )} - ${roundToNearestThousand(prediction)} Rupees`;
 
   // property data in form
   const [propertyData, setPropertyData] = useState({

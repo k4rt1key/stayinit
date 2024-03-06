@@ -353,7 +353,8 @@ const LandingPageCard = ({
 };
 
 LandingPageCard.defaultProps = {
-  image: "images/img_image_260x384.png",
+  image:
+    "https://media.istockphoto.com/id/981756464/photo/contemporary-kitchen-modern-interiors.webp?s=2048x2048&w=is&k=20&c=unX2mw6Rj8Vn_dgt_EPXdqRXbsHHrE3aVZLyuiOLrtM=",
   type: "flat",
   sqft: 999,
   name: "XYZ",

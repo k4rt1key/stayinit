@@ -7,13 +7,7 @@ import LandingPageCard from "../components/LandingPageCard";
 export default function Home() {
   const navigate = useNavigate();
 
-  const landingPageCardPropList = [
-    { image: "images/img_image_1.png" },
-    { image: "images/img_image_2.png" },
-    { image: "images/img_image_3.png" },
-    { image: "images/img_image_4.png" },
-    { image: "images/img_image_5.png" },
-  ];
+  const landingPageCardPropList = [{}, {}, {}, {}, {}, {}, {}];
 
   const [search, setSearch] = React.useState("");
   const [type, setType] = React.useState("flat");
