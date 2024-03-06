@@ -4,4 +4,4 @@ build
 *.pid
 *.lock
 .DS_Store
-# .env
+.env

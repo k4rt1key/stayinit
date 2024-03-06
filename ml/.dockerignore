@@ -10,6 +10,3 @@ __pycache__
 *.sqlite
 .env
 venv
-.dockerignore
-Dockerfile
-.dockerignore
