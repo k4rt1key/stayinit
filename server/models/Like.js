@@ -67,40 +67,56 @@ LikeSchema.pre("save", async function () {
     }
 });
 
-LikeSchema.pre("remove", async function () {
+// Define the function with common remove logic for likes
+const handleLikeRemove = async function () {
     try {
-        const Flat = require("./Flat")
-        const Hostel = require("./Hostel")
-        const Profile = require("./Profile")
+        const Flat = require("./Flat");
+        const Hostel = require("./Hostel");
+        const Profile = require("./Profile");
+
         if (this.type === "flat") {
             await Flat.findOneAndUpdate(
                 { _id: this.flat },
-                {
-                    $pull: { likes: this._id },
-                },
+                { $pull: { likes: this._id } },
                 { new: true, runValidators: true }
-            )
-        }
-        if (this.type === "hostel") {
+            );
+        } else if (this.type === "hostel") {
             await Hostel.findOneAndUpdate(
                 { _id: this.hostel },
-                {
-                    $pull: { likes: this._id },
-                },
+                { $pull: { likes: this._id } },
                 { new: true, runValidators: true }
-            )
+            );
         }
 
         await Profile.findOneAndUpdate(
             { _id: this.profile },
-            {
-                $pull: { likes: this._id },
-            },
+            { $pull: { likes: this._id } },
             { new: true, runValidators: true }
-        )
+        );
     } catch (error) {
         throw new Error(`backend: ${error.message}`);
     }
+};
+
+// Apply the pre middleware for remove
+LikeSchema.pre('remove', async function () {
+    await handleLikeRemove.call(this);
 });
+
+// Apply the pre middleware for deleteOne
+LikeSchema.pre('deleteOne', async function () {
+    await handleLikeRemove.call(this);
+});
+
+// Apply the pre middleware for deleteMany
+LikeSchema.pre('deleteMany', async function () {
+    await handleLikeRemove.call(this);
+});
+
+// Apply the pre middleware for findOneAndDelete
+LikeSchema.pre('findOneAndDelete', async function () {
+    await handleLikeRemove.call(this);
+});
+
 
 module.exports = mongoose.model("Like", LikeSchema)

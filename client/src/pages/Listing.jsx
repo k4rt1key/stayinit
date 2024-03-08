@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/Auth";
+import Select from "react-select";
 import { toast } from "react-toastify";
 
-import {
-  Button,
-  GoogleMapDiv,
-  Img,
-  Input,
-  List,
-  SelectBox,
-  Text,
-} from "../components";
+import { Button, GoogleMapDiv, Img, Text } from "../components";
 
 import LandingPageCard from "../components/LandingPageCard";
 
+// Filters Options
 const bhkOptions = [
   { label: "1 BHK", value: "1" },
   { label: "2 BHK", value: "2" },
@@ -72,7 +66,9 @@ function useFetch(searchParams) {
       };
 
       const response = await fetch(
-        "http://localhost:5000/api/v1/" + type + "?" + searchParams.toString(),
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/v1/${type}?${searchParams.toString()}`,
         requestOptions
       );
       const jsonResponse = await response.json();
@@ -208,7 +204,7 @@ const ListingPage = () => {
     });
 
     setSearchParams("");
-    window.location.reload();
+    // window.location.reload();
   }
 
   function submitFlatFilters(event) {
@@ -222,16 +218,16 @@ const ListingPage = () => {
     const newSearchParams = new URLSearchParams();
 
     if (filters.furnitureType) {
-      newSearchParams.set("furnitureType", filters.furnitureType);
+      newSearchParams.set("furnitureType", filters.furnitureType.value);
     }
     if (filters.bhk) {
-      newSearchParams.set("bhk", filters.bhk);
+      newSearchParams.set("bhk", filters.bhk.value);
     }
     if (filters.sqftRange) {
-      newSearchParams.set("sqftRange", filters.sqftRange);
+      newSearchParams.set("sqftRange", filters.sqftRange.value);
     }
     if (filters.priceRange) {
-      newSearchParams.set("priceRange", filters.priceRange);
+      newSearchParams.set("priceRange", filters.priceRange.value);
     }
     if (filters.search || searchParams.get("search")) {
       newSearchParams.set(
@@ -254,10 +250,10 @@ const ListingPage = () => {
     const newSearchParams = new URLSearchParams();
 
     if (filters.forWhichGender) {
-      newSearchParams.set("forWhichGender", filters.forWhichGender);
+      newSearchParams.set("forWhichGender", filters.forWhichGender.value);
     }
     if (filters.priceRange) {
-      newSearchParams.set("priceRange", filters.priceRange);
+      newSearchParams.set("priceRange", filters.priceRange.value);
     }
     if (filters.search) {
       newSearchParams.set("search", filters.search);
@@ -266,238 +262,302 @@ const ListingPage = () => {
     setSearchParams(newSearchParams.toString());
   }
 
-  const filterStyle =
-    "py-4 px-8 w-full md:w-[15rem] cursor-pointer focus:outline-none placeholder:text-[#073937] hover:bg-colorY2H focus:placeholder-[#FFFBF2] focus:bg-[#073937] focus:text-[#D8D4CD] bg-colorY2 rounded-[0.5em] border border-[#D8D4CD]";
+  // Select Filters List
+  let selectHostelFilters = [
+    {
+      options: priceOptionsForHostels,
+      placeholder: "Select price",
+      name: "priceRange",
+      value: filters["priceRange"],
+    },
+    {
+      options: genderOptions,
+      placeholder: "gender",
+      name: "forWhichGender",
+      value: filters["forWhichGender"],
+    },
+  ];
 
+  let selectFlatFilters = [
+    {
+      options: priceOptions,
+      placeholder: "Price",
+      name: "priceRange",
+      value: filters["priceRange"],
+    },
+    {
+      options: sqftOptions,
+      placeholder: "Sqft",
+      name: "sqftRange",
+      value: filters["sqftRange"],
+    },
+    {
+      options: furnitureTypeOptions,
+      placeholder: "Furniture type",
+      name: "furnitureType",
+      value: filters["furnitureType"],
+    },
+    {
+      options: bhkOptions,
+      placeholder: "BHK",
+      name: "bhk",
+      value: filters["bhk"],
+    },
+  ];
+
+  React.useEffect(() => {
+    // chnage only reference but not value of selectHostelFilters and selectFlatFilters
+    // because when filter changes, its changes value of selectHostelFilters and selectFlatFilters
+    // but selectHostelFilters and selectFlatFilters are not re-rendered
+    // because reference of selectHostelFilters and selectFlatFilters are not changed
+    selectHostelFilters = [...selectHostelFilters];
+    selectFlatFilters = [...selectFlatFilters];
+  }, [filters]);
+  const filterStyle = `py-4 px-8 focus:outline-none placeholder:text-gray-600 hover:bg-colorY2H bg-colorY2 rounded-[0.5em] border-[#D8D4CD] appearance-none border leading-5 focus:shadow-outline-blue focus:border-blue-300`;
+
+  console.log(filters);
   return (
     <>
-      {loading ? (
-        <div className="text-2xl flex justify-center items-center w-screen h-screen">
-          Loading...
-        </div>
-      ) : (
-        <div className="px-[0.7rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">
-          <div className="flex flex-col gap-10 items-center justify-center w-full">
-            {/* page header and filters */}
-            <div className="flex flex-col gap-6 items-center justify-center max-w-[1200px] mx-auto w-full">
-              <Text
-                className="text-4xl font-1 sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-full"
-                size=""
+      <div className="px-[0.7rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">
+        <div className="flex flex-col gap-10 items-center justify-center w-full">
+          {/* page header and filters */}
+          <div className="flex flex-col gap-6 items-center justify-center max-w-[1200px] mx-auto w-full">
+            <Text
+              className="text-4xl font-1 sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-full"
+              size=""
+            >
+              Find Property
+            </Text>
+
+            {/* Form */}
+            {type === "hostel" ? (
+              <form
+                className="flex flex-col md:flex-row flex-wrap gap-4 items-start justify-start w-full text-lg"
+                onSubmit={submitHostelFilters}
               >
-                Find Property
-              </Text>
+                {/* searchbar */}
+                <input
+                  name="search"
+                  className={filterStyle + "w-full md:w-[25rem]"}
+                  placeholder="Search by city, locality and property name"
+                  value={filters.search || ""}
+                  onChange={(event) => {
+                    setFilters({
+                      ...filters,
+                      search: event.target.value,
+                    });
+                  }}
+                />
 
-              {/* Form */}
-              {type === "hostel" ? (
-                <form
-                  className="flex flex-col md:flex-row flex-wrap gap-4 items-start justify-start w-full text-lg"
-                  onSubmit={submitHostelFilters}
+                {selectHostelFilters.map((selectBox) => {
+                  return (
+                    <Select
+                      key={selectBox.name}
+                      styles={{
+                        container: (provided) => ({
+                          ...provided,
+                          zIndex: 10,
+                        }),
+                        control: (provided) => ({
+                          ...provided,
+                          backgroundColor: "transparent",
+                          border: "0 !important",
+                          boxShadow: "0 !important",
+                          minHeight: "auto",
+                          "&:hover": {
+                            border: "0 !important",
+                          },
+                        }),
+                        option: (provided, state) => ({
+                          ...provided,
+                          color: state.isSelected && "#FFFBF2",
+                          backgroundColor: state.isSelected && "#191919",
+                          "&:hover": {
+                            backgroundColor: "#191919",
+                            color: "#ffffff",
+                          },
+                        }),
+                        singleValue: (provided) => ({
+                          ...provided,
+                          color: "inherit",
+                        }),
+                        input: (provided) => ({
+                          ...provided,
+                          color: "inherit",
+                          margin: "0",
+                          padding: "0",
+                          // height: "0",
+                        }),
+                        valueContainer: (provided) => ({
+                          ...provided,
+                          padding: "0",
+                        }),
+                        dropdownIndicator: (provided) => ({
+                          ...provided,
+                          paddingTop: "0px",
+                          paddingBottom: "0px",
+                        }),
+                        clearIndicator: (provided) => ({
+                          ...provided,
+                          padding: "0",
+                        }),
+                        multiValueLabel: (provided) => ({
+                          ...provided,
+                          padding: "0",
+                        }),
+                        menuPortal: (base) => ({ ...base, zIndex: 999999 }),
+                        placeholder: (base) => ({
+                          ...base,
+                          margin: 0,
+                        }),
+                      }}
+                      className={filterStyle + " w-full md:w-[15rem]"}
+                      isMulti={false}
+                      options={selectBox.options}
+                      isSearchable={false}
+                      placeholder={selectBox.placeholder}
+                      name={selectBox.name}
+                      value={selectBox.value}
+                      onChange={(event) => {
+                        setFilters({
+                          ...filters,
+                          [selectBox.name]: event,
+                        });
+                      }}
+                    />
+                  );
+                })}
+                <button className={filterStyle} type="submit">
+                  <span className="text-green-800">Search</span>
+                </button>
+                <button
+                  className={filterStyle}
+                  type="button"
+                  onClick={clearAllFilters}
                 >
-                  {/* searchbar */}
-                  <input
-                    placeholder="Search"
-                    className={filterStyle}
-                    name="search"
-                    value={filters.search || ""}
-                    onChange={(event) => {
-                      setFilters({
-                        ...filters,
-                        search: event.target.value,
-                      });
-                    }}
-                  />
+                  <span className="text-red-800">Clear</span>
+                </button>
+              </form>
+            ) : (
+              <form
+                className="flex flex-row flex-wrap gap-4 items-start justify-start w-full"
+                onSubmit={submitFlatFilters}
+              >
+                {/* Searchbar */}
+                <input
+                  placeholder="Search by city, locality and property name"
+                  className={filterStyle + "w-full md:w-[25rem]"}
+                  name="search"
+                  value={filters.search || ""}
+                  onChange={(event) => {
+                    setFilters({
+                      ...filters,
+                      search: event.target.value,
+                    });
+                  }}
+                />
 
-                  {/* price-ranges */}
-                  <SelectBox
-                    className={filterStyle}
-                    indicator={
-                      <Img
-                        className="h-6 w-6"
-                        src="/images/img_arrowdown_gray_700.svg"
-                        alt="arrow_down"
-                      />
-                    }
-                    isMulti={false}
-                    options={priceOptionsForHostels}
-                    isSearchable={true}
-                    placeholder="Price"
-                    name="priceRange"
-                    value={filters.priceRange}
-                    onChange={(event) => {
-                      setFilters({
-                        ...filters,
-                        priceRange: event,
-                      });
-                    }}
-                  />
-                  {/* gender options */}
-                  <SelectBox
-                    className={filterStyle}
-                    indicator={
-                      <Img
-                        className="h-6 w-6"
-                        src="/images/img_arrowdown_gray_700.svg"
-                        alt="arrow_down"
-                      />
-                    }
-                    isMulti={false}
-                    options={genderOptions}
-                    isSearchable={false}
-                    placeholder="ForWhichGender"
-                    name="forWhichGender"
-                    value={filters.forWhichGender}
-                    onChange={(event) => {
-                      setFilters({
-                        ...filters,
-                        forWhichGender: event,
-                      });
-                    }}
-                  />
+                {selectFlatFilters.map((selectBox) => {
+                  return (
+                    <Select
+                      key={selectBox.name}
+                      styles={{
+                        container: (provided) => ({
+                          ...provided,
+                          zIndex: 10,
+                        }),
+                        control: (provided) => ({
+                          ...provided,
+                          backgroundColor: "transparent",
+                          border: "0 !important",
+                          boxShadow: "0 !important",
+                          minHeight: "auto",
+                          "&:hover": {
+                            border: "0 !important",
+                          },
+                        }),
+                        option: (provided, state) => ({
+                          ...provided,
+                          color: state.isSelected && "#FFFBF2",
+                          backgroundColor: state.isSelected && "#191919",
+                          "&:hover": {
+                            backgroundColor: "#191919",
+                            color: "#ffffff",
+                          },
+                        }),
+                        singleValue: (provided) => ({
+                          ...provided,
+                          color: "inherit",
+                        }),
+                        input: (provided) => ({
+                          ...provided,
+                          color: "inherit",
+                          margin: "0",
+                          padding: "0",
+                          // height: "0",
+                        }),
+                        valueContainer: (provided) => ({
+                          ...provided,
+                          padding: "0",
+                        }),
+                        dropdownIndicator: (provided) => ({
+                          ...provided,
+                          paddingTop: "0px",
+                          paddingBottom: "0px",
+                        }),
+                        clearIndicator: (provided) => ({
+                          ...provided,
+                          padding: "0",
+                        }),
+                        multiValueLabel: (provided) => ({
+                          ...provided,
+                          padding: "0",
+                        }),
+                        menuPortal: (base) => ({ ...base, zIndex: 999999 }),
+                        placeholder: (base) => ({
+                          ...base,
+                          margin: 0,
+                        }),
+                      }}
+                      className={filterStyle + " w-full md:w-[15rem]"}
+                      isMulti={false}
+                      options={selectBox.options}
+                      isSearchable={false}
+                      placeholder={selectBox.placeholder}
+                      name={selectBox.name}
+                      value={selectBox.value}
+                      onChange={(event) => {
+                        setFilters({
+                          ...filters,
+                          [selectBox.name]: event,
+                        });
+                      }}
+                    />
+                  );
+                })}
 
-                  <button className={filterStyle} type="submit">
-                    <span className="text-green-800">Search</span>
-                  </button>
+                <button className={filterStyle} type="submit">
+                  <span className="text-green-800">Search</span>
+                </button>
 
-                  <button
-                    className={filterStyle}
-                    type="button"
-                    onClick={clearAllFilters}
-                  >
-                    <span className="text-red-800">Clear</span>
-                  </button>
-                </form>
-              ) : (
-                <form
-                  className="flex flex-row flex-wrap gap-4 items-start justify-start w-full"
-                  onSubmit={submitFlatFilters}
+                <button
+                  className={filterStyle}
+                  type="button"
+                  onClick={clearAllFilters}
                 >
-                  {/* Searchbar */}
-                  <input
-                    placeholder="Search"
-                    className={filterStyle}
-                    name="search"
-                    value={filters.search || ""}
-                    onChange={(event) => {
-                      setFilters({
-                        ...filters,
-                        search: event.target.value,
-                      });
-                    }}
-                  />
+                  <span className="text-red-800">Clear</span>
+                </button>
+              </form>
+            )}
+          </div>
 
-                  {/* Priceranges */}
-                  <SelectBox
-                    className={filterStyle}
-                    indicator={
-                      <Img
-                        className="h-6 w-6"
-                        src="/images/img_arrowdown_gray_700.svg"
-                        alt="arrow_down"
-                      />
-                    }
-                    isMulti={false}
-                    options={priceOptions}
-                    isSearchable={false}
-                    placeholder="Price"
-                    name="priceRange"
-                    value={filters.priceRange}
-                    onChange={(event) => {
-                      setFilters({
-                        ...filters,
-                        priceRange: event,
-                      });
-                    }}
-                  />
-
-                  {/* Sqft */}
-                  <SelectBox
-                    className={filterStyle}
-                    indicator={
-                      <Img
-                        className="h-6 w-6"
-                        src="/images/img_arrowdown_gray_700.svg"
-                        alt="arrow_down"
-                      />
-                    }
-                    isMulti={false}
-                    options={sqftOptions}
-                    isSearchable={false}
-                    placeholder="Sqft"
-                    name="sqftRange"
-                    value={filters.sqftRange}
-                    onChange={(event) => {
-                      setFilters({
-                        ...filters,
-                        sqftRange: event,
-                      });
-                    }}
-                  />
-
-                  {/* Furniture Options */}
-                  <SelectBox
-                    className={filterStyle}
-                    indicator={
-                      <Img
-                        className="h-6 w-6"
-                        src="/images/img_arrowdown_gray_700.svg"
-                        alt="arrow_down"
-                      />
-                    }
-                    isMulti={false}
-                    options={furnitureTypeOptions}
-                    isSearchable={false}
-                    placeholder="Furniture type"
-                    name="furnitureType"
-                    value={filters.furnitureType}
-                    onChange={(event) => {
-                      setFilters({
-                        ...filters,
-                        furnitureType: event,
-                      });
-                    }}
-                  />
-
-                  {/* Bhk Options */}
-                  <SelectBox
-                    className={filterStyle}
-                    indicator={
-                      <Img
-                        className="h-6 w-6"
-                        src="/images/img_arrowdown_gray_700.svg"
-                        alt="arrow_down"
-                      />
-                    }
-                    isMulti={false}
-                    options={bhkOptions}
-                    isSearchable={false}
-                    placeholder="BHK"
-                    name="bhk"
-                    value={filters.bhk}
-                    onChange={(event) => {
-                      setFilters({
-                        ...filters,
-                        bhk: event,
-                      });
-                    }}
-                  />
-
-                  <button className={filterStyle} type="submit">
-                    <span className="text-green-800">Search</span>
-                  </button>
-
-                  <button
-                    className={filterStyle}
-                    type="button"
-                    onClick={clearAllFilters}
-                  >
-                    <span className="text-red-800">Clear</span>
-                  </button>
-                </form>
-              )}
+          {loading ? (
+            <div className="text-2xl flex justify-center items-center w-screen h-screen">
+              Loading...
             </div>
-
-            {/* cards and map view */}
+          ) : (
             <div className="flex flex-col items-center justify-center w-full">
+              {/* cards and map view */}
               <div className="flex flex-col gap-6 items-start justify-center max-w-[1200px]  w-full">
                 {/* maps view */}
                 <div className="h-[511px] border-2 border-black relative w-full">
@@ -556,9 +616,9 @@ const ListingPage = () => {
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 };

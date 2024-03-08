@@ -40,10 +40,10 @@ PricingSchema.pre("save", async function () {
     }
 });
 
-PricingSchema.pre("remove", async function () {
+// Define the function with common remove logic
+const handleRemove = async function () {
     try {
-
-        const Hostel = require("./Hostel")
+        const Hostel = require("./Hostel");
 
         await Hostel.findOneAndUpdate(
             { _id: this.hostel },
@@ -51,10 +51,30 @@ PricingSchema.pre("remove", async function () {
                 $pull: { priceAndSharing: this._id },
             },
             { new: true, runValidators: true }
-        )
+        );
     } catch (error) {
         throw new Error(`backend: ${error.message}`);
     }
+};
+
+// Apply the pre middleware for remove
+PricingSchema.pre('remove', async function () {
+    await handleRemove.call(this);
+});
+
+// Apply the pre middleware for deleteOne
+PricingSchema.pre('deleteOne', async function () {
+    await handleRemove.call(this);
+});
+
+// Apply the pre middleware for deleteMany
+PricingSchema.pre('deleteMany', async function () {
+    await handleRemove.call(this);
+});
+
+// Apply the pre middleware for findOneAndDelete
+PricingSchema.pre('findOneAndDelete', async function () {
+    await handleRemove.call(this);
 });
 
 module.exports = mongoose.model("PriceAndSharing", PricingSchema)

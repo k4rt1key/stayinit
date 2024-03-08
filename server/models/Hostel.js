@@ -177,33 +177,72 @@ HostelSchema.pre("save", async function () {
 
     if (this.isNew) {
         try {
-            const Searching = require("./Searching")
 
-            await Searching.create({ keyword: this.name, type: "hostel" })
-            await Searching.create({ keyword: this.locality, type: "locality" })
-            await Searching.create({ keyword: this.city, type: "city" })
+            function extractCoordinatesFromUrl(url) {
+                // Extract the part of the URL containing the coordinates
+                const match = url.match(/@(.+),(.+),.*/);
+
+                if (!match) {
+                    return null; // No match found
+                }
+
+                // Extract latitude and longitude
+                const latitude = match[1];
+                const longitude = match[2];
+
+                return `${latitude},${longitude}`;
+            }
+
+            this.addressCordinates = extractCoordinatesFromUrl(this.addressLink);
+            console.log(this.addressCordinates)
+
+            // const Searching = require("./Searching")
+
+            // await Searching.create({ keyword: this.name, type: "hostel" })
+            // await Searching.create({ keyword: this.locality, type: "locality" })
+            // await Searching.create({ keyword: this.city, type: "city" })
         } catch (error) {
             throw new Error("backend: " + error.message)
         }
     }
 });
 
-HostelSchema.pre("remove", async function () {
+// Define the function with common remove logic for hostels
+const handleHostelRemove = async function () {
     try {
+        const Comment = require("./Comment");
+        const Like = require("./Like");
+        const NearestLandmarksForSearching = require("./NearestLandmarksForSearching");
 
-        const Comment = require("./Comment")
-        const Like = require("./Like")
-        const NearestLandmarksForSearching = require("./NearestLandmarksForSearching")
-
-        await Pricing.deleteMany({ hostel: this._id })
-        await NearestLandmarksForSearching.deleteMany({ _id: { $in: this.nearestLandmarksForSearching } })
-        await Comment.deleteMany({ hostel: this._id })
-        await Like.deleteMany({ hostel: this._id })
-
+        await Pricing.deleteMany({ hostel: this._id });
+        await NearestLandmarksForSearching.deleteMany({ _id: { $in: this.nearestLandmarksForSearching } });
+        await Comment.deleteMany({ hostel: this._id });
+        await Like.deleteMany({ hostel: this._id });
     } catch (error) {
         throw new Error(`backend: ${error.message}`);
     }
+};
+
+// Apply the pre middleware for remove
+HostelSchema.pre('remove', async function () {
+    await handleHostelRemove.call(this);
 });
+
+// Apply the pre middleware for deleteOne
+HostelSchema.pre('deleteOne', async function () {
+    await handleHostelRemove.call(this);
+});
+
+// Apply the pre middleware for deleteMany
+HostelSchema.pre('deleteMany', async function () {
+    await handleHostelRemove.call(this);
+});
+
+// Apply the pre middleware for findOneAndDelete
+HostelSchema.pre('findOneAndDelete', async function () {
+    await handleHostelRemove.call(this);
+});
+
 
 
 module.exports = mongoose.model("Hostel", HostelSchema)

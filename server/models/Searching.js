@@ -4,7 +4,7 @@ const SearchingSchema = new mongoose.Schema({
     keyword: {
         type: String,
         required: true,
-        unique: true,
+        // unique: true,
     },
     type: {
         type: String,

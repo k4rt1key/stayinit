@@ -5,3 +5,5 @@ build
 *.lock
 .DS_Store
 .env
+.env.local
+.env.production

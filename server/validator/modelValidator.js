@@ -1,14 +1,30 @@
 const validator = require('validator');
 
 const emailValidator = (email) => {
-    // validates an email
-    // example: abc.xyz@xyz
-    return validator.isEmail(email);
+    const allowedDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
+
+    // Use a regex to check the basic email format
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+    if (validator.isEmail(email) && emailPattern.test(email)) {
+        // Extract the domain from the email address
+        const [, domain] = email.split('@');
+
+        // Check if the domain is in the allowed domains list
+        if (allowedDomains.includes(domain.toLowerCase())) {
+            return true; // Valid email address
+        }
+    }
+
+    return false; // Invalid email address
 };
+
+
 const passwordValidator = (password) => {
     // password should be at least 8 chars long 
     // and should contain at least one uppercase, one lowercase, one number and one special character
     return validator.isStrongPassword(password);
+    // return true;
 };
 
 const phoneNumberValidator = (phoneNumber) => {

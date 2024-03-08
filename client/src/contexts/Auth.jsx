@@ -16,7 +16,7 @@ async function getAccessTokenFromRefreshToken(setAuthData, navigate) {
     };
 
     const response = await fetch(
-      "http://localhost:5000/api/v1/auth/validate-refresh-token",
+      `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/validate-refresh-token`,
       requestOptions
     );
     const jsonResponse = await response.json();
@@ -72,7 +72,7 @@ function Auth({ children }) {
         };
 
         const response = await fetch(
-          "http://localhost:5000/api/v1/auth/is-authenticate",
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/is-authenticate`,
           requestOptions
         );
 
@@ -122,7 +122,7 @@ function Auth({ children }) {
 
     async function logout() {
       const response = await fetch(
-        "http://localhost:5000/api/v1/auth/logout",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/logout`,
         requestOptions
       );
       const jsonResponse = await response.json();

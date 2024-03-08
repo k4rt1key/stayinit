@@ -49,7 +49,7 @@ const LandingPageCard = ({
       };
 
       const response = await fetch(
-        `http://localhost:5000/api/v1/likes`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/likes`,
         requestOptions
       );
       const jsonResponse = await response.json();
@@ -58,12 +58,11 @@ const LandingPageCard = ({
       if (jsonResponse.success === true) {
         const newList = [];
         data.forEach((like) => {
-          if (type === "hostel") {
-            like.hostel ? newList.push(like?.hostel?._id) : null;
-          } else {
-            like.flat ? newList.push(like?.flat?._id) : null;
-          }
+          like.hostel ? newList.push(like?.hostel?._id) : null;
+          like.flat ? newList.push(like?.flat?._id) : null;
         });
+
+        console.log(newList);
 
         setLikedProperty(newList);
       } else {
@@ -106,7 +105,7 @@ const LandingPageCard = ({
 
         setLikeLoading(true);
         const response = await fetch(
-          `http://localhost:5000/api/v1/likes/${type}/${_id}`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/likes/${type}/${_id}`,
           responseOptions
         );
         const jsonResponse = await response.json();
@@ -152,7 +151,7 @@ const LandingPageCard = ({
 
         setLikeLoading(true);
         const response = await fetch(
-          `http://localhost:5000/api/v1/likes`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/likes`,
           requestObject
         );
         const jsonResponse = await response.json();

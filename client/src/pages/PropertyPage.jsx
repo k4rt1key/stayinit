@@ -28,7 +28,7 @@ function useFetch() {
     };
 
     const response = await fetch(
-      `http://localhost:5000/api/v1/${type}/${propertyname}`,
+      `${import.meta.env.VITE_BACKEND_URL}/api/v1/${type}/${propertyname}`,
       requestOptions
     );
     const jsonResponse = await response.json();
@@ -56,6 +56,21 @@ export default function PropertyPage() {
   const [likesLength, setLikesLength] = useState(() => likedProperty.length);
   const [likeLoading, setLikeLoading] = useState(false);
 
+  function extractCoordinatesFromUrl(url) {
+    // Extract the part of the URL containing the coordinates
+    const match = url?.match(/@(.+),(.+),.*/);
+
+    if (!match) {
+      return null; // No match found
+    }
+
+    // Extract latitude and longitude
+    const latitude = match[1];
+    const longitude = match[2];
+
+    return `${latitude},${longitude}`;
+  }
+
   const navigate = useNavigate();
 
   async function getLikes() {
@@ -69,7 +84,7 @@ export default function PropertyPage() {
       };
 
       const response = await fetch(
-        `http://localhost:5000/api/v1/likes`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/likes`,
         requestOptions
       );
       const jsonResponse = await response.json();
@@ -126,7 +141,7 @@ export default function PropertyPage() {
 
         setLikeLoading(true);
         const response = await fetch(
-          `http://localhost:5000/api/v1/likes/${type}/${_id}`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/likes/${type}/${_id}`,
           responseOptions
         );
         const jsonResponse = await response.json();
@@ -172,7 +187,7 @@ export default function PropertyPage() {
 
         setLikeLoading(true);
         const response = await fetch(
-          `http://localhost:5000/api/v1/likes`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/likes`,
           requestObject
         );
         const jsonResponse = await response.json();
@@ -268,11 +283,6 @@ export default function PropertyPage() {
     ];
   }
 
-  const [mapQuery, setMapQuery] = React.useState(
-    `${property.name}, ${property.locality}, ${property.city}`
-  );
-  const [mapQueryNumber, setMapQueryNumber] = React.useState(1);
-
   // output prediction price state which we will be show to users
   const [prediction, setPrediction] = React.useState("");
   const predictionText = `Price Should be between ${roundToNearestThousand(
@@ -300,6 +310,8 @@ export default function PropertyPage() {
     floornumbernan: 0,
     totalfloornan: 0,
   });
+
+  let addressCordinates;
   React.useEffect(() => {
     setPropertyData({
       property_sqft: property.sqft,
@@ -320,6 +332,8 @@ export default function PropertyPage() {
       floornumbernan: 0,
       totalfloornan: 0,
     });
+
+    addressCordinates = extractCoordinatesFromUrl(property?.addressLink);
   }, [property]);
 
   // making request to server to predict price for user inputed property data
@@ -359,7 +373,7 @@ export default function PropertyPage() {
             totalfloornan: 0,
           }),
         };
-        const response = await fetch("http://localhost:7000/", options);
+        const response = await fetch(`${import.meta.env.VITE_ML_URL}`, options);
         const responseJson = await response.json();
         const data = responseJson.prediction;
 
@@ -379,6 +393,15 @@ export default function PropertyPage() {
       throw new Error(error.message);
     }
   }
+
+  const lat = addressCordinates?.split(",")[0];
+  const long = addressCordinates?.split(",")[1];
+  const [mapQuery, setMapQuery] = React.useState(
+    `${long},${lat}+${property.name}+${property.city}`
+  );
+
+  const [mapQueryNumber, setMapQueryNumber] = React.useState(0);
+  console.log(mapQuery);
 
   return (
     <>
@@ -493,7 +516,7 @@ export default function PropertyPage() {
                           onClick={() => {
                             setMapQueryNumber(1);
                             setMapQuery(
-                              `${property.name}, ${property.locality}, ${property.city}`
+                              `${long},${lat}+${property.name}+${property.city}`
                             );
                           }}
                           className={`${
@@ -508,7 +531,7 @@ export default function PropertyPage() {
                           onClick={() => {
                             setMapQueryNumber(2);
                             setMapQuery(
-                              `cafes around 10km of ${property.name},${property.locality}`
+                              `cafes around 10km of ${lat},${long}+${property.name}+${property.city}`
                             );
                           }}
                           className={`${
@@ -523,7 +546,7 @@ export default function PropertyPage() {
                           onClick={() => {
                             setMapQueryNumber(3);
                             setMapQuery(
-                              `public transportations near ${property.name},${property.locality},${property.city}`
+                              `public transportations near ${lat},${long}+${property.name}+${property.city}`
                             );
                           }}
                           className={`${
@@ -538,7 +561,7 @@ export default function PropertyPage() {
                           onClick={() => {
                             setMapQueryNumber(4);
                             setMapQuery(
-                              `${property.name},${property.locality},${property.city} to ${property.city} railway station`
+                              `${lat},${long},${property.name}+${property.city} to ${property.city} railway station`
                             );
                           }}
                           className={`${
@@ -552,10 +575,18 @@ export default function PropertyPage() {
                       </div>
                     </div>
                     <div className="h-[400px] border-2 border-black relative w-full">
-                      <iframe
-                        src={`https://www.google.com/maps/embed/v1/search?key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4&q=${mapQuery}`}
-                        className="h-full w-full"
-                      ></iframe>
+                      {mapQueryNumber !== 0 ? (
+                        <iframe
+                          src={`https://www.google.com/maps/embed/v1/search?q=${mapQuery}&key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4`}
+                          className="h-full w-full"
+                        ></iframe>
+                      ) : (
+                        <div className="w-full h-full flex justify-center items-center bg-gray-400">
+                          {" "}
+                          Explore Maps, Cafes, Public transports & Railway
+                          Station nearby this property
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

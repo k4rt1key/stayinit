@@ -31,7 +31,9 @@ export default function ResetPassword() {
         }),
       };
       const response = await fetch(
-        "http://localhost:5000/api/v1/auth/user/verify-reset-password-token",
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/v1/auth/user/verify-reset-password-token`,
         requestOptions
       );
       const jsonResponse = await response.json();

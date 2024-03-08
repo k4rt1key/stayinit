@@ -81,41 +81,56 @@ CommentSchema.pre('save', async function () {
 });
 
 
-CommentSchema.pre('remove', async function () {
+// Define the function with common remove logic for comments
+const handleCommentRemove = async function () {
     try {
-        const Flat = require("./Flat")
-        const Hostel = require("./Hostel")
-        const Profile = require("./Profile")
+        const Flat = require("./Flat");
+        const Hostel = require("./Hostel");
+        const Profile = require("./Profile");
+
         if (this.type === 'flat') {
             await Flat.findOneAndUpdate(
                 { _id: this.flat },
-                {
-                    $pull: { comments: this._id },
-                },
+                { $pull: { comments: this._id } },
                 { new: true, runValidators: true }
-            )
-        }
-
-        if (this.type === 'hostel') {
+            );
+        } else if (this.type === 'hostel') {
             await Hostel.findOneAndUpdate(
                 { _id: this.hostel },
-                {
-                    $pull: { comments: this._id },
-                },
+                { $pull: { comments: this._id } },
                 { new: true, runValidators: true }
-            )
+            );
         }
 
         await Profile.findOneAndUpdate(
             { _id: this.profile },
-            {
-                $pull: { comments: this._id },
-            },
+            { $pull: { comments: this._id } },
             { new: true, runValidators: true }
-        )
+        );
     } catch (error) {
         throw new Error(`backend: ${error.message}`);
     }
+};
+
+// Apply the pre middleware for remove
+CommentSchema.pre('remove', async function () {
+    await handleCommentRemove.call(this);
 });
+
+// Apply the pre middleware for deleteOne
+CommentSchema.pre('deleteOne', async function () {
+    await handleCommentRemove.call(this);
+});
+
+// Apply the pre middleware for deleteMany
+CommentSchema.pre('deleteMany', async function () {
+    await handleCommentRemove.call(this);
+});
+
+// Apply the pre middleware for findOneAndDelete
+CommentSchema.pre('findOneAndDelete', async function () {
+    await handleCommentRemove.call(this);
+});
+
 
 module.exports = mongoose.model('Comment', CommentSchema)

@@ -48,7 +48,7 @@ export default function Login() {
       };
 
       const response = await fetch(
-        "http://localhost:5000/api/v1/auth/login",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/login`,
         requestOptions
       );
       const jsonResponse = await response.json();

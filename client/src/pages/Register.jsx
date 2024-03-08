@@ -34,7 +34,9 @@ export default function Signup() {
     };
 
     const response = await fetch(
-      "http://localhost:5000/api/v1/auth/register/send-verification-otp",
+      `${
+        import.meta.env.VITE_BACKEND_URL
+      }/api/v1/auth/register/send-verification-otp`,
       requestOptions
     );
     const jsonResponse = await response.json();
@@ -66,7 +68,7 @@ export default function Signup() {
     };
 
     const response = await fetch(
-      "http://localhost:5000/api/v1/auth/register/verify-otp",
+      `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/register/verify-otp`,
       requestOptions
     );
     const jsonResponse = await response.json();
@@ -113,7 +115,7 @@ export default function Signup() {
       };
 
       const response = await fetch(
-        "http://localhost:5000/api/v1/auth/register",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/register`,
         requestOptions
       );
       const jsonResponse = await response.json();

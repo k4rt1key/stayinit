@@ -76,7 +76,10 @@ export default function Prediction() {
             totalfloornan: 0,
           }),
         };
-        const response = await fetch("http://localhost:7000/", response);
+        const response = await fetch(
+          `${import.meta.env.VITE_ML_URL}`,
+          response
+        );
         const responseJson = await response.json();
         const data = responseJson.prediction;
 

@@ -203,32 +203,72 @@ FlatSchema.pre("save", async function () {
 
     if (this.isNew) {
         try {
-            const Searching = require("./Searching")
+            function extractCoordinatesFromUrl(url) {
+                // Extract the part of the URL containing the coordinates
+                const match = url.match(/@(.+),(.+),.*/);
 
-            await Searching.create({ keyword: this.name, type: "hostel" })
-            await Searching.create({ keyword: this.locality, type: "locality" })
-            await Searching.create({ keyword: this.city, type: "city" })
+                if (!match) {
+                    return null; // No match found
+                }
+
+                // Extract latitude and longitude
+                const latitude = match[1];
+                const longitude = match[2];
+
+                return `${latitude},${longitude}`;
+            }
+
+            this.addressCordinates = extractCoordinatesFromUrl(this.addressLink);
+            console.log(this.addressCordinates)
+
+
+            // const Searching = require("./Searching")
+
+            // await Searching.create({ keyword: this.name, type: "hostel" })
+            // await Searching.create({ keyword: this.locality, type: "locality" })
+            // await Searching.create({ keyword: this.city, type: "city" })
 
         } catch (error) {
-            throw new Error("backend: " + error.message)
+            throw new Error("Backend: " + error.message)
         }
     }
 });
 
-FlatSchema.pre('remove', async function () {
+// Define the function with common remove logic for flats
+const handleFlatRemove = async function () {
     try {
+        const Comment = require("./Comment");
+        const Like = require("./Like");
+        const NearestLandmarksForSearching = require("./NearestLandmarksForSearching");
 
-        const Comment = require("./Comment")
-        const Like = require("./Like")
-        const NearestLandmarksForSearching = require("./NearestLandmarksForSearching")
-
-        await NearestLandmarksForSearching.deleteMany({ _id: { $in: this.nearestLandmarksForSearching } })
-        await Comment.deleteMany({ _id: { $in: this.comments } })
-        await Like.deleteMany({ _id: { $in: this.likes } })
+        await NearestLandmarksForSearching.deleteMany({ _id: { $in: this.nearestLandmarksForSearching } });
+        await Comment.deleteMany({ _id: { $in: this.comments } });
+        await Like.deleteMany({ _id: { $in: this.likes } });
     } catch (error) {
-        throw new Error(`backend: ${error.message}`);
+        throw new Error(`Backend: ${error.message}`);
     }
+};
+
+// Apply the pre middleware for remove
+FlatSchema.pre('remove', async function () {
+    await handleFlatRemove.call(this);
 });
+
+// Apply the pre middleware for deleteOne
+FlatSchema.pre('deleteOne', async function () {
+    await handleFlatRemove.call(this);
+});
+
+// Apply the pre middleware for deleteMany
+FlatSchema.pre('deleteMany', async function () {
+    await handleFlatRemove.call(this);
+});
+
+// Apply the pre middleware for findOneAndDelete
+FlatSchema.pre('findOneAndDelete', async function () {
+    await handleFlatRemove.call(this);
+});
+
 
 // FlatSchema.index({ '$**': 'text' });
 FlatSchema.index({ 'city': 'text' });

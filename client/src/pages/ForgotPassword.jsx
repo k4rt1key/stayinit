@@ -22,7 +22,9 @@ export default function ForgotPassword() {
       };
 
       const response = await fetch(
-        "http://localhost:5000/api/v1/auth/user/send-reset-password-token",
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/v1/auth/user/send-reset-password-token`,
         requestOptions
       );
       const jsonResponse = await response.json();
