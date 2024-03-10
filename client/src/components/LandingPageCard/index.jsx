@@ -62,8 +62,6 @@ const LandingPageCard = ({
           like.flat ? newList.push(like?.flat?._id) : null;
         });
 
-        console.log(newList);
-
         setLikedProperty(newList);
       } else {
         toast.error(jsonResponse.message);

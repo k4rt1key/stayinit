@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 import { Button, Img, Input, Text } from "../components";
 import LandingPageCard from "../components/LandingPageCard";
@@ -11,10 +11,6 @@ export default function Home() {
 
   const [search, setSearch] = React.useState("");
   const [type, setType] = React.useState("flat");
-
-  function handleSearch() {
-    navigate(`/listing/${type}?search=${search}`);
-  }
 
   return (
     <>
@@ -94,12 +90,12 @@ export default function Home() {
                 </div>
 
                 {/* search */}
-                <Button
-                  onClick={handleSearch}
+                <Link
+                  to={`/listing/${type}?search=${search}`}
                   className="bg-colorG cursor-pointer font-semibold py-[17px] rounded-[10px] text-center text-lg text-white w-full"
                 >
                   Search
-                </Button>
+                </Link>
               </form>
             </div>
           </div>

@@ -1,63 +1,25 @@
-import { Spinner } from "@material-tailwind/react";
-import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/Auth";
+
 import { toast } from "react-toastify";
-
+import { Spinner } from "@material-tailwind/react";
 import { Button, Img, Text } from "../components";
-
 import LandingPageCard from "../components/LandingPageCard";
 
-function useFetch(likesLength) {
-  try {
-    const [likes, setLikes] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-
-    async function init() {
-      setLoading(true);
-      const requestObject = {
-        method: "GET",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      };
-
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/v1/likes`,
-        requestObject
-      );
-      const jsonResponse = await response.json();
-
-      if (jsonResponse.success === true) {
-        setLikes(jsonResponse.data);
-        setLoading(false);
-      } else {
-        toast.error(jsonResponse.message);
-        throw new Error(jsonResponse.message);
-      }
-    }
-
-    useEffect(() => {
-      init();
-    }, [likesLength]);
-
-    return { likes, loading, error };
-  } catch (error) {
-    toast.error(error.message);
-    throw new Error(error.message);
-  }
-}
+import useFetchLikes from "../customHooks/useFetchLikes";
 
 export default function likes() {
+  const navigate = useNavigate();
+  // auth data
   const { authData } = useAuth();
   const { isAuthenticate, profile } = authData;
 
+  // likes
   const [likeLoading, setLikeLoading] = useState(false);
   const [likedProperty, setLikedProperty] = useState([]);
   const [likesLength, setLikesLength] = useState(() => likedProperty.length);
-  const { likes, loading, error } = useFetch(likesLength);
+  const [likes, loading, error] = useFetchLikes(likesLength);
 
   const likeArrayProps = likes.map((l) => {
     if (l?.hostel !== null && l?.hostel !== undefined) {
@@ -106,6 +68,10 @@ export default function likes() {
       };
     }
   });
+
+  if (!isAuthenticate) {
+    navigate("/login");
+  }
 
   if (!loading) {
     return (

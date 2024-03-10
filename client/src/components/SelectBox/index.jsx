@@ -29,7 +29,6 @@ const SelectBox = React.forwardRef(
 
     const handleChange = (data) => {
       setSelectedVal(data);
-      console.log("data: ", selectedVal);
       if (isMulti) {
         onChange?.(data?.map((d) => d.value) || []);
       } else {

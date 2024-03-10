@@ -78,7 +78,7 @@ export default function Navbar() {
     <div
       className="w-full px-[2rem] lg:px-[10rem] py-[0.5rem] 
                 shadow-sm bg-[#FFFBF2] 
-                sticky top-0 z-10"
+                sticky top-0 z-20"
     >
       <div
         className="flex items-center justify-between 

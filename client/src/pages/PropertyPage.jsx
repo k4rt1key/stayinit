@@ -1,75 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { nanoid } from "nanoid";
+import { useNavigate, useLoaderData, useParams } from "react-router-dom";
+import { useAuth } from "../contexts/Auth";
 
-import { Button, GoogleMapDiv, Img, Input, List, Text } from "../components";
+import { Button, Img, Input, List, Text } from "../components";
 import LandingPageCard from "../components/LandingPageCard";
 import ImageGallary from "../components/ImageGallary";
-import { useAuth } from "../contexts/Auth";
+import NearestLandmarksMaps from "../components/NearestLandmarksMaps";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
-import { roundToNearestThousand } from "../utils/utilityFunctions";
-
-function useFetch() {
-  const [property, setProperty] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const { type, propertyname } = useParams();
-  async function init(type, propertyname) {
-    if (type == "undefined" || propertyname == "undefined") {
-      setError("Invalid URL");
-    }
-    setLoading(true);
-    const requestOptions = {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    };
-
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/v1/${type}/${propertyname}`,
-      requestOptions
-    );
-    const jsonResponse = await response.json();
-
-    if (jsonResponse.success === true) {
-      setProperty(jsonResponse.data);
-      setLoading(false);
-    } else {
-      toast.error(jsonResponse.message);
-      // throw new Error(jsonResponse.message);
-    }
-  }
-
-  useEffect(() => {
-    init(type, propertyname);
-  }, [type, propertyname]);
-
-  return [property, loading, error];
-}
+import { nanoid } from "nanoid";
+import {
+  roundToNearestThousand,
+  extractCoordinatesFromUrl,
+} from "../utils/UtilityFunctions";
+import useFetchProperty from "../customHooks/useFetchProperty";
+import useFetchPrediction from "../customHooks/useFetchPrediction";
+import SuggestedProperties from "../components/SuggestedProperties";
 
 export default function PropertyPage() {
   const { authData } = useAuth();
   const { isAuthenticate, profile } = authData;
+  const [property, loading, error] = useFetchProperty();
+  const type = property?.type || useParams().type;
+
+  //// --- likes
   const [likedProperty, setLikedProperty] = useState([]);
   const [likesLength, setLikesLength] = useState(() => likedProperty.length);
   const [likeLoading, setLikeLoading] = useState(false);
-
-  function extractCoordinatesFromUrl(url) {
-    // Extract the part of the URL containing the coordinates
-    const match = url?.match(/@(.+),(.+),.*/);
-
-    if (!match) {
-      return null; // No match found
-    }
-
-    // Extract latitude and longitude
-    const latitude = match[1];
-    const longitude = match[2];
-
-    return `${latitude},${longitude}`;
-  }
 
   const navigate = useNavigate();
 
@@ -214,13 +171,7 @@ export default function PropertyPage() {
     }
   }
 
-  const landingPageCardPropList = [{}, {}, {}, {}, {}];
-
-  const { type } = useParams();
-  const [property, loading, error] = useFetch();
-  if (error !== "") {
-    throw new Error(error);
-  }
+  ///// --- likes
 
   let PropertyInfo = [];
   if (type === "hostel") {
@@ -271,7 +222,6 @@ export default function PropertyPage() {
       },
     ];
   }
-
   if (type === "flat") {
     PropertyInfo = [
       { name: "sqft", value: property.sqft },
@@ -284,124 +234,9 @@ export default function PropertyPage() {
   }
 
   // output prediction price state which we will be show to users
-  const [prediction, setPrediction] = React.useState("");
-  const predictionText = `Price Should be between ${roundToNearestThousand(
-    prediction * 0.95
-  )} - ${roundToNearestThousand(prediction * 1.05)} Rupees`;
-
-  // property data in form
-
-  const [propertyData, setPropertyData] = useState({
-    property_sqft: property.sqft,
-    property_bhk: property.bhk,
-    property_city: property.city,
-    property_locality: property.locality,
-    is_furnished: property.furnitureType,
-    property_project: property.name,
-    num_of_baths: property.bathrooms,
-    bachelors_or_family: "bachelors",
-    floornumber: property.atWhichFloor,
-    totalfloor: property.totalFloor,
-
-    property_pricenan: 0,
-    property_bhknan: 0,
-    property_sqftnan: 0,
-    num_of_bathsnan: 0,
-    floornumbernan: 0,
-    totalfloornan: 0,
-  });
-
-  let addressCordinates;
-  React.useEffect(() => {
-    setPropertyData({
-      property_sqft: property.sqft,
-      property_bhk: property.bhk,
-      property_city: property.city,
-      property_locality: property.locality,
-      is_furnished: property.furnitureType,
-      property_project: property.name,
-      num_of_baths: property.bathrooms,
-      bachelors_or_family: "bachelors",
-      floornumber: property.atWhichFloor,
-      totalfloor: property.totalFloor,
-
-      property_pricenan: 0,
-      property_bhknan: 0,
-      property_sqftnan: 0,
-      num_of_bathsnan: 0,
-      floornumbernan: 0,
-      totalfloornan: 0,
-    });
-
-    addressCordinates = extractCoordinatesFromUrl(property?.addressLink);
-  }, [property]);
-
-  // making request to server to predict price for user inputed property data
-  async function fetchPrediction() {
-    try {
-      // convert form data string to lowercase string for accurate prediction in ml model
-      const p_proj = propertyData.property_project
-        .toLowerCase()
-        .replace(" ", "_");
-      const p_city = propertyData.property_city.toLowerCase();
-      const p_loc = propertyData.property_locality.toLowerCase();
-      const p_isfun = propertyData.is_furnished.toLowerCase();
-
-      // if user is authenticated... then make api call
-      if (authData.isAuthenticate) {
-        const options = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            property_sqft: propertyData.property_sqft,
-            property_bhk: propertyData.property_bhk,
-            property_city: p_city,
-            property_locality: p_loc,
-            is_furnished: p_isfun,
-            property_project: p_proj,
-            num_of_baths: propertyData.num_of_baths,
-            bachelors_or_family: "bachelors",
-            floornumber: propertyData.floornumber,
-            totalfloor: propertyData.totalfloor || propertyData.atWhichFloor,
-            property_pricenan: 0,
-            property_bhknan: 0,
-            property_sqftnan: 0,
-            num_of_bathsnan: 0,
-            floornumbernan: 0,
-            totalfloornan: 0,
-          }),
-        };
-        const response = await fetch(`${import.meta.env.VITE_ML_URL}`, options);
-        const responseJson = await response.json();
-        const data = responseJson.prediction;
-
-        if (response.ok) {
-          toast.success("Successfully fetched prediction");
-          setPrediction(data);
-        } else {
-          toast.error(responseJson.message);
-        }
-      }
-      // if user is not autheticated... then redirect to "login"
-      else {
-        navigate("/login");
-      }
-    } catch (error) {
-      toast.error(error.message);
-      throw new Error(error.message);
-    }
-  }
-
-  const lat = addressCordinates?.split(",")[0];
-  const long = addressCordinates?.split(",")[1];
-  const [mapQuery, setMapQuery] = React.useState(
-    `${long},${lat}+${property.name}+${property.city}`
-  );
-
-  const [mapQueryNumber, setMapQueryNumber] = React.useState(0);
-  console.log(mapQuery);
+  const [showPrediction, setShowPrediction] = React.useState(false);
+  const [prediction, predictionLoading, predictionError] =
+    useFetchPrediction(property);
 
   return (
     <>
@@ -446,14 +281,23 @@ export default function PropertyPage() {
                       />
                       {"Add to Wishlist"}
                     </button>
-                    <button
-                      className="flex flex-row gap-4 w-full justify-center
+                    {/* Prediction price */}
+                    {property.type === "flat" && (
+                      <button
+                        className="flex flex-row gap-4 w-full justify-center
                     border-2 p-2 border-black bg-gray-200 items-center
                     text-black font-semibold rounded-lg"
-                      onClick={fetchPrediction}
-                    >
-                      {prediction == "" ? "See Expected Price" : predictionText}
-                    </button>
+                        onClick={() => setShowPrediction(true)}
+                      >
+                        {showPrediction === false
+                          ? "See Expected Price"
+                          : `Price Should be between ${roundToNearestThousand(
+                              prediction * 0.95
+                            )} - ${roundToNearestThousand(
+                              prediction * 1.05
+                            )} Rupees`}
+                      </button>
+                    )}
                     {/* pricing */}
                     <div className="flex flex-row flex-wrap gap-4 items-start justify-start w-full">
                       {type === "flat" ? (
@@ -480,7 +324,7 @@ export default function PropertyPage() {
                                     ₹{x.price}
                                   </Text>
                                   <Text className="text-gray-600 text-md w-full">
-                                    For {x.bhk} BHK
+                                    For {x.sharing} Sharing
                                   </Text>
                                 </div>
                               </div>
@@ -504,91 +348,8 @@ export default function PropertyPage() {
                       <div className="text-md">{property.description}</div>
                     </Text>
                   </div>
-                  {/* nearest landmarks */}
-                  <div className="flex flex-col gap-6 items-start justify-start w-full">
-                    <div className="flex flex-col gap-6 items-start justify-start w-full">
-                      <Text className="text-lg lg:text-xl font-semibold leading-[135.00%]">
-                        Local Information
-                      </Text>
-                      {/* 4 buttons */}
-                      <div className="gap-3 grid grid-cols-1 md:grid-cols-4 items-center justify-center  w-full">
-                        <Button
-                          onClick={() => {
-                            setMapQueryNumber(1);
-                            setMapQuery(
-                              `${long},${lat}+${property.name}+${property.city}`
-                            );
-                          }}
-                          className={`${
-                            mapQueryNumber === 1
-                              ? "bg-gray-900 text-white "
-                              : "text-gray-900"
-                          } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
-                        >
-                          Map
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            setMapQueryNumber(2);
-                            setMapQuery(
-                              `cafes around 10km of ${lat},${long}+${property.name}+${property.city}`
-                            );
-                          }}
-                          className={`${
-                            mapQueryNumber === 2
-                              ? "bg-gray-900 text-white "
-                              : "text-gray-900"
-                          } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
-                        >
-                          Cafes
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            setMapQueryNumber(3);
-                            setMapQuery(
-                              `public transportations near ${lat},${long}+${property.name}+${property.city}`
-                            );
-                          }}
-                          className={`${
-                            mapQueryNumber === 3
-                              ? "bg-gray-900 text-white "
-                              : "text-gray-900"
-                          } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
-                        >
-                          Bus Transportation
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            setMapQueryNumber(4);
-                            setMapQuery(
-                              `${lat},${long},${property.name}+${property.city} to ${property.city} railway station`
-                            );
-                          }}
-                          className={`${
-                            mapQueryNumber === 4
-                              ? "bg-gray-900 text-white "
-                              : "text-gray-900"
-                          } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
-                        >
-                          Railway-Station
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="h-[400px] border-2 border-black relative w-full">
-                      {mapQueryNumber !== 0 ? (
-                        <iframe
-                          src={`https://www.google.com/maps/embed/v1/search?q=${mapQuery}&key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4`}
-                          className="h-full w-full"
-                        ></iframe>
-                      ) : (
-                        <div className="w-full h-full flex justify-center items-center bg-gray-400">
-                          {" "}
-                          Explore Maps, Cafes, Public transports & Railway
-                          Station nearby this property
-                        </div>
-                      )}
-                    </div>
-                  </div>
+
+                  <NearestLandmarksMaps property={property} />
                 </div>
               </div>
               {/* highlights */}
@@ -597,7 +358,7 @@ export default function PropertyPage() {
                   {type.charAt(0).toUpperCase() + type.slice(1)} Highlights
                 </Text>
                 <div className="flex lg:flex-row flex-col gap-6 items-start justify-start w-full">
-                  {/* lists of highlights */}
+                  {/* lists of highlights Or Property Info */}
                   <List
                     className="gap-10 justify-between w-full"
                     orientation="horizontal"
@@ -731,47 +492,7 @@ export default function PropertyPage() {
           </div>
         </div>
         {/*  part - 2 suggested properties */}
-        <div className="flex flex-col items-center justify-center w-full">
-          <div className="flex flex-col md:gap-10 gap-[60px] md:h-auto items-start justify-start max-w-[1200px] mx-auto w-full">
-            {/* featured property - title  */}
-            <div className="flex flex-col gap-6 items-start justify-start w-full">
-              <div className="flex flex-col gap-10 items-center justify-between w-full">
-                <Text className="text-2xl md:text-4xl sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-auto">
-                  Featured Properties
-                </Text>
-                <Button
-                  className="common-pointer bg-transparent cursor-pointer flex items-center justify-center min-w-[124px]"
-                  onClick={() => navigate("/listing")}
-                  rightIcon={
-                    <Img
-                      className="h-6 mb-[3px] ml-2"
-                      src="/images/img_arrowright.svg"
-                      alt="arrow_right"
-                    />
-                  }
-                >
-                  <div className="font-bold text-left text-lg text-orange-A700">
-                    Explore All
-                  </div>
-                </Button>
-              </div>
-            </div>
-
-            {/* cards */}
-            <div className="flex flex-col items-start justify-start w-full">
-              <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 justify-center w-full">
-                {landingPageCardPropList.map((props, index) => (
-                  <React.Fragment key={`LandingPageCard${index}`}>
-                    <LandingPageCard
-                      className="flex flex-col md:h-auto items-start rounded-[1rem] justify-start w-full"
-                      {...props}
-                    />
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        <SuggestedProperties />
       </div>
     </>
   );

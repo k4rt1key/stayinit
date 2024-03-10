@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams, useParams } from "react-router-dom";
+import { useSearchParams, useParams, useLoaderData } from "react-router-dom";
 import { useAuth } from "../contexts/Auth";
+
 import Select from "react-select";
 import { toast } from "react-toastify";
-
 import { Button, GoogleMapDiv, Img, Text } from "../components";
-
 import LandingPageCard from "../components/LandingPageCard";
+
+import useFetchListing from "../customHooks/useFetchListing";
 
 // Filters Options
 const bhkOptions = [
@@ -49,63 +50,23 @@ const genderOptions = [
   { label: "Unisex", value: "both" },
 ];
 
-// Fetching Flat Listing
-function useFetch(searchParams) {
-  try {
-    const [flats, setFlats] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-
-    const { type } = useParams();
-
-    async function init(searchParams) {
-      setLoading(true);
-      const requestOptions = {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      };
-
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/v1/${type}?${searchParams.toString()}`,
-        requestOptions
-      );
-      const jsonResponse = await response.json();
-
-      if (jsonResponse.success === true) {
-        setFlats(jsonResponse.data);
-        setLoading(false);
-      } else {
-        // toast.error(jsonResponse.message);
-        throw new Error(jsonResponse.message);
-      }
-    }
-
-    useEffect(() => {
-      init(searchParams);
-    }, [searchParams]);
-
-    return [flats, loading, error];
-  } catch (error) {
-    // toast.error(error.message);
-    throw new Error(error.message);
-  }
-}
-
 const ListingPage = () => {
   const { authData } = useAuth();
   const { isAuthenticate, profile } = authData;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [propertyArray, loading, error] = useFetchListing(searchParams);
+  const { type } = useParams();
 
   const [likeLoading, setLikeLoading] = useState(false);
   const [likedProperty, setLikedProperty] = useState([]);
   const [likesLength, setLikesLength] = useState(() => likedProperty.length);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { type } = useParams();
+  // if type is invalid then return error
+  if (type != "hostel" && type != "flat") {
+    throw new Error(`invalid path /listing/${type}`);
+  }
 
-  const [propertyArray, loading, error] = useFetch(searchParams);
-
+  // ############# FOR MAPS STARTS
   const [propertyArrayAddresses, setPropertyArrayAddresses] = React.useState(
     []
   );
@@ -118,6 +79,9 @@ const ListingPage = () => {
     setPropertyArrayAddresses(arr);
   }, [propertyArray]);
 
+  // ############# FOR MAPS ENDS
+
+  // props ( for landing page card )
   const propertyArrayProps = propertyArray.map((p) => {
     if (type === "hostel") {
       return {
@@ -134,7 +98,6 @@ const ListingPage = () => {
         forWhichGender: p.forWhichGender,
         type: "hostel",
 
-        likeLoading,
         setLikeLoading,
         likedProperty,
         setLikedProperty,
@@ -166,20 +129,62 @@ const ListingPage = () => {
     }
   });
 
+  // %%%%%%%%% FOR FILTERS STARTS
   const [filters, setFilters] = useState(() => {
     if (type === "hostel") {
       return {
-        forWhichGender: null,
-        priceRange: null,
-        search: null,
+        forWhichGender: searchParams.get("forWhichGender")
+          ? {
+              label: genderOptions.find(
+                (x) => x.value == searchParams.get("forWhichGender")
+              )?.label,
+              value: searchParams.get("forWhichGender"),
+            }
+          : null,
+        priceRange: searchParams.get("priceRange")
+          ? {
+              label: priceOptionsForHostels.find(
+                (x) => x.value == searchParams.get("priceRange")
+              )?.label,
+              value: searchParams.get("priceRange"),
+            }
+          : null,
+        search: searchParams.get("search") || null,
       };
     } else {
       return {
-        furnitureType: null,
-        bhk: null,
-        sqftRange: null,
-        priceRange: null,
-        search: null,
+        furnitureType: searchParams.get("furnitureType")
+          ? {
+              label: furnitureTypeOptions.find(
+                (x) => x.value == searchParams.get("furnitureType")
+              )?.label,
+              value: searchParams.get("furnitureType"),
+            }
+          : null,
+        bhk: searchParams.get("bhk")
+          ? {
+              label: bhkOptions.find((x) => x.value == searchParams.get("bhk"))
+                ?.label,
+              value: searchParams.get("bhk"),
+            }
+          : null,
+        sqftRange: searchParams.get("sqftRange")
+          ? {
+              label: sqftOptions.find(
+                (x) => x.value == searchParams.get("sqftRange")
+              )?.label,
+              value: searchParams.get("sqftRange"),
+            }
+          : null,
+        priceRange: searchParams.get("priceRange")
+          ? {
+              label: priceOptions.find(
+                (x) => x.value == searchParams.get("priceRange")
+              )?.label,
+              value: searchParams.get("priceRange"),
+            }
+          : null,
+        search: searchParams.get("search") || null,
       };
     }
   });
@@ -208,11 +213,6 @@ const ListingPage = () => {
   }
 
   function submitFlatFilters(event) {
-    const search = searchParams.get("search");
-    if (search) {
-      setFilters({ ...filters, search });
-    }
-
     setSearchParams("");
     event.preventDefault();
     const newSearchParams = new URLSearchParams();
@@ -229,22 +229,14 @@ const ListingPage = () => {
     if (filters.priceRange) {
       newSearchParams.set("priceRange", filters.priceRange.value);
     }
-    if (filters.search || searchParams.get("search")) {
-      newSearchParams.set(
-        "search",
-        filters.search || searchParams.get("search")
-      );
+    if (filters.search) {
+      newSearchParams.set("search", filters.search);
     }
 
     setSearchParams(newSearchParams.toString());
   }
 
   function submitHostelFilters(event) {
-    const search = searchParams.get("search");
-    if (search) {
-      setFilters({ ...filters, search });
-    }
-
     setSearchParams("");
     event.preventDefault();
     const newSearchParams = new URLSearchParams();
@@ -262,7 +254,6 @@ const ListingPage = () => {
     setSearchParams(newSearchParams.toString());
   }
 
-  // Select Filters List
   let selectHostelFilters = [
     {
       options: priceOptionsForHostels,
@@ -272,7 +263,7 @@ const ListingPage = () => {
     },
     {
       options: genderOptions,
-      placeholder: "gender",
+      placeholder: "Gender",
       name: "forWhichGender",
       value: filters["forWhichGender"],
     },
@@ -313,9 +304,10 @@ const ListingPage = () => {
     selectHostelFilters = [...selectHostelFilters];
     selectFlatFilters = [...selectFlatFilters];
   }, [filters]);
+
+  // %%%%%%%%% FOR FILTERS ENDS
   const filterStyle = `py-4 px-8 focus:outline-none placeholder:text-gray-600 hover:bg-colorY2H bg-colorY2 rounded-[0.5em] border-[#D8D4CD] appearance-none border leading-5 focus:shadow-outline-blue focus:border-blue-300`;
 
-  console.log(filters);
   return (
     <>
       <div className="px-[0.7rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">
@@ -338,7 +330,7 @@ const ListingPage = () => {
                 {/* searchbar */}
                 <input
                   name="search"
-                  className={filterStyle + "w-full md:w-[25rem]"}
+                  className={filterStyle + " w-full md:w-[25rem]"}
                   placeholder="Search by city, locality and property name"
                   value={filters.search || ""}
                   onChange={(event) => {
@@ -346,6 +338,7 @@ const ListingPage = () => {
                       ...filters,
                       search: event.target.value,
                     });
+                    console.log("after filter change", filters);
                   }}
                 />
 
@@ -427,11 +420,14 @@ const ListingPage = () => {
                     />
                   );
                 })}
-                <button className={filterStyle} type="submit">
+                <button
+                  className={filterStyle + "  w-full md:w-[15rem]"}
+                  type="submit"
+                >
                   <span className="text-green-800">Search</span>
                 </button>
                 <button
-                  className={filterStyle}
+                  className={filterStyle + "  w-full md:w-[15rem]"}
                   type="button"
                   onClick={clearAllFilters}
                 >
@@ -446,7 +442,7 @@ const ListingPage = () => {
                 {/* Searchbar */}
                 <input
                   placeholder="Search by city, locality and property name"
-                  className={filterStyle + "w-full md:w-[25rem]"}
+                  className={filterStyle + " w-full md:w-[25rem]"}
                   name="search"
                   value={filters.search || ""}
                   onChange={(event) => {
@@ -536,12 +532,15 @@ const ListingPage = () => {
                   );
                 })}
 
-                <button className={filterStyle} type="submit">
+                <button
+                  className={filterStyle + " w-full md:w-[15rem]"}
+                  type="submit"
+                >
                   <span className="text-green-800">Search</span>
                 </button>
 
                 <button
-                  className={filterStyle}
+                  className={filterStyle + " w-full md:w-[15rem]"}
                   type="button"
                   onClick={clearAllFilters}
                 >
@@ -551,13 +550,17 @@ const ListingPage = () => {
             )}
           </div>
 
+          {/* cards and map view */}
           {loading ? (
-            <div className="text-2xl flex justify-center items-center w-screen h-screen">
+            <div className="text-2xl flex justify-center items-center w-full h-full">
               Loading...
+            </div>
+          ) : propertyArrayProps.length === 0 ? (
+            <div className="text-2xl flex justify-center items-center w-full h-full">
+              No {type}s Found
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center w-full">
-              {/* cards and map view */}
               <div className="flex flex-col gap-6 items-start justify-center max-w-[1200px]  w-full">
                 {/* maps view */}
                 <div className="h-[511px] border-2 border-black relative w-full">

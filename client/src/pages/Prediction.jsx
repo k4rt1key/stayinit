@@ -1,25 +1,18 @@
 import React, { useState } from "react";
-import { useAuth } from "../../contexts/Auth";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useAuth } from "../../contexts/Auth";
 
 // import of utility functions
-import { roundToNearestThousand } from "../utils/utilityFunctions";
+import { toast } from "react-toastify";
+import { roundToNearestThousand } from "../utils/UtilityFunctions";
+import useFetchPrediction from "../customHooks/useFetchPrediction";
 
 const filterStyle =
   "py-2 px-4 w-full focus:outline-none placeholder:text-[#073937] hover:bg-colorY2H focus:placeholder-[#FFFBF2] focus:bg-[#073937] focus:text-[#D8D4CD] bg-colorY2 rounded-[3rem] border border-[#D8D4CD]";
 
 export default function Prediction() {
-  const navigate = useNavigate();
-  const { authData } = useAuth();
+  const [prediction, loading, error] = useFetchPrediction();
 
-  // output prediction price state which we will be show to users
-  const [prediction, setPrediction] = React.useState();
-  const predictionText = `Price Should be between ${roundToNearestThousand(
-    prediction
-  )} - ${roundToNearestThousand(prediction)} Rupees`;
-
-  // property data in form
   const [propertyData, setPropertyData] = useState({
     property_sqft: 1000,
     property_bhk: 3,
@@ -38,67 +31,6 @@ export default function Prediction() {
     floornumbernan: 0,
     totalfloornan: 0,
   });
-
-  // making request to server to predict price for user inputed property data
-  async function fetchPrediction() {
-    try {
-      // convert form data string to lowercase string for accurate prediction in ml model
-      const p_proj = propertyData.property_project
-        .toLowerCase()
-        .replace(" ", "_");
-      const p_city = propertyData.property_city.toLowerCase();
-      const p_loc = propertyData.property_locality.toLowerCase();
-      const p_isfun = propertyData.is_furnished.toLowerCase();
-
-      // if user is authenticated... then make api call
-      if (authData.isAuthenticate) {
-        const options = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            property_sqft: propertyData.property_sqft,
-            property_bhk: propertyData.property_bhk,
-            property_city: p_city,
-            property_locality: p_loc,
-            is_furnished: p_isfun,
-            property_project: p_proj,
-            num_of_baths: propertyData.num_of_baths,
-            bachelors_or_family: "bachelors",
-            floornumber: propertyData.floornumber,
-            totalfloor: propertyData.totalfloor || propertyData.atWhichFloor,
-            property_pricenan: 0,
-            property_bhknan: 0,
-            property_sqftnan: 0,
-            num_of_bathsnan: 0,
-            floornumbernan: 0,
-            totalfloornan: 0,
-          }),
-        };
-        const response = await fetch(
-          `${import.meta.env.VITE_ML_URL}`,
-          response
-        );
-        const responseJson = await response.json();
-        const data = responseJson.prediction;
-
-        if (response.ok) {
-          toast.success("Successfully fetched prediction");
-          setPrediction(data);
-        } else {
-          toast.error(responseJson.message);
-        }
-      }
-      // if user is not autheticated... then redirect to "login"
-      else {
-        navigate("/login");
-      }
-    } catch (error) {
-      toast.error(error.message);
-      throw new Error(error.message);
-    }
-  }
 
   // handling property form data chnaging by updating "propertyData" state
   const handleChange = (e) => {
