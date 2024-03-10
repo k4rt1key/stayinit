@@ -21,7 +21,6 @@ const FlatRouter = require("./routes/flat")
 const HostelRouter = require("./routes/hostel")
 const ProfileRouter = require("./routes/profile")
 const LikesRouter = require("./routes/likes")
-const SearchingRouter = require("./routes/searching")
 
 // >> Importing Models
 const Hostel = require("./models/Hostel")
@@ -263,7 +262,6 @@ app.use("/api/v1/hostel", HostelRouter)
 app.use("/api/v1/likes", LikesRouter)
 app.use("/api/v1/comment", CommentRouter)
 app.use("/api/v1/file", FileRouter)
-app.use("/api/v1/searching", SearchingRouter)
 
 
 // >>> starting and connecting with server and db
