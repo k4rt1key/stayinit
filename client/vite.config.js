@@ -8,6 +8,9 @@ export default defineConfig({
       scss: {
         additionalData: `@import "./src/Main.css";`,
       },
+      build: {
+        sourcemap: true,
+      },
     }
   },
   // server: {
