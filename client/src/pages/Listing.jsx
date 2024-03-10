@@ -349,7 +349,7 @@ const ListingPage = () => {
                       styles={{
                         container: (provided) => ({
                           ...provided,
-                          zIndex: 10,
+                          // zIndex: 10,
                         }),
                         control: (provided) => ({
                           ...provided,
@@ -460,7 +460,7 @@ const ListingPage = () => {
                       styles={{
                         container: (provided) => ({
                           ...provided,
-                          zIndex: 10,
+                          // zIndex: 10,
                         }),
                         control: (provided) => ({
                           ...provided,
