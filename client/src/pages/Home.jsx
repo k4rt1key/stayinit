@@ -12,6 +12,8 @@ export default function Home() {
   const [search, setSearch] = React.useState("");
   const [type, setType] = React.useState("flat");
 
+  console.log(type, search);
+
   return (
     <>
       <div
@@ -67,7 +69,13 @@ export default function Home() {
                   Hostels
                 </Button>
               </div>
-              <form className="flex flex-col gap-6 items-start justify-start w-full">
+              <form
+                className="flex flex-col gap-6 items-start justify-start w-full"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  navigate(`/listing/${type}?search=${search}`);
+                }}
+              >
                 <div className="flex flex-col gap-5 items-start justify-start w-full">
                   {/* input - city */}
                   <Input
@@ -90,12 +98,9 @@ export default function Home() {
                 </div>
 
                 {/* search */}
-                <Link
-                  to={`/listing/${type}?search=${search}`}
-                  className="bg-colorG cursor-pointer font-semibold py-[17px] rounded-[10px] text-center text-lg text-white w-full"
-                >
+                <button className="bg-colorG cursor-pointer font-semibold py-[17px] rounded-[10px] text-center text-lg text-white w-full">
                   Search
-                </Link>
+                </button>
               </form>
             </div>
           </div>
