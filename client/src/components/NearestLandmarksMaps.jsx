@@ -42,9 +42,7 @@ export default function NearestLandmarksMap({ property }) {
               setMapStringNumber(0);
             }}
             className={`${
-              mapStringNumber === 0
-                ? "bg-gray-900 text-white "
-                : "text-gray-900"
+              mapStringNumber === 0 ? "bg-color2 text-white " : "text-gray-900"
             } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
           >
             Map
@@ -54,9 +52,7 @@ export default function NearestLandmarksMap({ property }) {
               setMapStringNumber(1);
             }}
             className={`${
-              mapStringNumber === 1
-                ? "bg-gray-900 text-white "
-                : "text-gray-900"
+              mapStringNumber === 1 ? "bg-color2 text-white " : "text-gray-900"
             } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
           >
             Cafes
@@ -66,9 +62,7 @@ export default function NearestLandmarksMap({ property }) {
               setMapStringNumber(2);
             }}
             className={`${
-              mapStringNumber === 2
-                ? "bg-gray-900 text-white "
-                : "text-gray-900"
+              mapStringNumber === 2 ? "bg-color2 text-white " : "text-gray-900"
             } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
           >
             Bus Transportation
@@ -78,9 +72,7 @@ export default function NearestLandmarksMap({ property }) {
               setMapStringNumber(3);
             }}
             className={`${
-              mapStringNumber === 3
-                ? "bg-gray-900 text-white "
-                : "text-gray-900"
+              mapStringNumber === 3 ? "bg-color2 text-white " : "text-gray-900"
             } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
           >
             Railway-Station

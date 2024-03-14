@@ -14,6 +14,7 @@ module.exports = withMT({
         'colorG': '#073937',
         'colorY2': '#FCF5EB',
         'colorY2H': '#F3EADC',
+        'color2': "#022c22"
       },
 
       fontFamily: {

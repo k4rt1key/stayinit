@@ -310,7 +310,7 @@ const ListingPage = () => {
 
   return (
     <>
-      <div className="px-[0.7rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">
+      <div className="px-[1.5rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">
         <div className="flex flex-col gap-10 items-center justify-center w-full">
           {/* page header and filters */}
           <div className="flex flex-col gap-6 items-center justify-center max-w-[1200px] mx-auto w-full">
@@ -421,17 +421,25 @@ const ListingPage = () => {
                   );
                 })}
                 <button
-                  className={filterStyle + "  w-full md:w-[15rem]"}
+                  className={
+                    "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                  }
                   type="submit"
                 >
-                  <span className="text-green-800">Search</span>
+                  <span className="">
+                    Search <span className="m-2"></span>🔍
+                  </span>
                 </button>
                 <button
-                  className={filterStyle + "  w-full md:w-[15rem]"}
+                  className={
+                    "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                  }
                   type="button"
                   onClick={clearAllFilters}
                 >
-                  <span className="text-red-800">Clear</span>
+                  <span className="">
+                    Clear <span className="m-2"></span>🧹
+                  </span>
                 </button>
               </form>
             ) : (
@@ -533,18 +541,25 @@ const ListingPage = () => {
                 })}
 
                 <button
-                  className={filterStyle + " w-full md:w-[15rem]"}
+                  className={
+                    "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                  }
                   type="submit"
                 >
-                  <span className="text-green-800">Search</span>
+                  <span className="">
+                    Search <span className="m-2"></span>🔍
+                  </span>
                 </button>
-
                 <button
-                  className={filterStyle + " w-full md:w-[15rem]"}
+                  className={
+                    "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                  }
                   type="button"
                   onClick={clearAllFilters}
                 >
-                  <span className="text-red-800">Clear</span>
+                  <span className="">
+                    Clear <span className="m-2"></span>🧹
+                  </span>
                 </button>
               </form>
             )}
@@ -586,8 +601,7 @@ const ListingPage = () => {
                   </div>
 
                   {/* page & nextpage */}
-                  <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
-                    {/* Page */}
+                  {/* <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
                     <div className="flex flex-row gap-6 items-start justify-start w-auto">
                       <Button className="border border-gray-700 border-solid cursor-pointer font-semibold h-12 py-[13px] rounded-[10px] text-base text-center text-gray-900 w-12">
                         1
@@ -600,7 +614,6 @@ const ListingPage = () => {
                       </Button>
                     </div>
 
-                    {/* Next-Page */}
                     <Button
                       className="border border-bluegray-102 border-solid cursor-pointer flex items-center justify-center min-w-[134px] px-[17px] py-[13px] rounded-[10px]"
                       rightIcon={
@@ -615,7 +628,7 @@ const ListingPage = () => {
                         Next Page
                       </div>
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

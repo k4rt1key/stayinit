@@ -3,7 +3,6 @@ import { useNavigate, useLoaderData, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/Auth";
 
 import { Button, Img, Input, List, Text } from "../components";
-import LandingPageCard from "../components/LandingPageCard";
 import ImageGallary from "../components/ImageGallary";
 import NearestLandmarksMaps from "../components/NearestLandmarksMaps";
 import { toast } from "react-toastify";
@@ -17,10 +16,11 @@ import useFetchProperty from "../customHooks/useFetchProperty";
 import useFetchPrediction from "../customHooks/useFetchPrediction";
 import SuggestedProperties from "../components/SuggestedProperties";
 
-export default function PropertyPage() {
+export default function PropertyPage(props) {
   const { authData } = useAuth();
   const { isAuthenticate, profile } = authData;
-  const [property, loading, error] = useFetchProperty();
+  // const [property, loading, error] = useFetchProperty();
+  const property = useLoaderData();
   const type = property?.type || useParams().type;
 
   //// --- likes
@@ -238,9 +238,11 @@ export default function PropertyPage() {
   const [prediction, predictionLoading, predictionError] =
     useFetchPrediction(property);
 
+  // suggested properties
+
   return (
     <>
-      <div className="px-[0.7rem] lg:px-[10rem] py-[0.5rem] flex flex-col gap-10 items-start justify-start w-full">
+      <div className="px-[1.5rem] lg:px-[10rem] py-[0.5rem] flex flex-col gap-10 items-start justify-start w-full">
         {/* part - 1 properties's info */}
         <div className="flex flex-col gap-10 items-start justify-start w-full">
           {/* images */}
@@ -285,7 +287,7 @@ export default function PropertyPage() {
                     {property.type === "flat" && (
                       <button
                         className="flex flex-row gap-4 w-full justify-center
-                    border-2 p-2 border-black bg-gray-200 items-center
+                    border-2 p-4 border-black bg-gray-200 items-center
                     text-black font-semibold rounded-lg"
                         onClick={() => setShowPrediction(true)}
                       >
@@ -485,14 +487,14 @@ export default function PropertyPage() {
                   </div>
                 </div>
               </div>
-              <Button className="bg-gray-900 cursor-pointer font-semibold py-[17px] rounded-[10px] text-base text-center text-white w-full">
+              <Button className="bg-color2 cursor-pointer font-semibold py-[17px] rounded-[10px] text-base text-center text-white w-full">
                 Send Request
               </Button>
             </div>
           </div>
         </div>
         {/*  part - 2 suggested properties */}
-        <SuggestedProperties />
+        <SuggestedProperties property={property} />
       </div>
     </>
   );

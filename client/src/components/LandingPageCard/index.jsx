@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 import React, { useState } from "react";
-import {} from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/Auth";
 
@@ -37,6 +37,8 @@ const LandingPageCard = ({
 }) => {
   const { authData } = useAuth();
   const { isAuthenticate, profile } = authData;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isLikedNow, setIsLikedNow] = useState(false);
 
   async function getLikes() {
     try {
@@ -83,8 +85,10 @@ const LandingPageCard = ({
   function toggleLike(_id) {
     if (isAuthenticate) {
       if (likedProperty.includes(_id)) {
+        setIsLikedNow(false);
         unlike(_id);
       } else {
+        setIsLikedNow(true);
         like(_id);
       }
     }
@@ -211,22 +215,14 @@ const LandingPageCard = ({
                 <div className="flex flex-1 flex-row gap-3 items-center justify-start w-full">
                   {type !== "hostel" ? (
                     <>
-                      <Img
-                        className="h-5 w-5"
-                        src="/images/img_bookmark.svg"
-                        alt="bookmark"
-                      />
+                      <span>🛌</span>
                       <Text className="text-sm lg:text-md font-semibold text-gray-700 w-auto">
                         {bhk} Bedroom
                       </Text>
                     </>
                   ) : (
                     <>
-                      <Img
-                        className="h-5 w-5"
-                        src="/images/img_bookmark.svg"
-                        alt="bookmark"
-                      />
+                      <span>👥</span>
                       <Text className="text-sm lg:text-md font-semibold text-gray-700 w-auto">
                         {sharing} Sharing
                       </Text>
@@ -237,22 +233,15 @@ const LandingPageCard = ({
                 <div className="flex flex-1 flex-row gap-3 items-center justify-end w-full">
                   {type !== "hostel" ? (
                     <>
-                      <Img
-                        className="h-5 w-5"
-                        src="/images/img_ticket.svg"
-                        alt="ticket"
-                      />
+                      <span>🚿</span>
                       <Text className="text-sm lg:text-md font-semibold text-gray-700 w-auto">
                         {bathrooms} Baths
                       </Text>
                     </>
                   ) : (
                     <>
-                      <Img
-                        className="h-5 w-5"
-                        src="/images/img_ticket.svg"
-                        alt="wifi"
-                      />
+                      <span>📶</span>
+
                       <Text className="text-sm lg:text-md font-semibold text-gray-700 w-auto">
                         {wifiFacility ? "Wifi" : "No Wifi"}
                       </Text>
@@ -265,22 +254,14 @@ const LandingPageCard = ({
                 <div className="flex flex-1 flex-row gap-3 items-center justify-start w-full">
                   {type !== "hostel" ? (
                     <>
-                      <Img
-                        className="h-5 w-5"
-                        src="/images/img_bookmark.svg"
-                        alt="bookmark"
-                      />
+                      <span>🟧</span>
                       <Text className="text-sm lg:text-md font-semibold text-gray-700 w-auto">
                         {sqft} Sqft
                       </Text>
                     </>
                   ) : (
                     <>
-                      <Img
-                        className="h-5 w-5"
-                        src="/images/img_bookmark.svg"
-                        alt="bookmark"
-                      />
+                      <span>🫧</span>
                       <Text className="text-sm lg:text-md font-semibold text-gray-700 w-auto">
                         {freeLaundry ? "Free Laundry" : "No Laundry"}
                       </Text>
@@ -291,22 +272,20 @@ const LandingPageCard = ({
                 <div className="flex flex-1 flex-row gap-3 items-center justify-end w-full">
                   {type !== "hostel" ? (
                     <>
-                      <Img
-                        className="h-5 w-5"
-                        src="/images/img_ticket.svg"
-                        alt="ticket"
-                      />
+                      <span>🌄</span>
                       <Text className="text-sm lg:text-md font-semibold text-gray-700 w-auto">
                         {balconies} Balconies
                       </Text>
                     </>
                   ) : (
                     <>
-                      <Img
-                        className="h-5 w-5"
-                        src="/images/img_ticket.svg"
-                        alt="wifi"
-                      />
+                      <span>
+                        {forWhichGender === "boys"
+                          ? "♂️"
+                          : forWhichGender === "girls"
+                          ? "♀️"
+                          : "⚧️"}
+                      </span>
                       <Text className="text-sm lg:text-md font-semibold text-gray-700 w-auto">
                         For {forWhichGender}
                       </Text>
@@ -318,19 +297,24 @@ const LandingPageCard = ({
             {/* price and details button */}
             <div className="flex flex-col gap-3 items-center justify-between w-full">
               <Link
-                to={`/listing/${type}/${uniqueName}`}
-                className="bg-gray-900 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
+                to={{
+                  pathname: `/listing/${type}/${uniqueName}`,
+                  state: { listingSearchParams: searchParams },
+                }}
+                className="bg-color2 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
               >
                 {"Details"}
               </Link>
               <button
-                onClick={() => toggleLike(_id)}
+                onClick={() => {
+                  toggleLike(_id);
+                }}
                 className="flex w-full flex-row gap-4 justify-center border-2 p-2 border-black bg-gray-200 items-center text-black font-semibold rounded-lg"
               >
                 <img
                   className="h-8 w-8"
                   src={
-                    likedProperty?.includes(_id)
+                    likedProperty?.includes(_id) || isLikedNow
                       ? "/images/liked.png"
                       : "/images/like.png"
                   }
@@ -347,26 +331,6 @@ const LandingPageCard = ({
       </div>
     </>
   );
-};
-
-LandingPageCard.defaultProps = {
-  image:
-    "https://media.istockphoto.com/id/981756464/photo/contemporary-kitchen-modern-interiors.webp?s=2048x2048&w=is&k=20&c=unX2mw6Rj8Vn_dgt_EPXdqRXbsHHrE3aVZLyuiOLrtM=",
-  type: "flat",
-  sqft: 999,
-  name: "XYZ",
-  city: "city",
-  locality: "locality",
-  bhk: 3,
-  bathrooms: 3,
-  balconies: 3,
-  price: "9999",
-  likeLoading: false,
-  setLikeLoading: () => {},
-  likedProperty: [],
-  setLikedProperty: () => {},
-  likesLength: 0,
-  setLikesLength: () => {},
 };
 
 export default LandingPageCard;

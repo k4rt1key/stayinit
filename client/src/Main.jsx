@@ -27,6 +27,8 @@ import ResetPassword from "./pages/ResetPassword";
 import Listing from "./pages/Listing";
 import Likes from "./pages/Likes";
 
+import propertyPageLoader from "./loaders/propertyPageLoader";
+
 import ErrorElement from "./components/ErrorElement";
 
 const router = createBrowserRouter(
@@ -36,7 +38,11 @@ const router = createBrowserRouter(
 
       <Route path="/listing/:type" element={<Listing />} />
 
-      <Route path="/listing/:type/:propertyname" element={<PropertyPage />} />
+      <Route
+        path="/listing/:type/:propertyname"
+        loader={propertyPageLoader}
+        element={<PropertyPage />}
+      />
 
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

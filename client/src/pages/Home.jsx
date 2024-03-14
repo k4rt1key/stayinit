@@ -2,12 +2,10 @@ import React from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
 import { Button, Img, Input, Text } from "../components";
-import LandingPageCard from "../components/LandingPageCard";
+import FeaturedProperties from "../components/FeaturedProperties";
 
 export default function Home() {
   const navigate = useNavigate();
-
-  const landingPageCardPropList = [{}, {}, {}, {}, {}, {}, {}];
 
   const [search, setSearch] = React.useState("");
   const [type, setType] = React.useState("flat");
@@ -18,7 +16,7 @@ export default function Home() {
     <>
       <div
         className="
-        px-[0.7rem] lg:px-[10rem]
+        px-[1.5rem] lg:px-[10rem]
         flex flex-col gap-10
         items-center justify-start  
         overflow-x-hidden
@@ -34,8 +32,8 @@ export default function Home() {
           <div className="w-full flex flex-col gap-10 items-start justify-start">
             {/* heading text */}
             <div className="w-full flex flex-col gap-4 items-start justify-start">
-              <Text className="text-4xl font-1 leading-[3.25rem]">
-                Find a perfect property
+              <Text className="text-3xl md:text-4xl font-1 leading-[3.25rem]">
+                Find a perfect Hostel & Flat
                 <br />
                 Where you&#39;ll love to live
               </Text>
@@ -52,7 +50,7 @@ export default function Home() {
                   onClick={() => setType("flat")}
                   className={`${
                     type === "flat"
-                      ? "bg-colorG text-white"
+                      ? "bg-color2 text-white"
                       : "bg-gray-300 text-colorG "
                   } cursor-pointer font-semibold py-3 rounded-[10px] text-center text-lg w-full`}
                 >
@@ -62,7 +60,7 @@ export default function Home() {
                   onClick={() => setType("hostel")}
                   className={`${
                     type === "hostel"
-                      ? "bg-colorG text-white"
+                      ? "bg-color2 text-white"
                       : "bg-gray-300 text-colorG "
                   } cursor-pointer font-semibold py-3 rounded-[10px] text-center text-lg w-full`}
                 >
@@ -98,7 +96,7 @@ export default function Home() {
                 </div>
 
                 {/* search */}
-                <button className="bg-colorG cursor-pointer font-semibold py-[17px] rounded-[10px] text-center text-lg text-white w-full">
+                <button className="bg-color2 cursor-pointer font-semibold py-[17px] rounded-[10px] text-center text-lg text-white w-full">
                   Search
                 </button>
               </form>
@@ -114,47 +112,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-center w-full">
-          <div className="flex flex-col md:gap-10 gap-[60px] md:h-auto items-start justify-start max-w-[1200px] mx-auto w-full">
-            {/* featured property - title  */}
-            <div className="flex flex-col gap-6 items-start justify-start w-full">
-              <div className="flex flex-col gap-10 items-center justify-cemter w-full">
-                <Text className="text-2xl sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-auto">
-                  Featured Properties
-                </Text>
-                <Button
-                  className="common-pointer bg-transparent cursor-pointer flex items-center justify-center min-w-[124px]"
-                  onClick={() => navigate("/listing/flat")}
-                  rightIcon={
-                    <Img
-                      className="h-6 mb-[3px] ml-2"
-                      src="/images/img_arrowright.svg"
-                      alt="arrow_right"
-                    />
-                  }
-                >
-                  <div className="font-bold text-left text-lg text-orange-A700">
-                    Explore All Flats
-                  </div>
-                </Button>
-              </div>
-            </div>
-
-            {/* cards */}
-            <div className="flex flex-col items-start justify-start w-full">
-              <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 justify-center w-full">
-                {landingPageCardPropList.map((props, index) => (
-                  <React.Fragment key={`LandingPageCard${index}`}>
-                    <LandingPageCard
-                      className="flex flex-col md:h-auto items-start rounded-[1rem] justify-start w-full"
-                      {...props}
-                    />
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        <FeaturedProperties />
       </div>
     </>
   );

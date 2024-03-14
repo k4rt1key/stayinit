@@ -1,22 +1,16 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 import { Button, Text, Img } from "../components";
 import LandingPageCard from "./LandingPageCard";
-import useFetchListings from "../customHooks/useFetchListing";
+import useFetchFeatured from "../customHooks/useFetchFeatured";
 import { useAuth } from "../contexts/Auth";
 
-export default function SuggestedProperties({ property }) {
+export default function SuggestedProperties() {
   const { authData } = useAuth();
   const { isAuthenticate, profile } = authData;
-  // now write search params in this format
-  // listing/${property.type}?search=${property.locality}
-  const searchParams = new URLSearchParams();
-  searchParams.append("search", property.city);
-  const type = property.type;
 
-  const memorizedSearchParams = useMemo(() => searchParams, [property.city]);
-
-  const [properties, loading, error] = useFetchListings(memorizedSearchParams);
+  const [properties, loading, error] = useFetchFeatured();
 
   //// --- likes
   const [likedProperty, setLikedProperty] = useState([]);
@@ -218,11 +212,11 @@ export default function SuggestedProperties({ property }) {
         <div className="flex flex-col gap-6 items-start justify-start w-full">
           <div className="flex flex-col gap-10 items-center justify-between w-full">
             <Text className="text-2xl md:text-4xl sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-auto">
-              Featured Properties
+              Featured Hostels
             </Text>
             <Button
               className="common-pointer bg-transparent cursor-pointer flex items-center justify-center min-w-[124px]"
-              onClick={() => navigate("/listing")}
+              onClick={() => navigate("/listing/hostel")}
               rightIcon={
                 <Img
                   className="h-6 mb-[3px] ml-2"
@@ -231,9 +225,12 @@ export default function SuggestedProperties({ property }) {
                 />
               }
             >
-              <div className="font-bold text-left text-lg text-orange-A700">
-                Explore All
-              </div>
+              <Link
+                to="/listing/hostel"
+                className="font-bold text-left text-lg text-orange-A700"
+              >
+                Explore All Hostels
+              </Link>
             </Button>
           </div>
         </div>

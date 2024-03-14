@@ -196,6 +196,11 @@ const FlatSchema = new mongoose.Schema({
         max: 10,
     },
 
+    isFeatured: {
+        type: Boolean,
+        default: false,
+    }
+
 }, { timestamps: true })
 
 

@@ -144,9 +144,29 @@ async function getAllFlats(req, res) {
     }
 }
 
+async function getFeaturedFlats(req, res) {
+    try {
+        const featuredFlats = await Flat.find({ isFeatured: true })
+            .populate("likes")
+            .exec()
+
+        return res.status(200).json({
+            "success": true,
+            "message": "Featured Flats were fetched successfully",
+            "data": featuredFlats
+        })
+    } catch (error) {
+        res.status(500).json({
+            "success": false,
+            "error": `Backend: ${error.message}`,
+        })
+    }
+}
+
 
 
 module.exports = {
     getFlat,
     getAllFlats,
+    getFeaturedFlats,
 }

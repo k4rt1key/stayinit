@@ -12,6 +12,12 @@ require("dotenv").config();
 
 const HostelSchema = new mongoose.Schema({
 
+    type: {
+        type: String,
+        default: "hostel",
+        enum: ["hostel"]
+    },
+
     // >>> mandatory fields
     name: {
         type: String,
@@ -164,6 +170,11 @@ const HostelSchema = new mongoose.Schema({
     cctv: Boolean,
 
     cleaning: Boolean,
+
+    isFeatured: {
+        type: Boolean,
+        default: false,
+    }
 
 }, { timestamps: true })
 

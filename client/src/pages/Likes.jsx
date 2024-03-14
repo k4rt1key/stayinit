@@ -22,7 +22,8 @@ export default function likes() {
   const [likes, loading, error] = useFetchLikes(likesLength);
 
   const likeArrayProps = likes.map((l) => {
-    if (l?.hostel !== null && l?.hostel !== undefined) {
+    console.log(l);
+    if (l?.type === "hostel") {
       return {
         _id: l?.hostel?._id,
         image: l?.hostel?.images[0],
@@ -76,7 +77,7 @@ export default function likes() {
   if (!loading) {
     return (
       <>
-        <div className="px-[0.7rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">
+        <div className="px-[1.5rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">
           <div className="flex flex-col gap-10 items-center justify-center w-full">
             {/* page header and filters */}
             <div className="flex flex-col gap-6 items-center justify-center max-w-[1200px] mx-auto w-full">
@@ -107,8 +108,7 @@ export default function likes() {
                     </div>
 
                     {/* page & nextpage */}
-                    <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
-                      {/* Page */}
+                    {/* <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
                       <div className="flex flex-row gap-6 items-start justify-start w-auto">
                         <Button className="border border-gray-700 border-solid cursor-pointer font-semibold h-12 py-[13px] rounded-[10px] text-base text-center text-gray-900 w-12">
                           1
@@ -121,7 +121,6 @@ export default function likes() {
                         </Button>
                       </div>
 
-                      {/* Next-Page */}
                       <Button
                         className="border border-bluegray-102 border-solid cursor-pointer flex items-center justify-center min-w-[134px] px-[17px] py-[13px] rounded-[10px]"
                         rightIcon={
@@ -136,7 +135,7 @@ export default function likes() {
                           Next Page
                         </div>
                       </Button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

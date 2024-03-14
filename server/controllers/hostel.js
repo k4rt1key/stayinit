@@ -110,7 +110,29 @@ async function getAllHostels(req, res) {
     }
 }
 
+async function getFeaturedHostels(req, res) {
+    try {
+        const featuredHostels = await Hostel.find({ isFeatured: true })
+            .populate('priceAndSharing addedBy comments likes nearestLandmarksForSearching')
+            .exec()
+
+
+        return res.status(200).json({
+            "success": true,
+            "message": "Featured hostels were fetched successfully",
+            "data": featuredHostels
+        })
+    } catch (error) {
+        res.status(500).json({
+            "success": false,
+            "message": `Backend: ${error.message}`,
+        })
+    }
+}
+
+
 module.exports = {
     getHostel,
     getAllHostels,
+    getFeaturedHostels,
 }

@@ -1,15 +1,13 @@
-import { useState, useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-export default function useFetchListing(searchParams) {
+export default function useFetchFeatured() {
     try {
         const [properties, setProperties] = useState([]);
         const [loading, setLoading] = useState(true);
         const [error, setError] = useState("");
 
-        const { type } = useParams();
 
-        async function init(searchParams) {
+        async function init() {
             setLoading(true);
             const requestOptions = {
                 method: "GET",
@@ -18,7 +16,7 @@ export default function useFetchListing(searchParams) {
 
             const response = await fetch(
                 `${import.meta.env.VITE_BACKEND_URL
-                }/api/v1/${type}?${searchParams.toString()}`,
+                }/api/v1/featured/hostel`,
                 requestOptions
             );
             const jsonResponse = await response.json();
@@ -27,14 +25,13 @@ export default function useFetchListing(searchParams) {
                 setProperties(jsonResponse.data);
                 setLoading(false);
             } else {
-                // toast.error(jsonResponse.message);
                 throw new Error(jsonResponse.message);
             }
         }
 
         useEffect(() => {
-            init(searchParams);
-        }, [searchParams]);
+            init();
+        }, []);
 
         return [properties, loading, error];
     } catch (error) {

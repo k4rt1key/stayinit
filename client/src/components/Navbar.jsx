@@ -85,11 +85,12 @@ export default function Navbar() {
                    max-w-7xl py-1"
       >
         {/* logo */}
-        <div className="inline-flex">
-          <Link to="/" className=" cursor-pointer">
-            <div className="flex flex-row gap-3 items-center text-2xl font-1 font-bold">
-              Stayinit
-            </div>
+        <div className="inline-flexoverflow-hidden h-[2rem]">
+          <Link
+            to="/"
+            className="h-full w-full flex  justify-center items-center cursor-pointer "
+          >
+            <img src="/stayinit.svg" className=" h-[8rem] w-[8rem] " />
           </Link>
         </div>
 
@@ -110,12 +111,16 @@ export default function Navbar() {
               <div className="px-5 pb-6 pt-5">
                 <div className="flex flex-row items-center justify-center">
                   {/* logo */}
-                  <div className="inline-flex items-center space-x-2">
-                    <span className="font-bold">
-                      <div className="flex flex-row gap-3 items-center text-2xl font-1 font-bold">
-                        Stayinit
-                      </div>
-                    </span>
+                  <div className="inline-flexoverflow-hidden h-[2rem]">
+                    <Link
+                      to="/"
+                      className="h-full w-full flex  justify-center items-center cursor-pointer "
+                    >
+                      <img
+                        src="/stayinit.svg"
+                        className=" h-[8rem] w-[8rem] "
+                      />
+                    </Link>
                   </div>
 
                   {/* close button */}

@@ -103,7 +103,13 @@ async function getLikedProperties(req, res) {
 
         // find all likes of the given profile
         const likesInDb = await Like.find({ profile })
-            .populate('flat hostel')
+            .populate("flat")
+            .populate({
+                path: "hostel",
+                populate: {
+                    path: "priceAndSharing",
+                }
+            })
 
         res.status(200).json({
             "success": true,

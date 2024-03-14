@@ -100,7 +100,7 @@ const Header = (props) => {
                 Search
               </div>
             </Button>
-            <Button className="bg-gray-900 cursor-pointer font-semibold py-2.5 rounded-[10px] text-base text-center text-white w-full">
+            <Button className="bg-color2 cursor-pointer font-semibold py-2.5 rounded-[10px] text-base text-center text-white w-full">
               Log in
             </Button>
           </div>
