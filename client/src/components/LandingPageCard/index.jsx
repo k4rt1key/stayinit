@@ -40,7 +40,7 @@ const LandingPageCard = ({
   const { isAuthenticate, profile } = authData;
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLikedNow, setIsLikedNow] = useState(false);
-  const { navigate } = useNavigate();
+  const navigate = useNavigate();
 
   async function getLikes() {
     try {
@@ -85,6 +85,7 @@ const LandingPageCard = ({
   }, [likesLength, isAuthenticate]);
 
   function toggleLike(_id) {
+    console.log("isAuthenticate", isAuthenticate);
     if (isAuthenticate) {
       if (likedProperty.includes(_id)) {
         setIsLikedNow(false);
