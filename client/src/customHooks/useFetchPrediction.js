@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/Auth";
 
 function useFetchPrediction(property) {
     const [prediction, setPrediction] = useState(0);
     const [predictionError, setPredictionError] = useState("");
     const [predictionLoading, setPredictionLoading] = useState(false);
+
+    const navigate = useNavigate();
+
+    const { authData } = useAuth();
+    const { isAuthenticate, profile } = authData;
 
     useEffect(() => {
         const fetchDataInternal = async () => {
@@ -64,6 +71,7 @@ function useFetchPrediction(property) {
         };
 
         if (property) {
+
             fetchDataInternal();
         }
 

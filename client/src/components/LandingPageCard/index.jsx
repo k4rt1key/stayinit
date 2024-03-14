@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/Auth";
+import { useNavigate } from "react-router-dom";
 
 import { Img, Text } from "../";
 
@@ -39,6 +40,7 @@ const LandingPageCard = ({
   const { isAuthenticate, profile } = authData;
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLikedNow, setIsLikedNow] = useState(false);
+  const { navigate } = useNavigate();
 
   async function getLikes() {
     try {
@@ -91,6 +93,8 @@ const LandingPageCard = ({
         setIsLikedNow(true);
         like(_id);
       }
+    } else {
+      navigate("/login");
     }
   }
 

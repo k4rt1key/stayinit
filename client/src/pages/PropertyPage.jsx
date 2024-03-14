@@ -82,6 +82,8 @@ export default function PropertyPage(props) {
       } else {
         like(_id);
       }
+    } else {
+      navigate("/login");
     }
   }
 
@@ -289,7 +291,12 @@ export default function PropertyPage(props) {
                         className="flex flex-row gap-4 w-full justify-center
                     border-2 p-4 border-black bg-gray-200 items-center
                     text-black font-semibold rounded-lg"
-                        onClick={() => setShowPrediction(true)}
+                        onClick={() => {
+                          if (!isAuthenticate) {
+                            navigate("/login");
+                          }
+                          setShowPrediction(true);
+                        }}
                       >
                         {showPrediction === false
                           ? "See Expected Price"
