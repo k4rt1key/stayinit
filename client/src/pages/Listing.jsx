@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useParams, useLoaderData } from "react-router-dom";
 import { useAuth } from "../contexts/Auth";
-
+import { Spinner } from "@material-tailwind/react";
 import Select from "react-select";
 import { toast } from "react-toastify";
 import { Button, GoogleMapDiv, Img, Text } from "../components";
@@ -308,300 +308,303 @@ const ListingPage = () => {
   // %%%%%%%%% FOR FILTERS ENDS
   const filterStyle = `py-4 px-8 focus:outline-none placeholder:text-gray-600 hover:bg-colorY2H bg-colorY2 rounded-[0.5em] border-[#D8D4CD] appearance-none border leading-5 focus:shadow-outline-blue focus:border-blue-300`;
 
-  return (
-    <>
-      <div className="px-[1.5rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">
-        <div className="flex flex-col gap-10 items-center justify-center w-full">
-          {/* page header and filters */}
-          <div className="flex flex-col gap-6 items-center justify-center max-w-[1200px] mx-auto w-full">
-            <Text
-              className="text-4xl font-1 sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-full"
-              size=""
-            >
-              Find Property
-            </Text>
-
-            {/* Form */}
-            {type === "hostel" ? (
-              <form
-                className="flex flex-col md:flex-row flex-wrap gap-4 items-start justify-start w-full text-lg"
-                onSubmit={submitHostelFilters}
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner color="green" className="h-16 w-16" />
+      </div>
+    );
+  } else {
+    return (
+      <>
+        <div className="px-[1.5rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">
+          <div className="flex flex-col gap-10 items-center justify-center w-full">
+            {/* page header and filters */}
+            <div className="flex flex-col gap-6 items-center justify-center max-w-[1200px] mx-auto w-full">
+              <Text
+                className="text-4xl font-1 sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-full"
+                size=""
               >
-                {/* searchbar */}
-                <input
-                  name="search"
-                  className={filterStyle + " w-full md:w-[25rem]"}
-                  placeholder="Search by city, locality and property name"
-                  value={filters.search || ""}
-                  onChange={(event) => {
-                    setFilters({
-                      ...filters,
-                      search: event.target.value,
-                    });
-                    console.log("after filter change", filters);
-                  }}
-                />
+                Find Property
+              </Text>
 
-                {selectHostelFilters.map((selectBox) => {
-                  return (
-                    <Select
-                      key={selectBox.name}
-                      styles={{
-                        container: (provided) => ({
-                          ...provided,
-                          // zIndex: 10,
-                        }),
-                        control: (provided) => ({
-                          ...provided,
-                          backgroundColor: "transparent",
-                          border: "0 !important",
-                          boxShadow: "0 !important",
-                          minHeight: "auto",
-                          "&:hover": {
+              {/* Form */}
+              {type === "hostel" ? (
+                <form
+                  className="flex flex-col md:flex-row flex-wrap gap-4 items-start justify-start w-full text-lg"
+                  onSubmit={submitHostelFilters}
+                >
+                  {/* searchbar */}
+                  <input
+                    name="search"
+                    className={filterStyle + " w-full md:w-[25rem]"}
+                    placeholder="Search by city, locality and property name"
+                    value={filters.search || ""}
+                    onChange={(event) => {
+                      setFilters({
+                        ...filters,
+                        search: event.target.value,
+                      });
+                      console.log("after filter change", filters);
+                    }}
+                  />
+
+                  {selectHostelFilters.map((selectBox) => {
+                    return (
+                      <Select
+                        key={selectBox.name}
+                        styles={{
+                          container: (provided) => ({
+                            ...provided,
+                            // zIndex: 10,
+                          }),
+                          control: (provided) => ({
+                            ...provided,
+                            backgroundColor: "transparent",
                             border: "0 !important",
-                          },
-                        }),
-                        option: (provided, state) => ({
-                          ...provided,
-                          color: state.isSelected && "#FFFBF2",
-                          backgroundColor: state.isSelected && "#191919",
-                          "&:hover": {
-                            backgroundColor: "#191919",
-                            color: "#ffffff",
-                          },
-                        }),
-                        singleValue: (provided) => ({
-                          ...provided,
-                          color: "inherit",
-                        }),
-                        input: (provided) => ({
-                          ...provided,
-                          color: "inherit",
-                          margin: "0",
-                          padding: "0",
-                          // height: "0",
-                        }),
-                        valueContainer: (provided) => ({
-                          ...provided,
-                          padding: "0",
-                        }),
-                        dropdownIndicator: (provided) => ({
-                          ...provided,
-                          paddingTop: "0px",
-                          paddingBottom: "0px",
-                        }),
-                        clearIndicator: (provided) => ({
-                          ...provided,
-                          padding: "0",
-                        }),
-                        multiValueLabel: (provided) => ({
-                          ...provided,
-                          padding: "0",
-                        }),
-                        menuPortal: (base) => ({ ...base, zIndex: 999999 }),
-                        placeholder: (base) => ({
-                          ...base,
-                          margin: 0,
-                        }),
-                      }}
-                      className={filterStyle + " w-full md:w-[15rem]"}
-                      isMulti={false}
-                      options={selectBox.options}
-                      isSearchable={false}
-                      placeholder={selectBox.placeholder}
-                      name={selectBox.name}
-                      value={selectBox.value}
-                      onChange={(event) => {
-                        setFilters({
-                          ...filters,
-                          [selectBox.name]: event,
-                        });
-                      }}
-                    />
-                  );
-                })}
-                <button
-                  className={
-                    "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
-                  }
-                  type="submit"
+                            boxShadow: "0 !important",
+                            minHeight: "auto",
+                            "&:hover": {
+                              border: "0 !important",
+                            },
+                          }),
+                          option: (provided, state) => ({
+                            ...provided,
+                            color: state.isSelected && "#FFFBF2",
+                            backgroundColor: state.isSelected && "#191919",
+                            "&:hover": {
+                              backgroundColor: "#191919",
+                              color: "#ffffff",
+                            },
+                          }),
+                          singleValue: (provided) => ({
+                            ...provided,
+                            color: "inherit",
+                          }),
+                          input: (provided) => ({
+                            ...provided,
+                            color: "inherit",
+                            margin: "0",
+                            padding: "0",
+                            // height: "0",
+                          }),
+                          valueContainer: (provided) => ({
+                            ...provided,
+                            padding: "0",
+                          }),
+                          dropdownIndicator: (provided) => ({
+                            ...provided,
+                            paddingTop: "0px",
+                            paddingBottom: "0px",
+                          }),
+                          clearIndicator: (provided) => ({
+                            ...provided,
+                            padding: "0",
+                          }),
+                          multiValueLabel: (provided) => ({
+                            ...provided,
+                            padding: "0",
+                          }),
+                          menuPortal: (base) => ({ ...base, zIndex: 999999 }),
+                          placeholder: (base) => ({
+                            ...base,
+                            margin: 0,
+                          }),
+                        }}
+                        className={filterStyle + " w-full md:w-[15rem]"}
+                        isMulti={false}
+                        options={selectBox.options}
+                        isSearchable={false}
+                        placeholder={selectBox.placeholder}
+                        name={selectBox.name}
+                        value={selectBox.value}
+                        onChange={(event) => {
+                          setFilters({
+                            ...filters,
+                            [selectBox.name]: event,
+                          });
+                        }}
+                      />
+                    );
+                  })}
+                  <button
+                    className={
+                      "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                    }
+                    type="submit"
+                  >
+                    <span className="">
+                      Search <span className="m-2"></span>🔍
+                    </span>
+                  </button>
+                  <button
+                    className={
+                      "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                    }
+                    type="button"
+                    onClick={clearAllFilters}
+                  >
+                    <span className="">
+                      Clear <span className="m-2"></span>🧹
+                    </span>
+                  </button>
+                </form>
+              ) : (
+                <form
+                  className="flex flex-row flex-wrap gap-4 items-start justify-start w-full"
+                  onSubmit={submitFlatFilters}
                 >
-                  <span className="">
-                    Search <span className="m-2"></span>🔍
-                  </span>
-                </button>
-                <button
-                  className={
-                    "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
-                  }
-                  type="button"
-                  onClick={clearAllFilters}
-                >
-                  <span className="">
-                    Clear <span className="m-2"></span>🧹
-                  </span>
-                </button>
-              </form>
+                  {/* Searchbar */}
+                  <input
+                    placeholder="Search by city, locality and property name"
+                    className={filterStyle + " w-full md:w-[25rem]"}
+                    name="search"
+                    value={filters.search || ""}
+                    onChange={(event) => {
+                      setFilters({
+                        ...filters,
+                        search: event.target.value,
+                      });
+                    }}
+                  />
+
+                  {selectFlatFilters.map((selectBox) => {
+                    return (
+                      <Select
+                        key={selectBox.name}
+                        styles={{
+                          container: (provided) => ({
+                            ...provided,
+                            // zIndex: 10,
+                          }),
+                          control: (provided) => ({
+                            ...provided,
+                            backgroundColor: "transparent",
+                            border: "0 !important",
+                            boxShadow: "0 !important",
+                            minHeight: "auto",
+                            "&:hover": {
+                              border: "0 !important",
+                            },
+                          }),
+                          option: (provided, state) => ({
+                            ...provided,
+                            color: state.isSelected && "#FFFBF2",
+                            backgroundColor: state.isSelected && "#191919",
+                            "&:hover": {
+                              backgroundColor: "#191919",
+                              color: "#ffffff",
+                            },
+                          }),
+                          singleValue: (provided) => ({
+                            ...provided,
+                            color: "inherit",
+                          }),
+                          input: (provided) => ({
+                            ...provided,
+                            color: "inherit",
+                            margin: "0",
+                            padding: "0",
+                            // height: "0",
+                          }),
+                          valueContainer: (provided) => ({
+                            ...provided,
+                            padding: "0",
+                          }),
+                          dropdownIndicator: (provided) => ({
+                            ...provided,
+                            paddingTop: "0px",
+                            paddingBottom: "0px",
+                          }),
+                          clearIndicator: (provided) => ({
+                            ...provided,
+                            padding: "0",
+                          }),
+                          multiValueLabel: (provided) => ({
+                            ...provided,
+                            padding: "0",
+                          }),
+                          menuPortal: (base) => ({ ...base, zIndex: 999999 }),
+                          placeholder: (base) => ({
+                            ...base,
+                            margin: 0,
+                          }),
+                        }}
+                        className={filterStyle + " w-full md:w-[15rem]"}
+                        isMulti={false}
+                        options={selectBox.options}
+                        isSearchable={false}
+                        placeholder={selectBox.placeholder}
+                        name={selectBox.name}
+                        value={selectBox.value}
+                        onChange={(event) => {
+                          setFilters({
+                            ...filters,
+                            [selectBox.name]: event,
+                          });
+                        }}
+                      />
+                    );
+                  })}
+
+                  <button
+                    className={
+                      "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                    }
+                    type="submit"
+                  >
+                    <span className="">
+                      Search <span className="m-2"></span>🔍
+                    </span>
+                  </button>
+                  <button
+                    className={
+                      "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                    }
+                    type="button"
+                    onClick={clearAllFilters}
+                  >
+                    <span className="">
+                      Clear <span className="m-2"></span>🧹
+                    </span>
+                  </button>
+                </form>
+              )}
+            </div>
+
+            {/* cards and map view */}
+            {propertyArrayProps.length === 0 ? (
+              <div className="text-2xl flex justify-center items-center w-full h-full">
+                No {type}s Found
+              </div>
             ) : (
-              <form
-                className="flex flex-row flex-wrap gap-4 items-start justify-start w-full"
-                onSubmit={submitFlatFilters}
-              >
-                {/* Searchbar */}
-                <input
-                  placeholder="Search by city, locality and property name"
-                  className={filterStyle + " w-full md:w-[25rem]"}
-                  name="search"
-                  value={filters.search || ""}
-                  onChange={(event) => {
-                    setFilters({
-                      ...filters,
-                      search: event.target.value,
-                    });
-                  }}
-                />
-
-                {selectFlatFilters.map((selectBox) => {
-                  return (
-                    <Select
-                      key={selectBox.name}
-                      styles={{
-                        container: (provided) => ({
-                          ...provided,
-                          // zIndex: 10,
-                        }),
-                        control: (provided) => ({
-                          ...provided,
-                          backgroundColor: "transparent",
-                          border: "0 !important",
-                          boxShadow: "0 !important",
-                          minHeight: "auto",
-                          "&:hover": {
-                            border: "0 !important",
-                          },
-                        }),
-                        option: (provided, state) => ({
-                          ...provided,
-                          color: state.isSelected && "#FFFBF2",
-                          backgroundColor: state.isSelected && "#191919",
-                          "&:hover": {
-                            backgroundColor: "#191919",
-                            color: "#ffffff",
-                          },
-                        }),
-                        singleValue: (provided) => ({
-                          ...provided,
-                          color: "inherit",
-                        }),
-                        input: (provided) => ({
-                          ...provided,
-                          color: "inherit",
-                          margin: "0",
-                          padding: "0",
-                          // height: "0",
-                        }),
-                        valueContainer: (provided) => ({
-                          ...provided,
-                          padding: "0",
-                        }),
-                        dropdownIndicator: (provided) => ({
-                          ...provided,
-                          paddingTop: "0px",
-                          paddingBottom: "0px",
-                        }),
-                        clearIndicator: (provided) => ({
-                          ...provided,
-                          padding: "0",
-                        }),
-                        multiValueLabel: (provided) => ({
-                          ...provided,
-                          padding: "0",
-                        }),
-                        menuPortal: (base) => ({ ...base, zIndex: 999999 }),
-                        placeholder: (base) => ({
-                          ...base,
-                          margin: 0,
-                        }),
-                      }}
-                      className={filterStyle + " w-full md:w-[15rem]"}
-                      isMulti={false}
-                      options={selectBox.options}
-                      isSearchable={false}
-                      placeholder={selectBox.placeholder}
-                      name={selectBox.name}
-                      value={selectBox.value}
-                      onChange={(event) => {
-                        setFilters({
-                          ...filters,
-                          [selectBox.name]: event,
-                        });
-                      }}
-                    />
-                  );
-                })}
-
-                <button
-                  className={
-                    "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
-                  }
-                  type="submit"
-                >
-                  <span className="">
-                    Search <span className="m-2"></span>🔍
-                  </span>
-                </button>
-                <button
-                  className={
-                    "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
-                  }
-                  type="button"
-                  onClick={clearAllFilters}
-                >
-                  <span className="">
-                    Clear <span className="m-2"></span>🧹
-                  </span>
-                </button>
-              </form>
-            )}
-          </div>
-
-          {/* cards and map view */}
-          {loading ? (
-            <div className="text-2xl flex justify-center items-center w-full h-full">
-              Loading...
-            </div>
-          ) : propertyArrayProps.length === 0 ? (
-            <div className="text-2xl flex justify-center items-center w-full h-full">
-              No {type}s Found
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center w-full">
-              <div className="flex flex-col gap-6 items-start justify-center max-w-[1200px]  w-full">
-                {/* maps view */}
-                <div className="h-[511px] border-2 border-black relative w-full">
-                  <div className="h-[511px] m-auto w-full">
-                    <GoogleMapDiv addresses={propertyArrayAddresses} />
-                  </div>
-                </div>
-
-                {/* cards */}
-                <div className="flex flex-col gap-10 items-start justify-start w-full">
-                  {/* cards */}
-                  <div className="flex flex-col items-start justify-start w-full">
-                    <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 justify-center w-full">
-                      {propertyArrayProps.map((props, index) => (
-                        <div
-                          className="relative"
-                          key={`LandingPageCard${index}`}
-                        >
-                          <LandingPageCard {...props} />
-                        </div>
-                      ))}
+              <div className="flex flex-col items-center justify-center w-full">
+                <div className="flex flex-col gap-6 items-start justify-center max-w-[1200px]  w-full">
+                  {/* maps view */}
+                  <div className="h-[511px] border-2 border-black relative w-full">
+                    <div className="h-[511px] m-auto w-full">
+                      <GoogleMapDiv addresses={propertyArrayAddresses} />
                     </div>
                   </div>
 
-                  {/* page & nextpage */}
-                  {/* <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
+                  {/* cards */}
+                  <div className="flex flex-col gap-10 items-start justify-start w-full">
+                    {/* cards */}
+                    <div className="flex flex-col items-start justify-start w-full">
+                      <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 justify-center w-full">
+                        {propertyArrayProps.map((props, index) => (
+                          <div
+                            className="relative"
+                            key={`LandingPageCard${index}`}
+                          >
+                            <LandingPageCard {...props} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* page & nextpage */}
+                    {/* <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
                     <div className="flex flex-row gap-6 items-start justify-start w-auto">
                       <Button className="border border-gray-700 border-solid cursor-pointer font-semibold h-12 py-[13px] rounded-[10px] text-base text-center text-gray-900 w-12">
                         1
@@ -629,14 +632,15 @@ const ListingPage = () => {
                       </div>
                     </Button>
                   </div> */}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  }
 };
 
 export default ListingPage;

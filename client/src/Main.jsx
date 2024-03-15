@@ -38,11 +38,7 @@ const router = createBrowserRouter(
 
       <Route path="/listing/:type" element={<Listing />} />
 
-      <Route
-        path="/listing/:type/:propertyname"
-        loader={propertyPageLoader}
-        element={<PropertyPage />}
-      />
+      <Route path="/listing/:type/:propertyname" element={<PropertyPage />} />
 
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
