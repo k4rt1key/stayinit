@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/Auth";
 
 import { toast } from "react-toastify";
@@ -75,6 +75,29 @@ export default function likes() {
   }
 
   if (!loading) {
+    if (likeArrayProps.length === 0) {
+      return (
+        <div className="flex gap-4 flex-col justify-center items-center h-screen">
+          <Text size="lg" className="text-center font-1 text-3xl">
+            You have not liked any properties yet
+          </Text>
+          <div className="flex gap-4">
+            <Link
+              to="/listing/flat"
+              className="px-4 py-2 bg-colorG text-white w-[10rem] text-center rounded-md mt-4"
+            >
+              Go to Flats
+            </Link>
+            <Link
+              className="px-4 py-2 bg-colorG text-white w-[10rem] text-center rounded-md mt-4"
+              to="/listing/hostel"
+            >
+              Go to Hostels
+            </Link>
+          </div>
+        </div>
+      );
+    }
     return (
       <>
         <div className="px-[1.5rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">

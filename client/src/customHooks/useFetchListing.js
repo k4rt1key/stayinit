@@ -23,9 +23,9 @@ export default function useFetchListing(searchParams) {
             );
             const jsonResponse = await response.json();
 
+            setLoading(false);
             if (jsonResponse.success === true) {
                 setProperties(jsonResponse.data);
-                setLoading(false);
             } else {
                 // toast.error(jsonResponse.message);
                 throw new Error(jsonResponse.message);

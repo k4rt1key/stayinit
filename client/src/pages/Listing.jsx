@@ -575,7 +575,7 @@ const ListingPage = () => {
             {/* cards and map view */}
             {propertyArrayProps.length === 0 ? (
               <div className="text-2xl flex justify-center items-center w-full h-full">
-                No {type}s Found
+                <p className="font-1 text-4xl">No {type}s Found</p>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center w-full">
