@@ -12,13 +12,16 @@ export default function ImageGallary({ images }) {
     <div className="w-full grid gap-4">
       <Carousel
         className="rounded-xl"
+        autoplay={true}
+        autoplayDelay={4000}
+        loop={true}
         prevArrow={({ handlePrev }) => (
           <IconButton
             variant="text"
             color="white"
             size="lg"
             onClick={handlePrev}
-            className="!absolute top-2/4 bg-color2 left-4 -translate-y-2/4"
+            className="!absolute top-2/4 left-4 -translate-y-2/4"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +45,7 @@ export default function ImageGallary({ images }) {
             color="white"
             size="lg"
             onClick={handleNext}
-            className="bg-color2 !absolute top-2/4 !right-4 -translate-y-2/4"
+            className="!absolute top-2/4 !right-4 -translate-y-2/4"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

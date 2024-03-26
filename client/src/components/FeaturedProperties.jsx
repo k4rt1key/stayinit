@@ -5,6 +5,7 @@ import { Button, Text, Img } from "../components";
 import LandingPageCard from "./LandingPageCard";
 import useFetchFeatured from "../customHooks/useFetchFeatured";
 import { useAuth } from "../contexts/Auth";
+import { Spinner } from "@material-tailwind/react";
 
 export default function SuggestedProperties() {
   const { authData } = useAuth();
@@ -237,16 +238,22 @@ export default function SuggestedProperties() {
 
         {/* cards */}
         <div className="flex flex-col items-start justify-start w-full">
-          <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 justify-center w-full">
-            {landingPageCardPropList.map((props, index) => (
-              <React.Fragment key={`LandingPageCard${index}`}>
-                <LandingPageCard
-                  className="flex flex-col md:h-auto items-start rounded-[1rem] justify-start w-full"
-                  {...props}
-                />
-              </React.Fragment>
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex items-center h-[20rem] justify-center w-full">
+              <Spinner color="green" className="h-16 w-16" />
+            </div>
+          ) : (
+            <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 justify-center w-full">
+              {landingPageCardPropList.map((props, index) => (
+                <React.Fragment key={`LandingPageCard${index}`}>
+                  <LandingPageCard
+                    className="flex flex-col md:h-auto items-start rounded-[1rem] justify-start w-full"
+                    {...props}
+                  />
+                </React.Fragment>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

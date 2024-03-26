@@ -8,18 +8,17 @@ export default function useFetchFeatured() {
 
 
         async function init() {
-            setLoading(true);
             const requestOptions = {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             };
-
             const response = await fetch(
                 `${import.meta.env.VITE_BACKEND_URL
                 }/api/v1/featured/hostel`,
                 requestOptions
             );
             const jsonResponse = await response.json();
+            console.log("JSON RESPONSE", jsonResponse)
 
             if (jsonResponse.success === true) {
                 setProperties(jsonResponse.data);
@@ -30,6 +29,7 @@ export default function useFetchFeatured() {
         }
 
         useEffect(() => {
+            setLoading(true);
             init();
         }, []);
 

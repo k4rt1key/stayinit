@@ -306,7 +306,7 @@ const ListingPage = () => {
   }, [filters]);
 
   // %%%%%%%%% FOR FILTERS ENDS
-  const filterStyle = `py-4 px-8 focus:outline-none placeholder:text-gray-600 hover:bg-colorY2H bg-colorY2 rounded-[0.5em] border-[#D8D4CD] appearance-none border leading-5 focus:shadow-outline-blue focus:border-blue-300`;
+  const filterStyle = `py-4 placeholder: text-center focus:outline-none placeholder:text-gray-600 hover:bg-colorY2H bg-colorY2 rounded-[0.5em] border-[#D8D4CD] appearance-none border leading-5 focus:shadow-outline-blue focus:border-blue-300`;
 
   if (loading) {
     return (
@@ -429,7 +429,7 @@ const ListingPage = () => {
                   })}
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none border border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="submit"
                   >
@@ -439,7 +439,7 @@ const ListingPage = () => {
                   </button>
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none border border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="button"
                     onClick={clearAllFilters}
@@ -549,7 +549,7 @@ const ListingPage = () => {
 
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none border border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="submit"
                   >
@@ -559,7 +559,7 @@ const ListingPage = () => {
                   </button>
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border-2 border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none border border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="button"
                     onClick={clearAllFilters}

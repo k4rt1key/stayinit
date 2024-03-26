@@ -218,23 +218,8 @@ export default function SuggestedProperties({ property }) {
         <div className="flex flex-col gap-6 items-start justify-start w-full">
           <div className="flex flex-col gap-10 items-center justify-between w-full">
             <Text className="text-2xl md:text-4xl sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-auto">
-              Featured Properties
+              Suggested Properties
             </Text>
-            <Button
-              className="common-pointer bg-transparent cursor-pointer flex items-center justify-center min-w-[124px]"
-              onClick={() => navigate("/listing")}
-              rightIcon={
-                <Img
-                  className="h-6 mb-[3px] ml-2"
-                  src="/images/img_arrowright.svg"
-                  alt="arrow_right"
-                />
-              }
-            >
-              <div className="font-bold text-left text-lg text-orange-A700">
-                Explore All
-              </div>
-            </Button>
           </div>
         </div>
 
