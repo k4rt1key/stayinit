@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 export default function Signup() {
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const [email, setEmail] = React.useState("");
   const [isOtpSent, setIsOtpSent] = React.useState(false);
   const [otp, setOtp] = React.useState("");

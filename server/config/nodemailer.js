@@ -16,9 +16,9 @@ async function mailSender(email, otp) {
         to: email,
         subject: "Stayinit.in: Your One-Time Password (OTP)",
         text: `
-        Dear [user],
+        Dear User,
 
-        Thank you for using Stayinit.in.To ensure the security of your account, we have sent you a one- time password (OTP) that is valid for the next 5 minutes.
+        Thank you for using Stayinit.in To ensure the security of your account, we have sent you a one- time password (OTP) that is valid for the next 5 minutes.
 
         Your OTP is: ${otp}
 
