@@ -410,10 +410,9 @@ export default function PropertyPage(props) {
                 </div>
               </div>
 
-              {/* suggested properties */}
               {/* highlights */}
-              <div className="flex flex-row border-2 border-[#073937] bg-colorY2 rounded-[10px] gap-10 p-8 items-start justify-start w-full xl:w-[450px]">
-                <div className="bg-white border-2 border-[#073937] border-solid flex flex-col gap-6 items-start justify-start p-4 lg:p-10 rounded-[10px] w-full">
+              <div className="flex flex-row border-2 border-[#073937] bg-colorY2 rounded-[10px] gap-10 items-start justify-start w-full xl:w-[450px]">
+                <div className="bg-white border-solid flex flex-col gap-6 items-start justify-start p-4 lg:p-10 rounded-[10px] w-full">
                   <Text className="text-xl md:text-2xl w-full font-semibold">
                     {type.charAt(0).toUpperCase() + type.slice(1)} Highlights
                   </Text>

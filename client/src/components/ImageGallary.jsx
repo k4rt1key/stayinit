@@ -11,7 +11,7 @@ export default function ImageGallary({ images, imageClassName }) {
   return (
     <div className="w-full grid gap-4">
       <Carousel
-        className="rounded-xl"
+        className="rounded-t-xl"
         autoplay={true}
         autoplayDelay={4000}
         loop={true}

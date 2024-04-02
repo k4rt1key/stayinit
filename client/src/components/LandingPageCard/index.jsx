@@ -191,7 +191,7 @@ const LandingPageCard = ({
             images={images}
           />
         </div>
-        <div className="bg-gray-51 border border-red-101 border-solid flex flex-col items-start justify-start px-5 py-[30px] rounded-bl-[10px] rounded-br-[10px] w-full">
+        <div className="bg-white border border-red-101 border-solid flex flex-col items-start justify-start px-5 py-[30px] rounded-bl-[10px] rounded-br-[10px] w-full">
           <div className="flex flex-col gap-6 items-start justify-start w-full">
             <div className="flex flex-col gap-2">
               <div className="flex flex-row gap-3 items-center justify-start w-full">
