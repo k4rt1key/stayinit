@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 
 export default function Signup() {
   const navigate = useNavigate();
-
   const [loading, setLoading] = React.useState(false);
 
   const [email, setEmail] = React.useState("");
@@ -46,7 +45,7 @@ export default function Signup() {
       setIsOtpSent(true);
       setError("");
     } else {
-      toast.error(jsonResponse.message);
+      // toast.error(jsonResponse.message);
       setIsOtpSent(false);
       setError(jsonResponse.message);
     }
@@ -78,7 +77,7 @@ export default function Signup() {
       setIsUserVerified(true);
       setError("");
     } else {
-      toast.error(jsonResponse.message);
+      // toast.error(jsonResponse.message);
       setIsUserVerified(false);
       setError(jsonResponse.message);
     }
@@ -128,13 +127,13 @@ export default function Signup() {
 
         setError("");
       } else {
-        toast.error(jsonResponse.message);
+        // toast.error(jsonResponse.message);
         setError(jsonResponse.message);
       }
 
       setLoading(false);
     } catch (error) {
-      toast.error(error.message);
+      // toast.error(error.message);
       throw new Error(error.message);
     }
   }

@@ -75,7 +75,7 @@ export default function Login() {
 
       setLoading(false);
     } catch (error) {
-      toast.error(error.message);
+      // toast.error(error.message);
       throw new Error(error.message);
     }
   }
