@@ -25,10 +25,10 @@ const priceOptions = [
 ];
 
 const priceOptionsForHostels = [
-  { label: "Below 7,000", value: "1" },
-  { label: "7,000 - 15,000", value: "2" },
-  { label: "15,000 - 25,000", value: "3" },
-  { label: "25,000+", value: "4" },
+  { label: "Below 40,000", value: "1" },
+  { label: "40,000 - 80,000", value: "2" },
+  { label: "80,000 - 1,20,000", value: "3" },
+  { label: "1,20,000+", value: "4" },
 ];
 
 const furnitureTypeOptions = [
@@ -82,11 +82,11 @@ const ListingPage = () => {
   // ############# FOR MAPS ENDS
 
   // props ( for landing page card )
-  const propertyArrayProps = propertyArray.map((p) => {
+  let propertyArrayProps = propertyArray.map((p) => {
     if (type === "hostel") {
       return {
         _id: p._id,
-        image: p.images[0],
+        images: p.images,
         city: p.city,
         locality: p.locality,
         uniqueName: p.uniqueName,
@@ -107,7 +107,7 @@ const ListingPage = () => {
     } else {
       return {
         _id: p._id,
-        image: p.images[0],
+        images: p.images,
         city: p.city,
         locality: p.locality,
         uniqueName: p.uniqueName,
@@ -128,6 +128,55 @@ const ListingPage = () => {
       };
     }
   });
+
+  useEffect(() => {
+    propertyArrayProps = propertyArray.map((p) => {
+      if (type === "hostel") {
+        return {
+          _id: p._id,
+          images: p.images,
+          city: p.city,
+          locality: p.locality,
+          uniqueName: p.uniqueName,
+          name: p.name,
+          price: p.priceAndSharing[0].price,
+          sharing: p.priceAndSharing[0].sharing,
+          freeLaundry: p.freeLaundry,
+          wifiFacility: p.wifiFacility,
+          forWhichGender: p.forWhichGender,
+          type: "hostel",
+
+          setLikeLoading,
+          likedProperty,
+          setLikedProperty,
+          likesLength,
+          setLikesLength,
+        };
+      } else {
+        return {
+          _id: p._id,
+          images: p.images,
+          city: p.city,
+          locality: p.locality,
+          uniqueName: p.uniqueName,
+          name: p.name,
+          price: p.price,
+          bhk: p.bhk,
+          bathrooms: p.bathrooms,
+          sqft: p.sqft,
+          balconies: p.balconies,
+          type: "flat",
+
+          likeLoading,
+          setLikeLoading,
+          likedProperty,
+          setLikedProperty,
+          likesLength,
+          setLikesLength,
+        };
+      }
+    });
+  }, [propertyArray]);
 
   // %%%%%%%%% FOR FILTERS STARTS
   const [filters, setFilters] = useState(() => {
@@ -429,7 +478,7 @@ const ListingPage = () => {
                   })}
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none border-2 border-[#073937] appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="submit"
                   >
@@ -439,7 +488,7 @@ const ListingPage = () => {
                   </button>
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none border-2 border-[#073937] appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="button"
                     onClick={clearAllFilters}
@@ -549,7 +598,7 @@ const ListingPage = () => {
 
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border border-green-800 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none border-2 border-[#073937] appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="submit"
                   >
@@ -559,7 +608,7 @@ const ListingPage = () => {
                   </button>
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border border-green-800 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none border-2 border-[#073937] appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="button"
                     onClick={clearAllFilters}

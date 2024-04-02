@@ -46,11 +46,8 @@ export default function SuggestedProperties() {
         });
 
         setLikedProperty(newList);
-      } else {
-        toast.error(jsonResponse.message);
       }
     } catch (error) {
-      toast.error(error.message);
       throw new Error(error.message);
     }
   }
@@ -93,7 +90,6 @@ export default function SuggestedProperties() {
         setLikeLoading(false);
 
         if (jsonResponse.success === true) {
-          toast.success(jsonResponse.message);
           setLikedProperty(() => {
             return likedProperty.filter((property) => {
               return property !== _id;
@@ -103,12 +99,9 @@ export default function SuggestedProperties() {
           setLikesLength((prev) => {
             return prev - 1;
           });
-        } else {
-          toast.error(jsonResponse.message);
         }
       }
     } catch (error) {
-      toast.error(error.message);
       throw new Error(error.message);
     }
   }
@@ -139,7 +132,6 @@ export default function SuggestedProperties() {
         setLikeLoading(false);
 
         if (jsonResponse.success === true) {
-          toast.success(jsonResponse.message);
           setLikedProperty((prev) => {
             const newList = [...prev];
             newList.push(_id);
@@ -149,12 +141,9 @@ export default function SuggestedProperties() {
           setLikesLength((prev) => {
             return prev + 1;
           });
-        } else {
-          toast.error(jsonResponse.message);
         }
       }
     } catch (error) {
-      toast.error(error.message);
       throw new Error(error.message);
     }
   }
@@ -164,7 +153,7 @@ export default function SuggestedProperties() {
     if (property.type === "hostel") {
       return {
         _id: property._id,
-        image: property.images[0],
+        images: property.images,
         city: property.city,
         locality: property.locality,
         uniqueName: property.uniqueName,
@@ -185,7 +174,7 @@ export default function SuggestedProperties() {
     } else {
       return {
         _id: property._id,
-        image: property.images[0],
+        images: property.images,
         city: property.city,
         locality: property.locality,
         uniqueName: property.uniqueName,

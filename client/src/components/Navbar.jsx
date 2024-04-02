@@ -22,7 +22,7 @@ export default function Navbar() {
   if (isAuthenticate) {
     navbarItems.push({
       key: "Logout",
-      link: "",
+      link: window.location,
       icon: "login.png",
       text: "Logout",
       onClick: logoutContextFunction,
@@ -45,10 +45,10 @@ export default function Navbar() {
   } else {
     navbarItems.push({
       key: "Login",
-      link: "/login",
-      target: "_blank",
+      link: `/login?returnUrl=${window.location.pathname}${window.location.search}`,
       icon: "login.png",
       text: "Login",
+      state: { returnUrl: window.location.pathname },
       onClick: () => {},
     });
     navbarItems.push({

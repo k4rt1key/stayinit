@@ -26,7 +26,7 @@ export default function likes() {
     if (l?.type === "hostel") {
       return {
         _id: l?.hostel?._id,
-        image: l?.hostel?.images[0],
+        images: l?.hostel?.images,
         city: l?.hostel?.city,
         locality: l?.hostel?.locality,
         uniqueName: l?.hostel?.uniqueName,
@@ -48,7 +48,7 @@ export default function likes() {
     } else {
       return {
         _id: l?.flat?._id,
-        image: l?.flat?.images[0],
+        images: l?.flat?.images,
         city: l?.flat?.city,
         locality: l?.flat?.locality,
         uniqueName: l?.flat?.uniqueName,
@@ -71,7 +71,7 @@ export default function likes() {
   });
 
   if (!isAuthenticate) {
-    navigate("/login");
+    navigate("/login", { state: { returnUrl: window.location.pathname } });
   }
 
   if (!loading) {

@@ -50,7 +50,7 @@ async function getAllFlats(req, res) {
 
         // getting filters and sorting options from request query 
         // then creating queryObject
-        const { bhk, furnitureType, search, priceRange, sqftRange, city, locality } = req.query
+        const { bhk, furnitureType, search, priceRange, sqftRange, city, locality, limit } = req.query
 
         let minSqft = 0, maxSqft = Infinity, minPrice = 0, maxPrice = Infinity;
         if (priceRange === "1") {
@@ -127,6 +127,7 @@ async function getAllFlats(req, res) {
             .sort(
                 sortByPrice ? { "price": sortByPrice } : sortBySqft ? { "sqft": sortBySqft } : null
             )
+            .limit(parseInt(limit))
             .exec()
 
         return res.status(200).json({

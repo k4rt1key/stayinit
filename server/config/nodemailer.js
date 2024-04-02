@@ -14,8 +14,22 @@ async function mailSender(email, otp) {
     let mailOptions = {
         from: process.env.EMAIL,
         to: email,
-        subject: "Verification email from Stayinit",
-        text: 'Your one time password ( OTP ) is ' + otp + '. This OTP will expire in 5 minutes.'
+        subject: "Stayinit.in: Your One-Time Password (OTP)",
+        text: `
+        Dear [user],
+
+        Thank you for using Stayinit.in.To ensure the security of your account, we have sent you a one- time password (OTP) that is valid for the next 5 minutes.
+
+        Your OTP is: ${otp}
+
+        Please enter this code in the OTP field when prompted to complete the verification process.
+
+        If you did not request this OTP, please ignore this message and contact us immediately.
+
+        Best regards, The Stayinit.in Team
+
+    `
+
     };
 
     await transporter.sendMail(mailOptions)

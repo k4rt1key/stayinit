@@ -46,20 +46,21 @@ async function getAllHostels(req, res) {
             sortByPrice,
             search,
             priceRange,
+            limit,
         } = req.query
 
         let minPrice = 0, maxPrice = Infinity
         if (priceRange == 1) {
             minPrice = 0;
-            maxPrice = 7000;
+            maxPrice = 40000;
         } else if (priceRange == 2) {
-            minPrice = 7000;
-            maxPrice = 15000;
+            minPrice = 40000;
+            maxPrice = 80000;
         } else if (priceRange == 3) {
-            minPrice = 15000;
-            maxPrice = 25000;
+            minPrice = 80000;
+            maxPrice = 120000;
         } else if (priceRange == 4) {
-            minPrice = 25000;
+            minPrice = 120000;
             maxPrice = Infinity;
         }
 
@@ -74,6 +75,7 @@ async function getAllHostels(req, res) {
 
         const hostelsInDb = await Hostel
             .find(queryObj)
+            .limit(parseInt(limit))
             .populate('priceAndSharing comments addedBy likes nearestLandmarksForSearching').exec()
 
         let response = hostelsInDb;

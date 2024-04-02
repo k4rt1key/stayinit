@@ -1,7 +1,7 @@
 import React from "react";
 import { Carousel, IconButton } from "@material-tailwind/react";
 
-export default function ImageGallary({ images }) {
+export default function ImageGallary({ images, imageClassName }) {
   const [active, setActive] = React.useState(images ? images[0] : "");
 
   React.useEffect(() => {
@@ -66,11 +66,7 @@ export default function ImageGallary({ images }) {
       >
         {images?.map((imgelink, index) => (
           <div key={index}>
-            <img
-              src={imgelink}
-              alt="image"
-              className="h-auto w-full max-w-full rounded-lg object-cover object-center md:h-[480px]"
-            />
+            <img src={imgelink} alt="image" className={imageClassName} />
           </div>
         ))}
       </Carousel>

@@ -32,14 +32,18 @@ async function getAccessTokenFromRefreshToken(setAuthData, navigate) {
 
       setAuthData({ isAuthenticate, profile });
     } else {
-      // navigate("/login");
+      //   searchParams.set("return-url", window.location.pathname);
+      navigate("/login", { state: { returnUrl: window.location.pathname } });
+
       localStorage.removeItem("token");
       setAuthData({ isAuthenticate: false, profile: undefined });
     }
   } else {
     localStorage.removeItem("token");
     setAuthData({ isAuthenticate: false, profile: undefined });
-    // navigate("/login");
+    //   searchParams.set("return-url", window.location.pathname);
+
+    navigate("/login", { state: { returnUrl: window.location.pathname } });
   }
 }
 
@@ -98,7 +102,7 @@ function Auth({ children }) {
     verifyUser();
   }, []);
 
-  function loginContextFunction(jsonResponse) {
+  function loginContextFunction(jsonResponse, returnUrl) {
     localStorage.setItem("token", jsonResponse.token);
     localStorage.setItem("refreshToken", jsonResponse.refreshToken);
 
@@ -132,6 +136,8 @@ function Auth({ children }) {
         localStorage.removeItem("refreshToken");
 
         setAuthData({ isAuthenticate: false, profile: undefined });
+        searchParams.set("return-url", window.location.pathname);
+        setSearchParams({ returnUrl: window.location.pathname });
         navigate("/login");
       } else {
         throw new Error("Logout failed");

@@ -1,5 +1,10 @@
 import React from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useAuth } from "../contexts/Auth";
 
 import { Spinner } from "@material-tailwind/react";
@@ -7,8 +12,13 @@ import { toast } from "react-toastify";
 
 export default function Login() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { loginContextFunction, authData } = useAuth();
   const { isAuthenticate } = authData;
+  const location = useLocation();
+  const { returnUrl } = location.state || {
+      returnUrl: searchParams.get("returnUrl"),
+    } || { returnUrl: "/" };
 
   if (isAuthenticate) {
     navigate("/");
@@ -17,8 +27,6 @@ export default function Login() {
   const [loginData, setLoginData] = React.useState({});
   const [error, setError] = React.useState("");
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const returnUrl = searchParams.get("return-url");
   const [loading, setLoading] = React.useState(false);
 
   function handleLoginInput(event) {
@@ -54,8 +62,7 @@ export default function Login() {
       const jsonResponse = await response.json();
 
       if (jsonResponse.success === true) {
-        toast.success(jsonResponse.message);
-        loginContextFunction(jsonResponse);
+        loginContextFunction(jsonResponse, returnUrl);
 
         if (returnUrl) {
           navigate(`${returnUrl}`);
@@ -63,7 +70,6 @@ export default function Login() {
           navigate("/");
         }
       } else {
-        toast.error(jsonResponse.message);
         setError(jsonResponse.message);
       }
 

@@ -7,11 +7,13 @@ import { useAuth } from "../../contexts/Auth";
 import { useNavigate } from "react-router-dom";
 
 import { Img, Text } from "../";
+import ImageGallary from "../ImageGallary";
 
 const LandingPageCard = ({
   _id,
   className,
   type,
+  images,
   image,
   name,
   price,
@@ -85,7 +87,6 @@ const LandingPageCard = ({
   }, [likesLength, isAuthenticate]);
 
   function toggleLike(_id) {
-    console.log("isAuthenticate", isAuthenticate);
     if (isAuthenticate) {
       if (likedProperty.includes(_id)) {
         setIsLikedNow(false);
@@ -95,7 +96,7 @@ const LandingPageCard = ({
         like(_id);
       }
     } else {
-      navigate("/login");
+      navigate("/login", { state: { returnUrl: window.location.pathname } });
     }
   }
 
@@ -119,7 +120,6 @@ const LandingPageCard = ({
         setLikeLoading(false);
 
         if (jsonResponse.success === true) {
-          toast.success(jsonResponse.message);
           setLikedProperty(() => {
             return likedProperty.filter((property) => {
               return property !== _id;
@@ -129,12 +129,9 @@ const LandingPageCard = ({
           setLikesLength((prev) => {
             return prev - 1;
           });
-        } else {
-          toast.error(jsonResponse.message);
         }
       }
     } catch (error) {
-      toast.error(error.message);
       throw new Error(error.message);
     }
   }
@@ -165,7 +162,6 @@ const LandingPageCard = ({
         setLikeLoading(false);
 
         if (jsonResponse.success === true) {
-          toast.success(jsonResponse.message);
           setLikedProperty((prev) => {
             const newList = [...prev];
             newList.push(_id);
@@ -175,24 +171,24 @@ const LandingPageCard = ({
           setLikesLength((prev) => {
             return prev + 1;
           });
-        } else {
-          toast.error(jsonResponse.message);
         }
       }
     } catch (error) {
-      toast.error(error.message);
       throw new Error(error.message);
     }
   }
   return (
     <>
       <div className={className}>
-        <div className="relative w-full">
-          <div className="h-[260px] sm:h-auto object-cover w-fulls bg-gray-500 z-0 absolute top-0 left-0"></div>
-          <Img
-            className="h-[260px] sm:h-auto object-cover w-full z-10"
+        <div className="relative bg-colorY2 w-full">
+          {/* <Img
+            className=""
             alt="image"
             src={image}
+          /> */}
+          <ImageGallary
+            imageClassName="aspect-w-16 aspect-h-9 h-[256px] object-cover w-full z-10"
+            images={images}
           />
         </div>
         <div className="bg-gray-51 border border-red-101 border-solid flex flex-col items-start justify-start px-5 py-[30px] rounded-bl-[10px] rounded-br-[10px] w-full">

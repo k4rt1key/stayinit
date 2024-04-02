@@ -57,7 +57,7 @@ const router = createBrowserRouter(
 export default function App() {
   return (
     <ThemeProvider>
-      <ToastContainer position="bottom-right" />
+      <ToastContainer position="top-center" />
       <GoogleOAuthProvider clientId={"123"}>
         <RouterProvider router={router} />
       </GoogleOAuthProvider>

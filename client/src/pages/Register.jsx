@@ -122,7 +122,10 @@ export default function Signup() {
 
       if (jsonResponse.success === true) {
         toast.success(jsonResponse.message);
+        searchParams.set("return-url", window.location.pathname);
+        setSearchParams({ returnUrl: window.location.pathname });
         navigate("/login");
+
         setError("");
       } else {
         toast.error(jsonResponse.message);

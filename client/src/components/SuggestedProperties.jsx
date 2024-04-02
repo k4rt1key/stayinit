@@ -12,6 +12,7 @@ export default function SuggestedProperties({ property }) {
   // listing/${property.type}?search=${property.locality}
   const searchParams = new URLSearchParams();
   searchParams.append("search", property.city);
+  searchParams.append("limit", "3");
   const type = property.type;
 
   const memorizedSearchParams = useMemo(() => searchParams, [property.city]);
@@ -51,11 +52,8 @@ export default function SuggestedProperties({ property }) {
         });
 
         setLikedProperty(newList);
-      } else {
-        toast.error(jsonResponse.message);
       }
     } catch (error) {
-      toast.error(error.message);
       throw new Error(error.message);
     }
   }
@@ -98,7 +96,6 @@ export default function SuggestedProperties({ property }) {
         setLikeLoading(false);
 
         if (jsonResponse.success === true) {
-          toast.success(jsonResponse.message);
           setLikedProperty(() => {
             return likedProperty.filter((property) => {
               return property !== _id;
@@ -108,12 +105,9 @@ export default function SuggestedProperties({ property }) {
           setLikesLength((prev) => {
             return prev - 1;
           });
-        } else {
-          toast.error(jsonResponse.message);
         }
       }
     } catch (error) {
-      toast.error(error.message);
       throw new Error(error.message);
     }
   }
@@ -144,7 +138,6 @@ export default function SuggestedProperties({ property }) {
         setLikeLoading(false);
 
         if (jsonResponse.success === true) {
-          toast.success(jsonResponse.message);
           setLikedProperty((prev) => {
             const newList = [...prev];
             newList.push(_id);
@@ -154,12 +147,9 @@ export default function SuggestedProperties({ property }) {
           setLikesLength((prev) => {
             return prev + 1;
           });
-        } else {
-          toast.error(jsonResponse.message);
         }
       }
     } catch (error) {
-      toast.error(error.message);
       throw new Error(error.message);
     }
   }
@@ -169,7 +159,7 @@ export default function SuggestedProperties({ property }) {
     if (property.type === "hostel") {
       return {
         _id: property._id,
-        image: property.images[0],
+        images: property.images,
         city: property.city,
         locality: property.locality,
         uniqueName: property.uniqueName,
@@ -190,7 +180,7 @@ export default function SuggestedProperties({ property }) {
     } else {
       return {
         _id: property._id,
-        image: property.images[0],
+        images: property.images,
         city: property.city,
         locality: property.locality,
         uniqueName: property.uniqueName,
@@ -217,7 +207,7 @@ export default function SuggestedProperties({ property }) {
         {/* featured property - title  */}
         <div className="flex flex-col gap-6 items-start justify-start w-full">
           <div className="flex flex-col gap-10 items-center justify-between w-full">
-            <Text className="text-2xl md:text-4xl sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-auto">
+            <Text className="text-2xl md:text-3xl sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-auto">
               Suggested Properties
             </Text>
           </div>

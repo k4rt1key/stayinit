@@ -40,6 +40,8 @@ export default function ResetPassword() {
 
       if (jsonResponse.success === true) {
         toast.success(jsonResponse.message);
+        searchParams.set("return-url", window.location.pathname);
+        setSearchParams({ returnUrl: window.location.pathname });
         navigate("/login");
       } else {
         toast.error(jsonResponse.message);

@@ -16,6 +16,7 @@ import {
 import useFetchProperty from "../customHooks/useFetchProperty";
 import useFetchPrediction from "../customHooks/useFetchPrediction";
 import SuggestedProperties from "../components/SuggestedProperties";
+import PropertyInfoBoxes from "../components/PropertyInfoBoxes";
 
 export default function PropertyPage(props) {
   const { authData } = useAuth();
@@ -59,11 +60,8 @@ export default function PropertyPage(props) {
         });
 
         setLikedProperty(newList);
-      } else {
-        toast.error(jsonResponse.message);
       }
     } catch (error) {
-      toast.error(error.message);
       throw new Error(error.message);
     }
   }
@@ -84,6 +82,8 @@ export default function PropertyPage(props) {
         like(_id);
       }
     } else {
+      searchParams.set("return-url", window.location.pathname);
+      setSearchParams({ returnUrl: window.location.pathname });
       navigate("/login");
     }
   }
@@ -108,7 +108,6 @@ export default function PropertyPage(props) {
         setLikeLoading(false);
 
         if (jsonResponse.success === true) {
-          toast.success(jsonResponse.message);
           setLikedProperty(() => {
             return likedProperty.filter((property) => {
               return property !== _id;
@@ -118,12 +117,9 @@ export default function PropertyPage(props) {
           setLikesLength((prev) => {
             return prev - 1;
           });
-        } else {
-          toast.error(jsonResponse.message);
         }
       }
     } catch (error) {
-      toast.error(error.message);
       throw new Error(error.message);
     }
   }
@@ -154,7 +150,6 @@ export default function PropertyPage(props) {
         setLikeLoading(false);
 
         if (jsonResponse.success === true) {
-          toast.success(jsonResponse.message);
           setLikedProperty((prev) => {
             const newList = [...prev];
             newList.push(_id);
@@ -164,12 +159,9 @@ export default function PropertyPage(props) {
           setLikesLength((prev) => {
             return prev + 1;
           });
-        } else {
-          toast.error(jsonResponse.message);
         }
       }
     } catch (error) {
-      toast.error(error.message);
       throw new Error(error.message);
     }
   }
@@ -180,59 +172,59 @@ export default function PropertyPage(props) {
   if (type === "hostel") {
     PropertyInfo = [
       {
-        name: "forWhichGender",
+        name: "🧑🏻‍🤝‍🧑🏻 For ",
         value: property.forWhichGender,
       },
       {
-        name: "liftFacility",
+        name: "🛗 Lift",
         value: property.liftFacility,
       },
       {
-        name: "wifiFacility",
+        name: "🛜 Free Wifi",
         value: property.wifiFacility,
       },
       {
-        name: "gymFacility",
+        name: "🏋🏻 Gym",
         value: property.gymFacility,
       },
       {
-        name: "acFacility",
+        name: "❄️ Ac Rooms",
         value: property.acFacility,
       },
       {
-        name: "gamingRoom",
+        name: "🎮 Gaming Room",
         value: property.gamingRoom,
       },
       {
-        name: "freeLaundry",
+        name: "🧺 Laundry Avilable",
         value: property.freeLaundry,
       },
       {
-        name: "securityGuard",
+        name: "👮🏻 Security Guard",
         value: property.securityGuard,
       },
       {
-        name: "filterWater",
+        name: "🚰 Filter Water",
         value: property.filterWater,
       },
       {
-        name: "cctv",
+        name: "📹 CCTV Monitoring",
         value: property.cctv,
       },
       {
-        name: "cleaning",
+        name: "🧹 Regular Cleaning",
         value: property.cleaning,
       },
     ];
   }
   if (type === "flat") {
     PropertyInfo = [
-      { name: "sqft", value: property.sqft },
-      { name: "furnitureType", value: property.furnitureType },
-      { name: "atWhichFloor", value: property.atWhichFloor },
-      { name: "totalFloor", value: property.totalFloor },
-      { name: "bathrooms", value: property.bathrooms },
-      { name: "balconies", value: property.balconies },
+      { name: "Sqft", value: property.sqft },
+      { name: "Furniture", value: property.furnitureType },
+      { name: "Floor", value: property.atWhichFloor },
+      { name: "Total Floor", value: property.totalFloor },
+      { name: "Bathrooms", value: property.bathrooms },
+      { name: "Balconies", value: property.balconies },
     ];
   }
 
@@ -257,13 +249,19 @@ export default function PropertyPage(props) {
           <div className="flex flex-col gap-10 items-start justify-start w-full">
             {/* images */}
             <div className="w-full relative">
-              <ImageGallary images={property?.images} />
+              <ImageGallary
+                imageClassName={
+                  "h-auto w-full h-[250px] md:h-[500px] max-w-full rounded-lg  object-cover"
+                }
+                images={property?.images}
+              />
             </div>
             {/* property's info cards */}
             <div className="flex xl:flex-row flex-col gap-6 items-start justify-center w-full">
               {/* property's info cards */}
               <div className="flex flex-1 flex-col gap-6 items-start justify-start w-full">
-                <div className="bg-white border border-bluegray-100 border-solid flex flex-col items-start justify-start p-4 lg:p-10 sm:px-5 rounded-[10px] w-full">
+                {/* price wishlist title description */}
+                <div className="bg-white border-2 border-[#073937] border-solid flex flex-col items-start justify-start p-4 lg:p-10 sm:px-5 rounded-[10px] w-full">
                   <div className="flex flex-col gap-11 items-start justify-start w-full">
                     <div className="flex flex-col gap-6 items-start justify-start w-full">
                       {/* name and address */}
@@ -277,49 +275,51 @@ export default function PropertyPage(props) {
                           {property.city}, {property.pincode}
                         </Text>
                       </div>
-                      {/* wishlist button */}
-                      <button
-                        onClick={() => toggleLike(property._id)}
-                        className="flex flex-row gap-4 w-full justify-center border-2 p-1 border-black bg-gray-200 items-center text-black font-semibold rounded-lg"
-                      >
-                        <img
-                          className="h-8 w-8 lg:h-12 lg:w-12"
-                          src={
-                            likedProperty.includes(property._id)
-                              ? "/images/liked.png"
-                              : "/images/like.png"
-                          }
-                          alt=""
-                        />
-                        {"Add to Wishlist"}
-                      </button>
-                      {/* Prediction price */}
-                      {property.type === "flat" && (
+                      <div className="flex gap-4 w-full">
+                        {/* wishlist button */}
                         <button
-                          className="flex flex-row gap-4 w-full justify-center
+                          onClick={() => toggleLike(property._id)}
+                          className="text-xl flex flex-row gap-4 w-full justify-center border-2 p-3 text-white bg-colorG items-center font-semibold rounded-lg"
+                        >
+                          {likedProperty.includes(property._id)
+                            ? "🤍 Add  to Wishlist"
+                            : "❤️ Remove to Wishlist"}
+                        </button>
+                        {/* Prediction price */}
+                        {property.type === "flat" && (
+                          <button
+                            className="flex flex-row gap-4 w-full justify-center
                     border-2 p-4 border-black bg-gray-200 items-center
                     text-black font-semibold rounded-lg"
-                          onClick={() => {
-                            if (!isAuthenticate) {
-                              navigate("/login");
-                            }
-                            setShowPrediction(true);
-                          }}
-                        >
-                          {showPrediction === false
-                            ? "See Expected Price"
-                            : `Price Should be between ${roundToNearestThousand(
-                                prediction * 0.95
-                              )} - ${roundToNearestThousand(
-                                prediction * 1.05
-                              )} Rupees`}
-                        </button>
-                      )}
+                            onClick={() => {
+                              if (!isAuthenticate) {
+                                searchParams.set(
+                                  "return-url",
+                                  window.location.pathname
+                                );
+                                setSearchParams({
+                                  returnUrl: window.location.pathname,
+                                });
+                                navigate("/login");
+                              }
+                              setShowPrediction(true);
+                            }}
+                          >
+                            {showPrediction === false
+                              ? "See Expected Price"
+                              : `Price Should be between ${roundToNearestThousand(
+                                  prediction * 0.95
+                                )} - ${roundToNearestThousand(
+                                  prediction * 1.05
+                                )} Rupees`}
+                          </button>
+                        )}
+                      </div>
                       {/* pricing */}
-                      <div className="flex flex-row flex-wrap gap-4 items-start justify-start w-full">
+                      <div className="flex flex-row flex-wrap gap-4 items-center justify-center w-full">
                         {type === "flat" ? (
-                          <div className="bg-white border-2 border-black border-solid flex flex-1 flex-col items-center justify-center sm:px-5 px-6 py-[7px] rounded-[10px] w-full">
-                            <div className="flex flex-col gap-1 items-start justify-start w-full">
+                          <div className="bg-white border-2 border-black border-solid flex flex-col items-center justify-center sm:px-5 px-6 py-[7px] rounded-[10px] w-full">
+                            <div className="flex flex-col gap-1 items-center justify-center">
                               <Text className="text-2xl lg:text-3xl text-gray-900 font-semibold sm:text-xl tracking-[-0.48px] w-full">
                                 ₹{property.price}
                               </Text>
@@ -336,7 +336,7 @@ export default function PropertyPage(props) {
                                   key={nanoid()}
                                   className="bg-white border border-gray-600 border-solid flex flex-1 flex-col items-center justify-center sm:px-5 px-6 py-[7px] rounded-[10px] w-full"
                                 >
-                                  <div className="flex flex-col gap-1 items-start justify-start w-full">
+                                  <div className="flex flex-col gap-1 items-center justify-center w-full">
                                     <Text className="text-2xl md:text-[22px] text-gray-900 font-semibold sm:text-xl tracking-[-0.48px] w-full">
                                       ₹{x.price}
                                     </Text>
@@ -365,47 +365,14 @@ export default function PropertyPage(props) {
                         <div className="text-md">{property.description}</div>
                       </Text>
                     </div>
+                  </div>
+                </div>
+                <div className="bg-white border-2 border-[#073937] border-solid flex flex-col items-start justify-start p-4 lg:p-10 sm:px-5 rounded-[10px] w-full">
+                  <NearestLandmarksMaps property={property} />
+                </div>
 
-                    <NearestLandmarksMaps property={property} />
-                  </div>
-                </div>
-                {/* highlights */}
-                <div className="bg-white border border-bluegray-100 border-solid flex flex-col gap-6 items-start justify-start p-4 lg:p-10 rounded-[10px] w-full">
-                  <Text className="text-xl md:text-2xl w-full font-semibold">
-                    {type.charAt(0).toUpperCase() + type.slice(1)} Highlights
-                  </Text>
-                  <div className="flex lg:flex-row flex-col gap-6 items-start justify-start w-full">
-                    {/* lists of highlights Or Property Info */}
-                    <List
-                      className="gap-10 justify-between w-full"
-                      orientation="horizontal"
-                    >
-                      <div className="grid grid-cols-1 2xl:grid-cols-2 gap-x-[2rem] gap-y-2 items-between justify-between w-full">
-                        {PropertyInfo.map((x) => {
-                          return (
-                            <div
-                              key={x.name + Math.random()}
-                              className="flex flex-row gap-4 items-center justify-between w-full"
-                            >
-                              <Text className="text-gray-800 text-md lg:text-xl">
-                                {x.name}
-                              </Text>
-                              <Text className="text-md lg:text-xl font-semibold text-gray-900">
-                                {x.value === true
-                                  ? "Yes"
-                                  : x.value !== false
-                                  ? x.value
-                                  : "No"}
-                              </Text>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </List>
-                  </div>
-                </div>
                 {/* agent */}
-                <div className="bg-white border border-bluegray-100 border-solid flex flex-col items-start justify-start p-4 lg:p-10 rounded-[10px] w-full">
+                <div className="bg-white border-2 border-[#073937] border-solid flex flex-col items-start justify-start p-4 lg:p-10 rounded-[10px] w-full">
                   <div className="flex flex-col gap-[26px] items-start justify-start w-full">
                     <Text className="text-xl md:text-2xl w-full font-semibold">
                       Agent Information
@@ -442,73 +409,23 @@ export default function PropertyPage(props) {
                   </div>
                 </div>
               </div>
-              {/* get in contact */}
-              <div className="flex flex-col gap-10 items-start justify-start w-full xl:w-[336px]">
-                <div className="flex flex-col gap-6 items-start justify-start w-full">
-                  <Text className="sm:text-2xl font-semibold md:text-[26px] text-[28px] text-gray-900 tracking-[-0.56px] w-full">
-                    Request for Visit
-                  </Text>
-                  <div className="flex flex-col gap-3 h-[440px] md:h-auto items-start justify-start w-full">
-                    <Input
-                      name="textfieldlarge"
-                      placeholder="Full Name"
-                      className="focus:border-transparent outline-none font-semibold p-0 placeholder:text-gray-600 sm:pr-5 text-gray-600 text-left text-lg w-full"
-                      wrapClassName="bg-white border border-bluegray-100 border-solid flex pl-4 pr-[35px] py-[17px] rounded-[10px] w-full"
-                      type="text"
-                      prefix={
-                        <Img
-                          className="mt-auto mb-px h-6 mr-3.5"
-                          src="/images/img_user.svg"
-                          alt="user"
-                        />
-                      }
-                    ></Input>
-                    <Input
-                      name="textfieldlarge_One"
-                      placeholder="Email Address"
-                      className="focus:border-transparent outline-none font-semibold p-0 placeholder:text-gray-600 sm:pr-5 text-gray-600 text-left text-lg w-full"
-                      wrapClassName="bg-white border border-bluegray-100 border-solid flex pl-4 pr-[35px] py-[17px] rounded-[10px] w-full"
-                      type="email"
-                      prefix={
-                        <Img
-                          className="mt-auto mb-px h-6 mr-3.5"
-                          src="/images/img_mail_gray_600_24x24.svg"
-                          alt="mail"
-                        />
-                      }
-                    ></Input>
-                    <Input
-                      name="textfieldlarge_Two"
-                      placeholder="Phone Number"
-                      className="focus:border-transparent outline-none font-semibold p-0 placeholder:text-gray-600 sm:pr-5 text-gray-600 text-left text-lg w-full"
-                      wrapClassName="bg-white border border-bluegray-100 border-solid flex pl-4 pr-[35px] py-[17px] rounded-[10px] w-full"
-                      type="number"
-                      prefix={
-                        <Img
-                          className="mt-auto mb-px h-6 mr-3.5"
-                          src="/images/img_call.svg"
-                          alt="call"
-                        />
-                      }
-                    ></Input>
 
-                    <div className="bg-white border border-bluegray-100 border-solid flex flex-col h-[152px] md:h-auto items-start justify-start px-[19px] py-3.5 rounded-[10px] w-full">
-                      <Text
-                        className="text-gray-600 text-lg w-auto"
-                        size="txtManropeSemiBold18Gray600"
-                      >
-                        Message
-                      </Text>
-                    </div>
+              {/* suggested properties */}
+              {/* highlights */}
+              <div className="flex flex-row border-2 border-[#073937] bg-colorY2 rounded-[10px] gap-10 p-8 items-start justify-start w-full xl:w-[450px]">
+                <div className="bg-white border-2 border-[#073937] border-solid flex flex-col gap-6 items-start justify-start p-4 lg:p-10 rounded-[10px] w-full">
+                  <Text className="text-xl md:text-2xl w-full font-semibold">
+                    {type.charAt(0).toUpperCase() + type.slice(1)} Highlights
+                  </Text>
+                  <div className="flex lg:flex-row flex-col gap-6 items-start justify-start w-full">
+                    {/* lists of highlights Or Property Info */}
+                    <PropertyInfoBoxes PropertyInfo={PropertyInfo} />
                   </div>
                 </div>
-                <Button className="bg-color2 cursor-pointer font-semibold py-[17px] rounded-[10px] text-base text-center text-white w-full">
-                  Send Request
-                </Button>
               </div>
             </div>
           </div>
-          {/*  part - 2 suggested properties */}
+
           <SuggestedProperties property={property} />
         </div>
       </>

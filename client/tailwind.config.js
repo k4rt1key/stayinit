@@ -10,6 +10,7 @@ module.exports = withMT({
     extend: {
       backgroundColor: {
         'colorY': '#FFFBF2',
+        // 'colorY': '#F8EEE7',
         'colorYH': '#F3EADC',
         'colorG': '#073937',
         'colorY2': '#FCF5EB',
