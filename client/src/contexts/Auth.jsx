@@ -33,7 +33,7 @@ async function getAccessTokenFromRefreshToken(setAuthData, navigate) {
       setAuthData({ isAuthenticate, profile });
     } else {
       //   searchParams.set("return-url", window.location.pathname);
-      navigate("/login", { state: { returnUrl: window.location.pathname } });
+      // navigate("/login", { state: { returnUrl: window.location.pathname } });
 
       localStorage.removeItem("token");
       setAuthData({ isAuthenticate: false, profile: undefined });
@@ -43,7 +43,7 @@ async function getAccessTokenFromRefreshToken(setAuthData, navigate) {
     setAuthData({ isAuthenticate: false, profile: undefined });
     //   searchParams.set("return-url", window.location.pathname);
 
-    navigate("/login", { state: { returnUrl: window.location.pathname } });
+    // navigate("/login", { state: { returnUrl: window.location.pathname } });
   }
 }
 
