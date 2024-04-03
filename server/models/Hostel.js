@@ -178,11 +178,11 @@ const HostelSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
-// HostelSchema.index({ '$**': 'text' });
-HostelSchema.index({ 'city': 'text' });
-HostelSchema.index({ 'locality': 'text' });
-HostelSchema.index({ 'uniqueName': 'text' });
-HostelSchema.index({ 'name': 'text' });
+HostelSchema.index({ '$**': 'text' });
+// HostelSchema.index({ 'city': 'text' });
+// HostelSchema.index({ 'locality': 'text' });
+// HostelSchema.index({ 'uniqueName': 'text' });
+// HostelSchema.index({ 'name': 'text' });
 
 HostelSchema.pre("save", async function () {
 

@@ -387,7 +387,7 @@ const ListingPage = () => {
                   <input
                     name="search"
                     className={filterStyle + " w-full md:w-[25rem]"}
-                    placeholder="Search by city, locality and property name"
+                    placeholder="Search Property"
                     value={filters.search || ""}
                     onChange={(event) => {
                       setFilters({
@@ -505,7 +505,7 @@ const ListingPage = () => {
                 >
                   {/* Searchbar */}
                   <input
-                    placeholder="Search by city, locality and property name"
+                    placeholder="Search Property"
                     className={filterStyle + " w-full md:w-[25rem]"}
                     name="search"
                     value={filters.search || ""}

@@ -75,16 +75,14 @@ export default function PropertyPage(props) {
   }, [likesLength, isAuthenticate]);
 
   function toggleLike(_id) {
-    if (isAuthenticate) {
+    if (isAuthenticate === true) {
       if (likedProperty.includes(_id)) {
         unlike(_id);
       } else {
         like(_id);
       }
     } else {
-      searchParams.set("return-url", window.location.pathname);
-      setSearchParams({ returnUrl: window.location.pathname });
-      navigate("/login");
+      navigate("/login", { state: { returnUrl: window.location.pathname } });
     }
   }
 
@@ -282,8 +280,8 @@ export default function PropertyPage(props) {
                           className="text-xl flex flex-row gap-4 w-full justify-center border-2 p-3 text-white bg-colorG items-center font-semibold rounded-lg"
                         >
                           {likedProperty.includes(property._id)
-                            ? "🤍 Add  to Wishlist"
-                            : "❤️ Remove to Wishlist"}
+                            ? "❤️ Remove to Wishlist"
+                            : "🤍 Add  to Wishlist"}
                         </button>
                         {/* Prediction price */}
                         {property.type === "flat" && (

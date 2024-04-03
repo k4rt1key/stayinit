@@ -114,9 +114,12 @@ async function getAllFlats(req, res) {
         }
 
         if (search) {
-            queryObj.$text = {
-                $search: search,
-            }
+            queryObj.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { uniqueName: { $regex: search, $options: 'i' } },
+                { city: { $regex: search, $options: 'i' } },
+                { locality: { $regex: search, $options: 'i' } }
+            ];
         }
 
 

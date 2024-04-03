@@ -275,11 +275,11 @@ FlatSchema.pre('findOneAndDelete', async function () {
 });
 
 
-// FlatSchema.index({ '$**': 'text' });
-FlatSchema.index({ 'city': 'text' });
-FlatSchema.index({ 'locality': 'text' });
-FlatSchema.index({ 'uniqueName': 'text' });
-FlatSchema.index({ 'name': 'text' });
+FlatSchema.index({ '$**': 'text' });
+// FlatSchema.index({ 'city': 'text' });
+// FlatSchema.index({ 'locality': 'text' });
+// FlatSchema.index({ 'uniqueName': 'text' });
+// FlatSchema.index({ 'name': 'text' });
 
 
 module.exports = mongoose.model("Flat", FlatSchema)
