@@ -259,7 +259,7 @@ export default function PropertyPage(props) {
               {/* property's info cards */}
               <div className="flex flex-1 flex-col gap-6 items-start justify-start w-full">
                 {/* price wishlist title description */}
-                <div className="bg-white border-2 border-[#073937] border-solid flex flex-col items-start justify-start p-4 lg:p-10 sm:px-5 rounded-[10px] w-full">
+                <div className="bg-white border-2 flex flex-col items-start justify-start p-4 lg:p-10 sm:px-5 rounded-[10px] w-full">
                   <div className="flex flex-col gap-11 items-start justify-start w-full">
                     <div className="flex flex-col gap-6 items-start justify-start w-full">
                       {/* name and address */}
@@ -277,17 +277,17 @@ export default function PropertyPage(props) {
                         {/* wishlist button */}
                         <button
                           onClick={() => toggleLike(property._id)}
-                          className="text-xl flex flex-row gap-4 w-full justify-center border-2 p-3 text-white bg-colorG items-center font-semibold rounded-lg"
+                          className="text-xl flex flex-row gap-4 w-full justify-center border-2 p-3 bg-gray-200 bg-colorG items-center font-semibold rounded-lg"
                         >
                           {likedProperty.includes(property._id)
-                            ? "❤️ Remove to Wishlist"
-                            : "🤍 Add  to Wishlist"}
+                            ? "❤️ Wishlist"
+                            : "🤍 Wishlist"}
                         </button>
                         {/* Prediction price */}
                         {property.type === "flat" && (
                           <button
                             className="flex flex-row gap-4 w-full justify-center
-                    border-2 p-4 border-black bg-gray-200 items-center
+                    border-2 p-4 border-[#CAC4BC] bg-gray-200 items-center
                     text-black font-semibold rounded-lg"
                             onClick={() => {
                               if (!isAuthenticate) {
@@ -316,14 +316,14 @@ export default function PropertyPage(props) {
                       {/* pricing */}
                       <div className="flex flex-row flex-wrap gap-4 items-center justify-center w-full">
                         {type === "flat" ? (
-                          <div className="bg-white border-2 border-black border-solid flex flex-col items-center justify-center sm:px-5 px-6 py-[7px] rounded-[10px] w-full">
+                          <div className="bg-gray-200 cursor-pointer border-2 border-[#CAC4BC] flex flex-row flex-wrap items-center justify-center sm:px-5 px-6 py-[7px] rounded-[10px] w-full">
                             <div className="flex flex-col gap-1 items-center justify-center">
-                              <Text className="text-2xl lg:text-3xl text-gray-900 font-semibold sm:text-xl tracking-[-0.48px] w-full">
+                              <span className="text-xl font-bold">
                                 ₹{property.price}
-                              </Text>
-                              <Text className="text-md lg:text-2xl w-full">
+                              </span>
+                              <span className="text-sm">
                                 For {property.bhk} BHK
-                              </Text>
+                              </span>
                             </div>
                           </div>
                         ) : (
@@ -332,15 +332,15 @@ export default function PropertyPage(props) {
                               return (
                                 <div
                                   key={nanoid()}
-                                  className="bg-white border border-gray-600 border-solid flex flex-1 flex-col items-center justify-center sm:px-5 px-6 py-[7px] rounded-[10px] w-full"
+                                  className="bg-gray-200 border cursor-pointer flex flex-1 flex-col items-center justify-center sm:px-5 px-6 py-[7px] rounded-[10px] w-full"
                                 >
-                                  <div className="flex flex-col gap-1 items-center justify-center w-full">
-                                    <Text className="text-2xl md:text-[22px] text-gray-900 font-semibold sm:text-xl tracking-[-0.48px] w-full">
+                                  <div className="flex flex-col gap-1 items-center justify-center">
+                                    <span className="text-xl font-bold">
                                       ₹{x.price}
-                                    </Text>
-                                    <Text className="text-gray-600 text-md w-full">
+                                    </span>
+                                    <span className="text-sm">
                                       For {x.sharing} Sharing
-                                    </Text>
+                                    </span>
                                   </div>
                                 </div>
                               );
@@ -365,12 +365,12 @@ export default function PropertyPage(props) {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white border-2 border-[#073937] border-solid flex flex-col items-start justify-start p-4 lg:p-10 sm:px-5 rounded-[10px] w-full">
+                <div className="bg-white border-2 flex flex-col items-start justify-start p-4 lg:p-10 sm:px-5 rounded-[10px] w-full">
                   <NearestLandmarksMaps property={property} />
                 </div>
 
                 {/* agent */}
-                <div className="bg-white border-2 border-[#073937] border-solid flex flex-col items-start justify-start p-4 lg:p-10 rounded-[10px] w-full">
+                <div className="bg-white border-2 flex flex-col items-start justify-start p-4 lg:p-10 rounded-[10px] w-full">
                   <div className="flex flex-col gap-[26px] items-start justify-start w-full">
                     <Text className="text-xl md:text-2xl w-full font-semibold">
                       Agent Information
@@ -409,7 +409,7 @@ export default function PropertyPage(props) {
               </div>
 
               {/* highlights */}
-              <div className="flex flex-row border-2 border-[#073937] bg-colorY2 rounded-[10px] gap-10 items-start justify-start w-full xl:w-[450px]">
+              <div className="flex flex-row border-2 bg-color1 rounded-[10px] gap-10 items-start justify-start w-full xl:w-[450px]">
                 <div className="bg-white border-solid flex flex-col gap-6 items-start justify-start p-4 lg:p-10 rounded-[10px] w-full">
                   <Text className="text-xl md:text-2xl w-full font-semibold">
                     {type.charAt(0).toUpperCase() + type.slice(1)} Highlights

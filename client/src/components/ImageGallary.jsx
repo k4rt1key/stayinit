@@ -71,29 +71,16 @@ export default function ImageGallary({ images, imageClassName }) {
         ))}
       </Carousel>
     </div>
+    // <div className="grid grid-cols-6 grid-rows-2 w-full border-2">
+    //   <div className="col-span-4 row-span-4 w-full border-2">
+    //     <img src={images[0]} alt="image" className="object-cover" />
+    //   </div>
+    //   <div className="col-span-2 row-span-1 w-[20%]">
+    //     <img src={images[1]} alt="image" />
+    //   </div>
+    //   <div className="col-span-2 row-span-1 w-[20%]">
+    //     <img src={images[2]} alt="image" />
+    //   </div>
+    // </div>
   );
-
-  // return (
-  //   <div className="w-full grid gap-4">
-  //     <div>
-  //       <img
-  //         className="h-auto w-full max-w-full rounded-lg object-cover object-center md:h-[480px]"
-  //         src={active}
-  //         alt=""
-  //       />
-  //     </div>
-  //     <div className="w-full grid grid-cols-3 lg:grid-cols-8 gap-4">
-  //       {images?.map((imgelink, index) => (
-  //         <div key={index}>
-  //           <img
-  //             onClick={() => setActive(imgelink)}
-  //             src={imgelink}
-  //             className="h-20 max-w-full cursor-pointer rounded-lg object-cover object-center"
-  //             alt="gallery-image"
-  //           />
-  //         </div>
-  //       ))}
-  //     </div>
-  //   </div>
-  // );
 }

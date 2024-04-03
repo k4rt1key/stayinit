@@ -9,13 +9,14 @@ module.exports = withMT({
   theme: {
     extend: {
       backgroundColor: {
-        'colorY': '#FFFBF2',
-        // 'colorY': '#F8EEE7',
-        'colorYH': '#F3EADC',
-        'colorG': '#073937',
-        'colorY2': '#FCF5EB',
-        'colorY2H': '#F3EADC',
-        'color2': "#022c22"
+        'color1': '#FFFBF2',
+        'color2': "#073937",
+        // 'color1': '#F8EEE7',
+        'color3': '#FDF5EA',
+        'color4': '#CAC4BC'
+        // 'colorG': '#073937',
+        // 'color3': '#FCF5EB',
+        // 'color3': '#F3EADC',
       },
 
       fontFamily: {

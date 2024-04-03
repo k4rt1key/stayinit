@@ -7,7 +7,7 @@ function PropertyInfoBoxes({ PropertyInfo }) {
         x.value === true || x.value !== undefined ? (
           <div
             key={x.name + Math.random()}
-            className="flex flex-row gap-6 rounded-md w-full bg-color1 border-2 border-[#f6e5c5] p-2 items-center justify-between"
+            className="flex flex-row gap-6 rounded-md w-full bg-gray-200  p-2 items-center justify-between"
           >
             <div className="flex flex-row justify-between gap-6 p-2">
               <span>{x.name.toUpperCase()}</span>

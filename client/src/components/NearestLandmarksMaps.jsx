@@ -42,7 +42,9 @@ export default function NearestLandmarksMap({ property }) {
               setMapStringNumber(0);
             }}
             className={`${
-              mapStringNumber === 0 ? "bg-color2 text-white " : "text-gray-900"
+              mapStringNumber === 0
+                ? "bg-color2 text-white "
+                : "text-gray-900 bg-gray-300"
             } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
           >
             Map
@@ -52,7 +54,9 @@ export default function NearestLandmarksMap({ property }) {
               setMapStringNumber(1);
             }}
             className={`${
-              mapStringNumber === 1 ? "bg-color2 text-white " : "text-gray-900"
+              mapStringNumber === 1
+                ? "bg-color2 text-white "
+                : "text-gray-900 bg-gray-300"
             } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
           >
             Cafes
@@ -62,28 +66,32 @@ export default function NearestLandmarksMap({ property }) {
               setMapStringNumber(2);
             }}
             className={`${
-              mapStringNumber === 2 ? "bg-color2 text-white " : "text-gray-900"
+              mapStringNumber === 2
+                ? "bg-color2 text-white "
+                : "text-gray-900 bg-gray-300"
             } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
           >
-            Bus Transportation
+            Bus
           </Button>
           <Button
             onClick={() => {
               setMapStringNumber(3);
             }}
             className={`${
-              mapStringNumber === 3 ? "bg-color2 text-white " : "text-gray-900"
+              mapStringNumber === 3
+                ? "bg-color2 text-white "
+                : "text-gray-900 bg-gray-300"
             } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
           >
-            Railway-Station
+            Railway
           </Button>
         </div>
       </div>
-      <div className="h-[400px] border-2 border-black relative w-full">
+      <div className="h-[400px] border-2 border-[#CAC4BC] relative w-full">
         {mapStringNumber !== -1 ? (
           iframes[mapStringNumber]
         ) : (
-          <div className="w-full h-full flex justify-center items-center bg-gray-400">
+          <div className="w-full h-full flex justify-center items-center bg-gray-200">
             {" "}
             Explore Maps, Cafes, Public transports & Railway Station nearby this
             property

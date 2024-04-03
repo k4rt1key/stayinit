@@ -180,7 +180,7 @@ const LandingPageCard = ({
   return (
     <>
       <div className={className}>
-        <div className="relative bg-colorY2 w-full">
+        <div className="relative bg-color1 w-full">
           {/* <Img
             className=""
             alt="image"
@@ -310,7 +310,7 @@ const LandingPageCard = ({
                 onClick={() => {
                   toggleLike(_id);
                 }}
-                className="flex w-full flex-row gap-4 justify-center border-2 p-2 border-black bg-gray-200 items-center text-black font-semibold rounded-lg"
+                className="flex w-full flex-row gap-4 justify-center border-2 p-2 border-gray-400 bg-gray-200 items-center text-black font-semibold rounded-lg"
               >
                 <img
                   className="h-8 w-8"

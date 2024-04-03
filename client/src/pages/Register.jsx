@@ -140,7 +140,7 @@ export default function Signup() {
   }
 
   return (
-    <section className="w-full h-full justify-center items-center bg-colorY">
+    <section className="w-full h-full justify-center items-center bg-color1">
       <div className="h-full w-full flex flex-col gap-8 justify-center items-center">
         <h2 className="text-3xl leading-tight text-black sm:text-4xl font-1">
           Register
@@ -170,7 +170,7 @@ export default function Signup() {
                     setEmail(event.target.value);
                   }}
                   value={email}
-                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
+                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-color1 px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                 />
                 <button
                   type="submit"
@@ -200,7 +200,7 @@ export default function Signup() {
                   }}
                   value={otp}
                   placeholder="OTP"
-                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
+                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-color1 px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                 />
                 <button
                   type="submit"
@@ -225,7 +225,7 @@ export default function Signup() {
                   value={signupData.username}
                   placeholder="Username"
                   name="username"
-                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
+                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-color1 px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                 />
                 <input
                   type="text"
@@ -233,7 +233,7 @@ export default function Signup() {
                   value={signupData.phoneNumber}
                   placeholder="Phone Number"
                   name="phoneNumber"
-                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
+                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-color1 px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                 />
                 <input
                   type="password"
@@ -241,7 +241,7 @@ export default function Signup() {
                   value={signupData.password}
                   placeholder="Password"
                   name="password"
-                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
+                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-color1 px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                 />
 
                 <input
@@ -250,7 +250,7 @@ export default function Signup() {
                   value={signupData.confirmPassword}
                   placeholder="Confirm Password"
                   name="confirmPassword"
-                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
+                  className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-color1 px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                 />
                 <button
                   type="submit"

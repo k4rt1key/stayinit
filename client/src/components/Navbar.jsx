@@ -65,7 +65,7 @@ export default function Navbar() {
     return (
       <div key={item.key} onClick={item.onClick}>
         <Link to={item.link} target={`${item.target || ""}`} className="">
-          <div className="text-xl flex flex-row gap-3 py-3 px-6 items-center hover:bg-colorYH rounded-[0.5rem]">
+          <div className="text-xl flex flex-row gap-3 py-3 px-6 items-center hover:bg-color1 rounded-[0.5rem]">
             <img src={`/icons/${item.icon}`} className="w-5 h-5" alt="" />{" "}
             <span>{item.text}</span>
           </div>
@@ -77,7 +77,7 @@ export default function Navbar() {
   return (
     <div
       className="w-full px-[2rem] lg:px-[10rem] py-[0.5rem] 
-                shadow-sm bg-[#FFFBF2] 
+                bg-[#FFFBF2] 
                 sticky top-0 z-20"
     >
       <div
@@ -107,7 +107,7 @@ export default function Navbar() {
         {/* mobile view */}
         {isMenuOpen && (
           <div className="absolute inset-x-0 top-0 z-50 origin-top-right transform p-2 transition lg:hidden">
-            <div className="divide-y-2 divide-gray-50 rounded-lg bg-colorY shadow-lg ring-1 ring-black ring-opacity-5">
+            <div className="divide-y-2 divide-gray-50 rounded-lg bg-color1 shadow-lg ring-1 ring-black ring-opacity-5">
               <div className="px-5 pb-6 pt-5">
                 <div className="flex flex-row items-center justify-center">
                   {/* logo */}
@@ -128,7 +128,7 @@ export default function Navbar() {
                     <button
                       type="button"
                       onClick={toggleMenu}
-                      className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                      className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-200 hover:text-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                     >
                       <span className="sr-only">Close menu</span>
                       <X className="h-8 w-8" aria-hidden="true" />

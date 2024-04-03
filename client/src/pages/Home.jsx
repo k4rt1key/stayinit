@@ -51,7 +51,7 @@ export default function Home() {
                   className={`${
                     type === "flat"
                       ? "bg-color2 text-white"
-                      : "bg-gray-300 text-colorG "
+                      : "bg-gray-200 text-colorG "
                   } cursor-pointer font-semibold py-3 rounded-[10px] text-center text-lg w-full`}
                 >
                   Flat
@@ -61,7 +61,7 @@ export default function Home() {
                   className={`${
                     type === "hostel"
                       ? "bg-color2 text-white"
-                      : "bg-gray-300 text-colorG "
+                      : "bg-gray-200 text-colorG "
                   } cursor-pointer font-semibold py-3 rounded-[10px] text-center text-lg w-full`}
                 >
                   Hostels

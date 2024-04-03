@@ -355,7 +355,7 @@ const ListingPage = () => {
   }, [filters]);
 
   // %%%%%%%%% FOR FILTERS ENDS
-  const filterStyle = `py-4 placeholder: text-center focus:outline-none placeholder:text-gray-600 hover:bg-colorY2H bg-colorY2 rounded-[0.5em] border-[#D8D4CD] appearance-none border leading-5 focus:shadow-outline-blue focus:border-blue-300`;
+  const filterStyle = `py-4 border-2 border-[#CAC4BC] placeholder: text-center focus:outline-none placeholder:text-gray-600 hover:font-semibold bg-color3 rounded-[0.5em] border-[#D8D4CD] appearance-none border leading-5 `;
 
   if (loading) {
     return (
@@ -460,7 +460,9 @@ const ListingPage = () => {
                             margin: 0,
                           }),
                         }}
-                        className={filterStyle + " w-full md:w-[15rem]"}
+                        className={
+                          filterStyle + " cursor-pointer w-full md:w-[15rem]"
+                        }
                         isMulti={false}
                         options={selectBox.options}
                         isSearchable={false}
@@ -478,7 +480,7 @@ const ListingPage = () => {
                   })}
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border-2 border-[#073937] appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none  border-2 border-gray-400 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-gray-200 rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="submit"
                   >
@@ -488,7 +490,7 @@ const ListingPage = () => {
                   </button>
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border-2 border-[#073937] appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none  border-2 border-gray-400 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-gray-200 rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="button"
                     onClick={clearAllFilters}
@@ -506,7 +508,9 @@ const ListingPage = () => {
                   {/* Searchbar */}
                   <input
                     placeholder="Search Property"
-                    className={filterStyle + " w-full md:w-[25rem]"}
+                    className={
+                      filterStyle + " cursor-pointer w-full md:w-[25rem]"
+                    }
                     name="search"
                     value={filters.search || ""}
                     onChange={(event) => {
@@ -579,7 +583,9 @@ const ListingPage = () => {
                             margin: 0,
                           }),
                         }}
-                        className={filterStyle + " w-full md:w-[15rem]"}
+                        className={
+                          filterStyle + " cursor-pointer w-full md:w-[15rem]"
+                        }
                         isMulti={false}
                         options={selectBox.options}
                         isSearchable={false}
@@ -598,7 +604,7 @@ const ListingPage = () => {
 
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border-2 border-[#073937] appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none  border-2 border-gray-400 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-gray-200 rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="submit"
                   >
@@ -608,7 +614,7 @@ const ListingPage = () => {
                   </button>
                   <button
                     className={
-                      "py-4 px-8 focus:outline-none border-2 border-[#073937] appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-colorYH rounded-[0.5rem] w-full md:w-[15rem]"
+                      "py-4 px-8 focus:outline-none border-2 border-gray-400 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-gray-200 rounded-[0.5rem] w-full md:w-[15rem]"
                     }
                     type="button"
                     onClick={clearAllFilters}
@@ -630,7 +636,7 @@ const ListingPage = () => {
               <div className="flex flex-col items-center justify-center w-full">
                 <div className="flex flex-col gap-6 items-start justify-center max-w-[1200px]  w-full">
                   {/* maps view */}
-                  <div className="h-[511px] border-2 border-black relative w-full">
+                  <div className="h-[511px] border-2 border-[#CAC4BC] relative w-full">
                     <div className="h-[511px] m-auto w-full">
                       <GoogleMapDiv addresses={propertyArrayAddresses} />
                     </div>
