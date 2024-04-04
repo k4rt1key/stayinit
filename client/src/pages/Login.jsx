@@ -63,6 +63,7 @@ export default function Login() {
 
       if (jsonResponse.success === true) {
         loginContextFunction(jsonResponse, returnUrl);
+        toast.success("Successfully Logged in :)");
 
         if (returnUrl) {
           navigate(`${returnUrl}`);
@@ -156,7 +157,7 @@ export default function Login() {
                 <div>
                   <button
                     type="submit"
-                    className="bg-colorG w-full flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5"
+                    className="bg-color2 w-full flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5"
                   >
                     {loading ? <Spinner color="white" size="sm" /> : "Login"}
                   </button>

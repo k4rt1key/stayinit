@@ -54,13 +54,13 @@ export default function ForgotPassword() {
           </h1>
           <Link
             to="/"
-            className="text-white text-center rounded-[3rem] p-3 bg-colorG"
+            className="text-white text-center rounded-[3rem] p-3 bg-color2"
           >
             Go Back Home
           </Link>
           <Link
             to="/login"
-            className="text-white text-center rounded-[3rem] p-3 bg-colorG"
+            className="text-white text-center rounded-[3rem] p-3 bg-color2"
           >
             {" "}
             Go Back to Login{" "}
@@ -92,7 +92,7 @@ export default function ForgotPassword() {
 
           <button
             type="submit"
-            className="bg-colorG w-full flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5"
+            className="bg-color2 w-full flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5"
           >
             {loading ? <Spinner color="white" size="sm" /> : "Verify Email"}
           </button>

@@ -88,7 +88,7 @@ export default function ResetPassword() {
 
           <button
             type="submit"
-            className="bg-colorG w-full text-[#FFFBF2] px-4 py-3 rounded-[3rem]"
+            className="bg-color2 w-full text-[#FFFBF2] px-4 py-3 rounded-[3rem]"
           >
             Send
           </button>

@@ -21,7 +21,7 @@ export default function ErrorElement() {
           </p>
           <Link
             to="/"
-            className="bg-colorG text-white font-bold py-2 px-4 rounded"
+            className="bg-color2 text-white font-bold py-2 px-4 rounded"
           >
             Go Home
           </Link>

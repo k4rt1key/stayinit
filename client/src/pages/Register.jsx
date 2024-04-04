@@ -174,7 +174,7 @@ export default function Signup() {
                 />
                 <button
                   type="submit"
-                  className="bg-colorG flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5"
+                  className="bg-color2 flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5"
                 >
                   {loading ? <Spinner color="white" size="sm" /> : "Send OTP"}
                 </button>
@@ -204,7 +204,7 @@ export default function Signup() {
                 />
                 <button
                   type="submit"
-                  className="bg-colorG flex justify-center text-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5"
+                  className="bg-color2 flex justify-center text-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5"
                 >
                   {loading ? <Spinner color="white" size="sm" /> : "Verify OTP"}
                 </button>
@@ -254,7 +254,7 @@ export default function Signup() {
                 />
                 <button
                   type="submit"
-                  className="bg-colorG flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5"
+                  className="bg-color2 flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5"
                 >
                   {loading ? <Spinner color="white" size="sm" /> : "Register"}
                 </button>

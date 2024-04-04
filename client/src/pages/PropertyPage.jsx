@@ -277,7 +277,7 @@ export default function PropertyPage(props) {
                         {/* wishlist button */}
                         <button
                           onClick={() => toggleLike(property._id)}
-                          className="text-xl flex flex-row gap-4 w-full justify-center border-2 p-3 bg-gray-200 bg-colorG items-center font-semibold rounded-lg"
+                          className="text-xl flex flex-row gap-4 w-full justify-center border-2 p-3 bg-gray-200 bg-color2 items-center font-semibold rounded-lg"
                         >
                           {likedProperty.includes(property._id)
                             ? "❤️ Wishlist"

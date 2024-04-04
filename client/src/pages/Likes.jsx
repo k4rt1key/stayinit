@@ -84,12 +84,12 @@ export default function likes() {
           <div className="flex gap-4">
             <Link
               to="/listing/flat"
-              className="px-4 py-2 bg-colorG text-white w-[10rem] text-center rounded-md mt-4"
+              className="px-4 py-2 bg-color2 text-white w-[10rem] text-center rounded-md mt-4"
             >
               Go to Flats
             </Link>
             <Link
-              className="px-4 py-2 bg-colorG text-white w-[10rem] text-center rounded-md mt-4"
+              className="px-4 py-2 bg-color2 text-white w-[10rem] text-center rounded-md mt-4"
               to="/listing/hostel"
             >
               Go to Hostels
