@@ -115,7 +115,7 @@ export default function Login() {
                   </label>
                   <div className="mt-2">
                     <input
-                      className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-color1 px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
+                      className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                       type="email"
                       placeholder="Email"
                       name="email"
@@ -145,7 +145,7 @@ export default function Login() {
                   </div>
                   <div className="mt-2">
                     <input
-                      className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-color1 px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
+                      className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                       name="password"
                       type="password"
                       placeholder="Password"
