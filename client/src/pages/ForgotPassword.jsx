@@ -86,7 +86,7 @@ export default function ForgotPassword() {
             type="text"
             value={email}
             placeholder="Enter your email registered with us"
-            className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-color1 px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
+            className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
             onChange={(e) => setEmail(e.target.value)}
           />
 

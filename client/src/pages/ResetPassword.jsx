@@ -74,14 +74,14 @@ export default function ResetPassword() {
           <input
             type="password"
             placeholder="New Password"
-            className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-color1 px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
+            className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <input
             type="password"
             placeholder="Confirm Password"
-            className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-color1 px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-nones"
+            className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-nones"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
