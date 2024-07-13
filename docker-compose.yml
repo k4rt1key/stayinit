@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  server:
+    build: 
+      context: ./server
+    ports:
+      - 5000:5000
+    networks:
+      - stayinit
+    environment:
+      MONGO_URL: 
+      PORT: 
+      JWT_SECRET:
+      JWT_REFRESH_SECRET:
+      GOOGLE_MAP_API_KEY: 
+      JWT_EXPIRY: 
+      JWT_REFRESH_EXPIRY: 
+      SALT_ROUNDS: 
+      CLOUD_NAME: 
+      API_KEY: 
+      API_SECRET:
+      EMAIL:
+      PASSWORD: 
+      FRONTEND_URL: http://localhost:5173
+
+  ml:
+    build: 
+      context: ./ml
+    image: ml:latest
+    ports:
+      - 7000:7000
+    networks:
+      - stayinit
+
+  frontend:
+    build:
+      context: ./client
+    ports:
+      - 5173:5173
+    networks:
+      - stayinit
+    environment:
+      VITE_BACKEND_URL: http://localhost:5000
+
+networks:
+  stayinit:
+    driver: bridge
+
