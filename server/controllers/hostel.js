@@ -41,13 +41,26 @@ async function getHostel(req, res) {
 async function getAllHostels(req, res) {
     try {
         // getting various filters and sorting options from request query
-        const {
+        let {
             forWhichGender,
             sortByPrice,
             search,
             priceRange,
             limit,
+            page,
         } = req.query
+
+
+        if (!page || page == 0) {
+            page = 1;
+        }
+
+        if (!limit || limit == 0) {
+            limit = 9;
+        }
+
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+
 
         let minPrice = 0, maxPrice = Infinity
         if (priceRange == 1) {
@@ -80,7 +93,8 @@ async function getAllHostels(req, res) {
 
         const hostelsInDb = await Hostel
             .find(queryObj)
-            .limit(parseInt(limit))
+            .skip(skip)
+            .limit(limit)
             .populate('priceAndSharing comments addedBy likes nearestLandmarksForSearching').exec()
 
         let response = hostelsInDb;

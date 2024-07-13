@@ -35,199 +35,14 @@ const Otp = require("./models/Otp")
 const PasswordResetToken = require("./models/PasswordResetToken")
 const User = require("./models/User")
 
-// >>> Admin Panel
-const AdminBro = require('admin-bro')
-const AdminBroExpress = require('@admin-bro/express')
-const AdminBroMongoose = require('@admin-bro/mongoose')
-
-// Register the Mongoose adapter for AdminBro
-AdminBro.registerAdapter(AdminBroMongoose);
-
-// Create an AdminBro instance and add the Hostel schema as a resource
-const adminBro = new AdminBro({
-    resources: [
-        // Hostel
-        {
-            resource: Hostel,
-            options: {
-                properties: {
-                    priceAndSharing: {
-                        type: 'reference',
-                        reference: 'PriceAndSharing',
-                    },
-                    nearestLandmarksForSearching: {
-                        type: 'reference',
-                        reference: 'NearestLandmarksForSearching',
-                    },
-
-                    comments: {
-                        type: 'reference',
-                        reference: 'Comment',
-                    },
-                    likes: {
-                        type: 'reference',
-                        reference: 'Like',
-                    },
-                    addedBy: {
-                        type: 'reference',
-                        reference: 'Profile',
-                    },
-                }
-            }
-        },
-
-        // Flat
-        {
-            resource: Flat,
-            options: {
-                properties: {
-                    nearestLandmarksForSearching: {
-                        type: 'reference',
-                        reference: 'NearestLandmarksForSearching',
-                    },
-
-                    comments: {
-                        type: 'reference',
-                        reference: 'Comment',
-                    },
-                    likes: {
-                        type: 'reference',
-                        reference: 'Like',
-                    },
-                    addedBy: {
-                        type: 'reference',
-                        reference: 'Profile',
-                    },
-                }
-            }
-        },
-
-        // NearestLandmarksForSearching
-        {
-            resource: NearestLandmarksForSearching,
-            options: {
-                properties: {
-                    flat: {
-                        type: 'reference',
-                        reference: 'Flat',
-                    },
-                    hostel: {
-                        type: 'reference',
-                        reference: 'Hostel',
-                    }
-                }
-            }
-        },
-
-        // PriceAndSharing
-        {
-            resource: PriceAndSharing,
-            options: {
-                properties: {
-                    hostel: {
-                        type: 'reference',
-                        reference: 'Hostel',
-                    }
-                }
-            }
-        },
-
-        // Comment
-        {
-            resource: Comment,
-            options: {
-                properties: {
-                    hostel: {
-                        type: 'reference',
-                        reference: 'Hostel',
-                    },
-                    flat: {
-                        type: 'reference',
-                        reference: 'Flat',
-                    },
-                    profile: {
-                        type: 'reference',
-                        reference: 'Profile',
-                    }
-                }
-            }
-        },
-
-        // Like
-        {
-            resource: Like,
-            options: {
-                properties: {
-                    hostel: {
-                        type: 'reference',
-                        reference: 'Hostel',
-                    },
-                    flat: {
-                        type: 'reference',
-                        reference: 'Flat',
-                    },
-                    profile: {
-                        type: 'reference',
-                        reference: 'Profile',
-                    }
-                }
-            }
-        },
-
-        // Profile
-        {
-            resource: Profile,
-            options: {
-                properties: {
-                    userId: {
-                        type: 'reference',
-                        reference: 'User',
-                    },
-                    comments: {
-                        type: 'reference',
-                        reference: 'Comment',
-                    },
-                    likes: {
-                        type: 'reference',
-                        reference: 'Like',
-                    }
-
-                }
-            },
-        },
-
-        // Otp
-        {
-            resource: Otp,
-        },
-
-        // PasswordResetToken
-        {
-            resource: PasswordResetToken,
-        },
-
-        // User
-        {
-            resource: User,
-            options: {
-                properties: {
-                    profile: {
-                        type: 'reference',
-                        reference: 'Profile',
-                    }
-                }
-            }
-        },
-
-    ],
-});
-
-// Build the AdminBro router and add it to the Express app
-const adminRouter = AdminBroExpress.buildRouter(adminBro);
-app.use(adminBro.options.rootPath, adminRouter);
-
 // >>> security middlewares 
-app.use(cors("*"))
+app.use(cors(
+    {
+        origin: process.env.FRONTEND_URL,
+        credentials: true
+    }
+));
+
 app.use(mongoSanitize());
 app.use(helmet());
 app.use(xss());
@@ -276,11 +91,6 @@ async function runServer() {
         });
 
         connectCloudinary();
-
-        // Initialize AdminBro
-        await adminRouter;
-
-        app.use(adminBro.options.rootPath, adminRouter);
 
         app.listen(process.env.PORT || 5000, () => {
             console.log(`Listing on port ${process.env.PORT || 5000}`)
