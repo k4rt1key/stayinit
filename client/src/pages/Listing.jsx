@@ -60,7 +60,7 @@ const ListingPage = () => {
   const [likeLoading, setLikeLoading] = useState(false);
   const [likedProperty, setLikedProperty] = useState([]);
   const [likesLength, setLikesLength] = useState(() => likedProperty.length);
-
+  const [page, setPage] = useState(1);
   // if type is invalid then return error
   if (type != "hostel" && type != "flat") {
     throw new Error(`invalid path /listing/${type}`);
@@ -263,7 +263,7 @@ const ListingPage = () => {
 
   function submitFlatFilters(event) {
     setSearchParams("");
-    event.preventDefault();
+    if (event) event.preventDefault();
     const newSearchParams = new URLSearchParams();
 
     if (filters.furnitureType) {
@@ -281,13 +281,16 @@ const ListingPage = () => {
     if (filters.search) {
       newSearchParams.set("search", filters.search);
     }
+    if (page) {
+      newSearchParams.set("page", page);
+    }
 
     setSearchParams(newSearchParams.toString());
   }
 
   function submitHostelFilters(event) {
     setSearchParams("");
-    event.preventDefault();
+    if (event) event.preventDefault();
     const newSearchParams = new URLSearchParams();
 
     if (filters.forWhichGender) {
@@ -298,6 +301,9 @@ const ListingPage = () => {
     }
     if (filters.search) {
       newSearchParams.set("search", filters.search);
+    }
+    if (page) {
+      newSearchParams.set("page", page);
     }
 
     setSearchParams(newSearchParams.toString());
@@ -353,6 +359,11 @@ const ListingPage = () => {
     selectHostelFilters = [...selectHostelFilters];
     selectFlatFilters = [...selectFlatFilters];
   }, [filters]);
+
+  React.useEffect(() => {
+    if (type === "hostel") submitHostelFilters();
+    else submitFlatFilters();
+  }, [page]);
 
   // %%%%%%%%% FOR FILTERS ENDS
   const filterStyle = `py-4 border-2 border-[#CAC4BC] placeholder: text-center focus:outline-none placeholder:text-gray-600 hover:font-semibold bg-color3 rounded-[0.5em] border-[#D8D4CD] appearance-none border leading-5 `;
@@ -659,34 +670,30 @@ const ListingPage = () => {
                     </div>
 
                     {/* page & nextpage */}
-                    {/* <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
-                    <div className="flex flex-row gap-6 items-start justify-start w-auto">
-                      <Button className="border border-gray-700 border-solid cursor-pointer font-semibold h-12 py-[13px] rounded-[10px] text-base text-center text-gray-900 w-12">
-                        1
+                    <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
+                      <Button
+                        className="bg-color2 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
+                        onClick={() => {
+                          if (page > 1) setPage(page - 1);
+                        }}
+                      >
+                        ⏮️ Prev Page
                       </Button>
-                      <Button className="border border-bluegray-102 border-solid cursor-pointer font-semibold h-12 py-[13px] rounded-[10px] text-base text-center text-gray-900 w-12">
-                        2
-                      </Button>
-                      <Button className="border border-bluegray-102 border-solid cursor-pointer font-semibold h-12 py-[13px] rounded-[10px] text-base text-center text-gray-900 w-12">
-                        3
+                      <Text
+                        size="lg"
+                        className="flex w-[33%] justify-center border-2 p-2 border-gray-400 bg-gray-200 items-center text-black font-semibold rounded-lg"
+                      >
+                        Page {page || 1}
+                      </Text>
+                      <Button
+                        className="bg-color2 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
+                        onClick={() => {
+                          setPage(page + 1);
+                        }}
+                      >
+                        Next Page ⏭️
                       </Button>
                     </div>
-
-                    <Button
-                      className="border border-bluegray-102 border-solid cursor-pointer flex items-center justify-center min-w-[134px] px-[17px] py-[13px] rounded-[10px]"
-                      rightIcon={
-                        <Img
-                          className="h-4 mt-px mb-[5px] ml-1"
-                          src="/images/img_arrowright_gray_900.svg"
-                          alt="arrow_right"
-                        />
-                      }
-                    >
-                      <div className="font-semibold text-base text-gray-900 text-left">
-                        Next Page
-                      </div>
-                    </Button>
-                  </div> */}
                   </div>
                 </div>
               </div>
