@@ -405,7 +405,6 @@ const ListingPage = () => {
                         ...filters,
                         search: event.target.value,
                       });
-                      console.log("after filter change", filters);
                     }}
                   />
 
@@ -669,7 +668,7 @@ const ListingPage = () => {
                       </div>
                     </div>
 
-                    {/* page & nextpage */}
+                    {/* page & nextpage
                     <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
                       <Button
                         className="bg-color2 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
@@ -693,11 +692,36 @@ const ListingPage = () => {
                       >
                         Next Page ⏭️
                       </Button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
             )}
+            {/* page & nextpage */}
+            <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
+              <Button
+                className="bg-color2 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
+                onClick={() => {
+                  if (page > 1) setPage(page - 1);
+                }}
+              >
+                ⏮️ Prev Page
+              </Button>
+              <Text
+                size="lg"
+                className="flex w-[33%] justify-center border-2 p-2 border-gray-400 bg-gray-200 items-center text-black font-semibold rounded-lg"
+              >
+                Page {page || 1}
+              </Text>
+              <Button
+                className="bg-color2 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
+                onClick={() => {
+                  setPage(page + 1);
+                }}
+              >
+                Next Page ⏭️
+              </Button>
+            </div>
           </div>
         </div>
       </>

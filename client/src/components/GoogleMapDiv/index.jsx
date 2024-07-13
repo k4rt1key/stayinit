@@ -49,9 +49,6 @@ const GoogleMapDiv = ({ addresses }) => {
           try {
             return await geocodeAddress(address);
           } catch (error) {
-            console.error(
-              `Error geocoding address "${address}": ${error.message}`
-            );
             return null;
           }
         })

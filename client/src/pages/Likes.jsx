@@ -22,7 +22,6 @@ export default function likes() {
   const [likes, loading, error] = useFetchLikes(likesLength);
 
   const likeArrayProps = likes.map((l) => {
-    console.log(l);
     if (l?.type === "hostel") {
       return {
         _id: l?.hostel?._id,

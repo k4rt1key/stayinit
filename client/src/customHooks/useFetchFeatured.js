@@ -18,7 +18,6 @@ export default function useFetchFeatured() {
                 requestOptions
             );
             const jsonResponse = await response.json();
-            console.log("JSON RESPONSE", jsonResponse)
 
             if (jsonResponse.success === true) {
                 setProperties(jsonResponse.data);

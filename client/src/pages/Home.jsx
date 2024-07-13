@@ -10,8 +10,6 @@ export default function Home() {
   const [search, setSearch] = React.useState("");
   const [type, setType] = React.useState("flat");
 
-  console.log(type, search);
-
   return (
     <>
       <div
