@@ -77,8 +77,17 @@ export default function PropertyPage(props) {
   function toggleLike(_id) {
     if (isAuthenticate === true) {
       if (likedProperty.includes(_id)) {
+        let newLikesList = likedProperty.filter((property) => {
+          return property !== _id;
+        });
+        setLikedProperty(newLikesList);
         unlike(_id);
       } else {
+        setLikedProperty((prev) => {
+          const newList = [...prev];
+          newList.push(_id);
+          return newList;
+        });
         like(_id);
       }
     } else {
