@@ -51,8 +51,10 @@ const genderOptions = [
 ];
 
 const ListingPage = () => {
+
   const { authData } = useAuth();
   const { isAuthenticate, profile } = authData;
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [propertyArray, loading, error] = useFetchListing(searchParams);
   const { type } = useParams();
@@ -60,6 +62,7 @@ const ListingPage = () => {
   const [likeLoading, setLikeLoading] = useState(false);
   const [likedProperty, setLikedProperty] = useState([]);
   const [likesLength, setLikesLength] = useState(() => likedProperty.length);
+  
   const [page, setPage] = useState(1);
   // if type is invalid then return error
   if (type != "hostel" && type != "flat") {

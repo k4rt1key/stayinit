@@ -43,7 +43,7 @@ async function like(req, res) {
         if (likeInDb) {
             return res.status(409).json({
                 "success": false,
-                "message": "User has already liked this propert",
+                "message": "User has already liked this property",
             });
         }
 

@@ -33,7 +33,7 @@ async function getFlat(req, res) {
 
         res.status(200).json({
             "success": true,
-            "message": "Flat not found",
+            "message": "Successfully fetched flats",
             "data": flatInDb
         })
 
@@ -60,6 +60,8 @@ async function getAllFlats(req, res) {
             limit = 9;
         }
 
+        // skip = (2-1) * (9) = 9
+        // limit = 9 
         const skip = (parseInt(page) - 1) * parseInt(limit);
 
         let minSqft = 0, maxSqft = Infinity, minPrice = 0, maxPrice = Infinity;
@@ -102,8 +104,8 @@ async function getAllFlats(req, res) {
             maxSqft = Infinity;
         }
 
-        const sortByPrice = req.query.sortByPrice;
-        const sortBySqft = req.query.sortBySqft;
+        const sortByPrice = req.query.sortByPrice; // 1 0r -1
+        const sortBySqft = req.query.sortBySqft; // 1 0r -1
 
         queryObj = {}
 
@@ -112,7 +114,7 @@ async function getAllFlats(req, res) {
         }
 
         if (locality) {
-            queryObj.locality = locality.toUpperCase()
+            queryObj.locality = locality.toLowerCase()
         }
 
         if (bhk) {
@@ -131,7 +133,6 @@ async function getAllFlats(req, res) {
                 { locality: { $regex: search, $options: 'i' } }
             ];
         }
-
 
         const flatsInDb = await Flat.find(queryObj)
             .populate("likes")
