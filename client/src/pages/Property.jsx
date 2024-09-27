@@ -66,7 +66,7 @@ const PropertyPage = () => {
               <span className="text-indigo-600 font-semibold">
                 ₹{item.price.toLocaleString()}
               </span>{" "}
-              / Semester
+              / Year
             </li>
           ))}
         </ul>
@@ -238,7 +238,9 @@ const PropertyPage = () => {
           )}
 
           <div className="my-6  bg-gray-50 rounded-lg shadow-sm">
-            <h2 className="text-xl font-1 font-semibold mb-3">Pricing</h2>
+            <h2 className="text-xl font-1 font-semibold mb-3">
+              {property.type === "flat" ? "Rent" : "Pricing"}
+            </h2>
             {renderPricing()}
           </div>
 

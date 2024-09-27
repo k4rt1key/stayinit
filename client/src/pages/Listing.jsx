@@ -216,7 +216,10 @@ const ListingPage = () => {
       <main className="flex-1">
         <div className="flex justify-between items-center p-6 w-[97%] rounded-2xl bg-gray-100 ml-4">
           <h1 className="text-lg md:text-3xl text-center font-1">
-            {type.charAt(0).toUpperCase() + type.slice(1)} Listings
+            {type.charAt(0).toUpperCase() + type.slice(1)} Listings{" "}
+            {type.charAt(0).toLowerCase() + type.slice(1) === "flat"
+              ? "for Rent"
+              : ""}{" "}
           </h1>
           <button
             className="lg:hidden bg-blue-600 text-white p-2 rounded-full"
