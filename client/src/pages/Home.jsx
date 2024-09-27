@@ -44,8 +44,8 @@ export default function Home() {
             <span className="text-gray-200">Living Space</span>
           </h1>
           <p className="text-xl lg:text-2xl mb-12 max-w-xl mx-auto text-gray-200">
-            Discover your dream property in our curated selection of flats and
-            hostels.
+            Discover your dream property in our curated selection of hostels and
+            flats for rent.
           </p>
 
           {/* Search Section */}
