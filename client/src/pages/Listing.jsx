@@ -5,24 +5,9 @@ import useFetchListing from "../customHooks/useFetchListing";
 import { ChevronLeft, ChevronRight, Sliders } from "lucide-react";
 
 const ListingPage = () => {
-<<<<<<< HEAD
-
-  const { authData } = useAuth();
-  const { isAuthenticate, profile } = authData;
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [propertyArray, loading, error] = useFetchListing(searchParams);
-  const { type } = useParams();
-
-  const [likeLoading, setLikeLoading] = useState(false);
-  const [likedProperty, setLikedProperty] = useState([]);
-  const [likesLength, setLikesLength] = useState(() => likedProperty.length);
-  
-=======
   const [searchParams, setSearchParams] = useSearchParams();
   const [propertyArray, loading, error] = useFetchListing(searchParams);
   const { type } = useParams(); // hostel or flat
->>>>>>> 9579b71 (updated ui)
   const [page, setPage] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 

@@ -33,11 +33,7 @@ async function getFlat(req, res) {
 
         res.status(200).json({
             "success": true,
-<<<<<<< HEAD
-            "message": "Successfully fetched flats",
-=======
             "message": "Fetched Flat Successfully",
->>>>>>> 9579b71 (updated ui)
             "data": flatInDb
         })
 
