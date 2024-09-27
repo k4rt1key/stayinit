@@ -118,7 +118,6 @@ UserSchema.methods.generateRefreshAndAccessTokens = async function () {
 
 const handleDelete = async function () {
     try {
-        console.log("Deleting user");
         const Comment = require("./Comment");
         const Flat = require("./Flat");
         const Hostel = require("./Hostel");

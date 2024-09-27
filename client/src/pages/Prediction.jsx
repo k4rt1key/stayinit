@@ -8,7 +8,7 @@ import { roundToNearestThousand } from "../utils/UtilityFunctions";
 import useFetchPrediction from "../customHooks/useFetchPrediction";
 
 const filterStyle =
-  "py-2 px-4 w-full focus:outline-none placeholder:text-[#073937] hover:bg-color1 focus:placeholder-[#FFFBF2] focus:bg-[#073937] focus:text-[#D8D4CD] bg-color1 rounded-[3rem] border border-[#D8D4CD]";
+  "py-2 px-4 w-full focus:outline-none placeholder:text-[#073937] hover: focus:placeholder-[#FFFBF2] focus:bg-[#073937] focus:text-[#D8D4CD]  rounded-[3rem] border border-[#D8D4CD]";
 
 export default function Prediction() {
   const [prediction, loading, error] = useFetchPrediction();

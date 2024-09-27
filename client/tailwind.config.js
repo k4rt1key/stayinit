@@ -9,14 +9,6 @@ module.exports = withMT({
   theme: {
     extend: {
       backgroundColor: {
-        'color1': '#FFFBF2',
-        'color2': "#073937",
-        // 'color1': '#F8EEE7',
-        'color3': '#FDF5EA',
-        'color4': '#CAC4BC'
-        // 'colorG': '#073937',
-        // 'color3': '#FCF5EB',
-        // 'color3': '#F3EADC',
       },
 
       fontFamily: {

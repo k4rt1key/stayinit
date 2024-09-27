@@ -1,117 +1,165 @@
-import React from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Search, Home as HomeIcon, Filter, DollarSign } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-import { Button, Img, Input, Text } from "../components";
-import FeaturedProperties from "../components/FeaturedProperties";
+const FeatureCard = ({ icon, title, description }) => (
+  <motion.div
+    className="flex flex-col items-center p-8 bg-white rounded-lg shadow-sm transition-all duration-300 hover:shadow-md"
+    whileHover={{ y: -5 }}
+  >
+    <div className="text-black mb-6">{icon}</div>
+    <h3 className="text-xl font-semibold mb-4 text-gray-800">{title}</h3>
+    <p className="text-gray-600 text-center text-sm">{description}</p>
+  </motion.div>
+);
 
 export default function Home() {
+  const [search, setSearch] = useState("");
+  const [propertyType, setPropertyType] = useState("flat");
   const navigate = useNavigate();
 
-  const [search, setSearch] = React.useState("");
-  const [type, setType] = React.useState("flat");
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/listing/${propertyType}?search=${search}`);
+  };
 
   return (
-    <>
-      <div
-        className="
-        px-[1.5rem] lg:px-[10rem]
-        flex flex-col gap-10
-        items-center justify-start  
-        overflow-x-hidden
-        w-auto"
+    <div className="flex flex-col justify-center bg-white">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="relative bg-gray-400 py-24 px-6 lg:px-32"
+        style={{
+          backgroundImage: "url('/images/bg.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       >
-        {/* heading */}
-        <div
-          className="
-          flex md:flex-row flex-col gap-10 items-center justify-start w-full
-          py-10"
-        >
-          {/* heading + input */}
-          <div className="w-full flex flex-col gap-10 items-start justify-start">
-            {/* heading text */}
-            <div className="w-full flex flex-col gap-4 items-start justify-start">
-              <Text className="text-3xl md:text-4xl font-1 leading-[3.25rem]">
-                Find a perfect Hostel & Flat
-                <br />
-                Where you&#39;ll love to live
-              </Text>
-              <Text className="text-lg lg:text-xl lg:leading-[2rem] text-gray-600 text-md">
-                We helps businesses customize, automate and scale up their ad
-                production and delivery.
-              </Text>
-            </div>
-            {/* inputs */}
-            <div className="flex flex-col gap-[38px] items-center justify-start w-full">
-              {/* Flat Or Hostel */}
-              <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full">
-                <Button
-                  onClick={() => setType("flat")}
-                  className={`${
-                    type === "flat"
-                      ? "bg-color2 text-white"
-                      : "bg-gray-200 text-colorG "
-                  } cursor-pointer font-semibold py-3 rounded-[10px] text-center text-lg w-full`}
-                >
-                  Flat
-                </Button>
-                <Button
-                  onClick={() => setType("hostel")}
-                  className={`${
-                    type === "hostel"
-                      ? "bg-color2 text-white"
-                      : "bg-gray-200 text-colorG "
-                  } cursor-pointer font-semibold py-3 rounded-[10px] text-center text-lg w-full`}
-                >
-                  Hostels
-                </Button>
-              </div>
-              <form
-                className="flex flex-col gap-6 items-start justify-start w-full"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  navigate(`/listing/${type}?search=${search}`);
-                }}
-              >
-                <div className="flex flex-col gap-5 items-start justify-start w-full">
-                  {/* input - city */}
-                  <Input
-                    name="textfieldlarge"
-                    placeholder="Search by City, Locality, or Property's name"
-                    className="focus:border-transparent outline-none placeholder:text-gray-600 text-gray-600 text-left md:text-xl text-md w-full"
-                    wrapClassName="bg-white border border-solid flex pb-3.5 pt-5 px-4 rounded-[10px] w-full"
-                    suffix={
-                      <Img
-                        className="mt-auto mb-[5px] h-5 ml-[35px]"
-                        src="/images/img_location.svg"
-                        alt="location"
-                      />
-                    }
-                    value={search}
-                    onChange={(event) => {
-                      setSearch(event);
-                    }}
-                  ></Input>
-                </div>
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div className="relative z-10 max-w-6xl mx-auto text-center">
+          <h1 className="text-4xl lg:text-6xl font-1 mb-6 leading-tight text-white">
+            Find Your Perfect <br />
+            <span className="text-gray-200">Living Space</span>
+          </h1>
+          <p className="text-xl lg:text-2xl mb-12 max-w-xl mx-auto text-gray-200">
+            Discover your dream property in our curated selection of flats and
+            hostels.
+          </p>
 
-                {/* search */}
-                <button className="bg-color2 cursor-pointer font-semibold py-[17px] rounded-[10px] text-center text-lg text-white w-full">
-                  Search
-                </button>
-              </form>
+          {/* Search Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="bg-gray-400/40 p-6 rounded-xl shadow-md max-w-md mx-auto"
+          >
+            <div className="flex md:flex gap-4 mb-6">
+              <button
+                onClick={() => setPropertyType("flat")}
+                className={`px-8 py-3 rounded-full transition-colors duration-200 font-medium flex-1 ${
+                  propertyType === "flat"
+                    ? "bg-gray-200 text-black hover:bg-gray-300"
+                    : "bg-gray-200 text-black hover:bg-gray-300"
+                }`}
+              >
+                Flat
+              </button>
+              <button
+                onClick={() => setPropertyType("hostel")}
+                className={`px-8 py-2 rounded-full transition-colors duration-200 font-medium flex-1 ${
+                  propertyType === "hostel"
+                    ? "bg-gray-900 text-white hover:bg-gray-300"
+                    : "bg-white text-gray-900 hover:bg-gray-300"
+                }`}
+              >
+                Hostel
+              </button>
             </div>
-          </div>
-          {/* home page image */}
-          <div className="w-full hidden lg:flex flex-col gap-10 items-center justify-center">
-            <Img
-              className="w-full h-full object-cover"
-              src="/images/img_image.png"
-              alt="image"
+            <form onSubmit={handleSearch} className="flex flex-row gap-4">
+              <input
+                placeholder="Search by City or Locality"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="flex-grow rounded-full px-6 py-2 bg-gray-100 text-black placeholder-gray-900 focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="bg-black/85 justify-center items-center text-white px-6 py-2 rounded-full transition-colors duration-200"
+              >
+                <Search className="w-6 h-6" />
+              </button>
+            </form>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Feature Section */}
+      <div className="py-24 px-6 lg:px-32 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-3xl font-bold font-1 mb-12 text-center text-gray-800"
+          >
+            Our Features
+          </motion.h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <FeatureCard
+              icon={<HomeIcon className="w-12 h-12" />}
+              title="List Your Property"
+              description="Easily add and manage your property listings with our intuitive platform."
+            />
+            <FeatureCard
+              icon={<Filter className="w-12 h-12" />}
+              title="Advanced Search"
+              description="Use our powerful filters to find your perfect home that meets all your criteria."
+            />
+            <FeatureCard
+              icon={<DollarSign className="w-12 h-12" />}
+              title="Featured Listings"
+              description="Boost your property's visibility with our premium featured listings option."
             />
           </div>
         </div>
-
-        <FeaturedProperties />
       </div>
-    </>
+
+      {/* Call to Action Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="bg-gray-100 py-24 px-6 lg:px-32"
+      >
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-1 font-bold mb-6 text-black">
+            Ready to Get Started?
+          </h2>
+          <p className="text-lg text-gray-700 mb-12">
+            Join our community of property owners and seekers today!
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
+            <button
+              onClick={() => {
+                navigate("/dashboard/add-flat");
+              }}
+              className="bg-indigo-900 text-white px-8 py-3 rounded-full text-base font-medium hover:bg-gray-800 transition-colors duration-200"
+            >
+              List Property
+            </button>
+            <button
+              onClick={() => {
+                navigate("/dashboard/flatlist");
+              }}
+              className="bg-white text-black px-8 py-3 rounded-full text-base font-medium border border-black hover:bg-gray-100 transition-colors duration-200"
+            >
+              Browse Listings
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
   );
 }

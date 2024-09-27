@@ -1,102 +1,54 @@
 import React, { useState } from "react";
-
 import { extractCoordinatesFromUrl } from "../utils/UtilityFunctions";
-
-import { Button, Text } from "../components";
+import { Button } from "../components";
 
 export default function NearestLandmarksMap({ property }) {
   const addressCordinates = extractCoordinatesFromUrl(property?.addressLink);
   const lat = addressCordinates?.split(",")[0];
   const long = addressCordinates?.split(",")[1];
-  const { city, locality, uniquename, name } = property;
-  const [mapString, setMapString] = useState(`${lat},${long}`);
+  const { city, locality } = property;
   const [mapStringNumber, setMapStringNumber] = useState(0);
-  const iframes = [
-    <iframe
-      src={`https://www.google.com/maps/embed/v1/search?q=${`${lat},${long}`}&key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4`}
-      className="h-full w-full"
-    ></iframe>,
-    <iframe
-      src={`https://www.google.com/maps/embed/v1/search?q=${`cafes around 10km of ${lat},${long},${locality},${city}`}&key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4`}
-      className="h-full w-full"
-    ></iframe>,
-    <iframe
-      src={`https://www.google.com/maps/embed/v1/search?q=${`bus transportations near ${lat},${long},${locality},${city}`}&key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4`}
-      className="h-full w-full"
-    ></iframe>,
-    <iframe
-      src={`https://www.google.com/maps/embed/v1/search?q=${`${lat},${long} to ${city} railway station`}&key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4`}
-      className="h-full w-full"
-    ></iframe>,
+
+  const mapTypes = [
+    { name: "Map", query: `${lat},${long}` },
+    {
+      name: "Cafes",
+      query: `cafes around 10km of ${lat},${long},${locality},${city}`,
+    },
+    {
+      name: "Bus",
+      query: `bus transportations near ${lat},${long},${locality},${city}`,
+    },
+    { name: "Railway", query: `${lat},${long} to ${city} railway station` },
   ];
+
   return (
-    <div className="flex flex-col gap-6 items-start justify-start w-full">
-      <div className="flex flex-col gap-6 items-start justify-start w-full">
-        <Text className="text-lg lg:text-xl font-semibold leading-[135.00%]">
-          Local Information
-        </Text>
-        {/* 4 buttons */}
-        <div className="gap-3 grid grid-cols-1 md:grid-cols-4 items-center justify-center  w-full">
+    <div className="flex flex-col gap-6 w-full">
+      <h2 className="text-2xl font-semibold text-gray-800">
+        Local Information
+      </h2>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {mapTypes.map((type, index) => (
           <Button
-            onClick={() => {
-              setMapStringNumber(0);
-            }}
-            className={`${
-              mapStringNumber === 0
-                ? "bg-color2 text-white "
-                : "text-gray-900 bg-gray-300"
-            } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
+            key={type.name}
+            onClick={() => setMapStringNumber(index)}
+            className={`py-2 px-4 rounded-full text-sm font-medium transition-colors duration-200 ${
+              mapStringNumber === index
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
           >
-            Map
+            {type.name}
           </Button>
-          <Button
-            onClick={() => {
-              setMapStringNumber(1);
-            }}
-            className={`${
-              mapStringNumber === 1
-                ? "bg-color2 text-white "
-                : "text-gray-900 bg-gray-300"
-            } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
-          >
-            Cafes
-          </Button>
-          <Button
-            onClick={() => {
-              setMapStringNumber(2);
-            }}
-            className={`${
-              mapStringNumber === 2
-                ? "bg-color2 text-white "
-                : "text-gray-900 bg-gray-300"
-            } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
-          >
-            Bus
-          </Button>
-          <Button
-            onClick={() => {
-              setMapStringNumber(3);
-            }}
-            className={`${
-              mapStringNumber === 3
-                ? "bg-color2 text-white "
-                : "text-gray-900 bg-gray-300"
-            } border border-bluegray-100 border-solid cursor-pointer flex-1 font-semibold py-[11px] rounded-[10px] text-base text-center  w-full`}
-          >
-            Railway
-          </Button>
-        </div>
+        ))}
       </div>
-      <div className="h-[400px] border-2 border-[#CAC4BC] relative w-full">
-        {mapStringNumber !== -1 ? (
-          iframes[mapStringNumber]
-        ) : (
-          <div className="w-full h-full flex justify-center items-center bg-gray-200">
-            {" "}
-            Explore Maps, Cafes, Public transports & Railway Station nearby this
-            property
-          </div>
-        )}
+      <div className="h-[400px] rounded-lg overflow-hidden shadow-md">
+        <iframe
+          src={`https://www.google.com/maps/embed/v1/search?q=${mapTypes[mapStringNumber].query}&key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4`}
+          className="w-full h-full border-0"
+          allowFullScreen
+          loading="lazy"
+        ></iframe>
       </div>
     </div>
   );

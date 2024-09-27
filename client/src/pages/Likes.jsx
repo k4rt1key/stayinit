@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/Auth";
-
 import { toast } from "react-toastify";
 import { Spinner } from "@material-tailwind/react";
-import { Button, Img, Text } from "../components";
+import { Button, Text } from "../components";
 import LandingPageCard from "../components/LandingPageCard";
-
 import useFetchLikes from "../customHooks/useFetchLikes";
+import { Heart } from "lucide-react";
 
-export default function likes() {
+export default function Likes() {
   const navigate = useNavigate();
-  // auth data
   const { authData } = useAuth();
   const { isAuthenticate, profile } = authData;
 
-  // likes
   const [likeLoading, setLikeLoading] = useState(false);
   const [likedProperty, setLikedProperty] = useState([]);
   const [likesLength, setLikesLength] = useState(() => likedProperty.length);
@@ -36,7 +33,6 @@ export default function likes() {
         wifiFacility: l?.hostel?.wifiFacility,
         forWhichGender: l?.hostel?.forWhichGender,
         type: "hostel",
-
         likeLoading,
         setLikeLoading,
         likedProperty,
@@ -58,7 +54,6 @@ export default function likes() {
         sqft: l?.flat?.sqft,
         balconies: l?.flat?.balconies,
         type: "flat",
-
         likeLoading,
         setLikeLoading,
         likedProperty,
@@ -69,108 +64,68 @@ export default function likes() {
     }
   });
 
-  if (!isAuthenticate) {
-    navigate("/login", { state: { returnUrl: window.location.pathname } });
-  }
-
-  if (!loading) {
-    if (likeArrayProps.length === 0) {
-      return (
-        <div className="flex gap-4 flex-col justify-center items-center h-screen">
-          <Text size="lg" className="text-center font-1 text-3xl">
-            You have not liked any properties yet
-          </Text>
-          <div className="flex gap-4">
-            <Link
-              to="/listing/flat"
-              className="px-4 py-2 bg-color2 text-white w-[10rem] text-center rounded-md mt-4"
-            >
-              Go to Flats
-            </Link>
-            <Link
-              className="px-4 py-2 bg-color2 text-white w-[10rem] text-center rounded-md mt-4"
-              to="/listing/hostel"
-            >
-              Go to Hostels
-            </Link>
-          </div>
-        </div>
-      );
+  useEffect(() => {
+    if (!isAuthenticate) {
+      navigate("/login", { state: { returnUrl: window.location.pathname } });
     }
-    return (
-      <>
-        <div className="px-[1.5rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">
-          <div className="flex flex-col gap-10 items-center justify-center w-full">
-            {/* page header and filters */}
-            <div className="flex flex-col gap-6 items-center justify-center max-w-[1200px] mx-auto w-full">
-              <Text
-                className="text-4xl font-1 sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-full"
-                size=""
-              >
-                Liked Property
-              </Text>
+  }, [isAuthenticate, navigate]);
 
-              {/* cards and map view */}
-              <div className="flex flex-col items-center justify-center w-full">
-                <div className="flex flex-col gap-6 items-start justify-center max-w-[1200px]  w-full">
-                  {/* cards */}
-                  <div className="flex flex-col gap-10 items-start justify-start w-full">
-                    {/* cards */}
-                    <div className="flex flex-col items-start justify-start w-full">
-                      <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 justify-center w-full">
-                        {likeArrayProps.map((props, index) => (
-                          <div
-                            className="relative"
-                            key={`LandingPageCard${index}`}
-                          >
-                            <LandingPageCard {...props} />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* page & nextpage */}
-                    {/* <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
-                      <div className="flex flex-row gap-6 items-start justify-start w-auto">
-                        <Button className="border border-gray-700 border-solid cursor-pointer font-semibold h-12 py-[13px] rounded-[10px] text-base text-center text-gray-900 w-12">
-                          1
-                        </Button>
-                        <Button className="border border-bluegray-102 border-solid cursor-pointer font-semibold h-12 py-[13px] rounded-[10px] text-base text-center text-gray-900 w-12">
-                          2
-                        </Button>
-                        <Button className="border border-bluegray-102 border-solid cursor-pointer font-semibold h-12 py-[13px] rounded-[10px] text-base text-center text-gray-900 w-12">
-                          3
-                        </Button>
-                      </div>
-
-                      <Button
-                        className="border border-bluegray-102 border-solid cursor-pointer flex items-center justify-center min-w-[134px] px-[17px] py-[13px] rounded-[10px]"
-                        rightIcon={
-                          <Img
-                            className="h-4 mt-px mb-[5px] ml-1"
-                            src="/images/img_arrowright_gray_900.svg"
-                            alt="arrow_right"
-                          />
-                        }
-                      >
-                        <div className="font-semibold text-base text-gray-900 text-left">
-                          Next Page
-                        </div>
-                      </Button>
-                    </div> */}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  } else {
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Spinner color="green" className="h-16 w-16" />
+        <Spinner color="blue" className="h-16 w-16" />
       </div>
     );
   }
+
+  if (likeArrayProps.length === 0) {
+    return (
+      <div className="flex flex-col justify-center items-center bg-gray-50">
+        <div className="text-center p-8 bg-white rounded-lg shadow-md">
+          <Heart className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+          <Text className="text-3xl font-bold text-gray-800 mb-4">
+            Your Wishlist is Empty
+          </Text>
+          <p className="text-gray-600 mb-8">
+            You haven't liked any properties yet. Start exploring to find your
+            dream home!
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Link
+              to="/listing/flat"
+              className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Explore Flats
+            </Link>
+            <Link
+              to="/listing/hostel"
+              className="px-6 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition-colors"
+            >
+              Discover Hostels
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-gray-50 py-2">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-12 p-6 bg-gray-100 rounded-xl">
+          <h1 className="text-2xl font-1 text-gray-900">
+            Your Liked Properties
+          </h1>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {likeArrayProps.map((props, index) => (
+            <div key={`LikedProperty${index}`} className="relative">
+              <div className="absolute top-4 right-4 z-10"></div>
+              <LandingPageCard {...props} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

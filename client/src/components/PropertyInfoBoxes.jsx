@@ -1,26 +1,29 @@
 import React from "react";
-import { List, Text } from "./";
+
 function PropertyInfoBoxes({ PropertyInfo }) {
   return (
-    <div className="w-full flex flex-row gap-6 flex-wrap">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {PropertyInfo.map((x) =>
         x.value === true || x.value !== undefined ? (
           <div
             key={x.name + Math.random()}
-            className="flex flex-row gap-6 rounded-md w-full bg-gray-200  p-2 items-center justify-between"
+            className="bg-white shadow-sm rounded-lg p-4 flex items-center justify-between transition-all duration-300 hover:shadow-md"
           >
-            <div className="flex flex-row justify-between gap-6 p-2">
-              <span>{x.name.toUpperCase()}</span>
-              <span className="font-bold">
-                {typeof x.value === "boolean"
-                  ? ""
-                  : x.value?.toString().toUpperCase()}
+            <div className="flex items-center space-x-3">
+              <span className="text-2xl">{x.icon}</span>
+              <span className="text-sm font-medium text-gray-700">
+                {x.name}
               </span>
             </div>
+            <span className="text-sm font-bold text-gray-900">
+              {typeof x.value === "boolean"
+                ? x.value
+                  ? "Yes"
+                  : "No"
+                : x.value?.toString()}
+            </span>
           </div>
-        ) : (
-          <React.Fragment key={x.name + Math.random()} />
-        )
+        ) : null
       )}
     </div>
   );

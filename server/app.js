@@ -22,6 +22,8 @@ const HostelRouter = require("./routes/hostel")
 const ProfileRouter = require("./routes/profile")
 const LikesRouter = require("./routes/likes")
 const FeaturedRouter = require("./routes/featured")
+const FlatAdminRouter = require("./routes/flatadmin")
+const HostelAdminRouter = require("./routes/hosteladmin")
 
 // >> Importing Models
 const Hostel = require("./models/Hostel")
@@ -34,6 +36,7 @@ const Profile = require("./models/Profile")
 const Otp = require("./models/Otp")
 const PasswordResetToken = require("./models/PasswordResetToken")
 const User = require("./models/User")
+
 
 // >>> security middlewares 
 app.use(cors("*"));
@@ -74,6 +77,8 @@ app.use("/api/v1/likes", LikesRouter)
 app.use("/api/v1/comment", CommentRouter)
 app.use("/api/v1/file", FileRouter)
 app.use("/api/v1/featured", FeaturedRouter)
+app.use("/api/v1/flatadmin", FlatAdminRouter)
+app.use("/api/v1/hosteladmin", HostelAdminRouter)
 
 
 // >>> starting and connecting with server and db

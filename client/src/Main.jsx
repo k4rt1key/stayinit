@@ -16,7 +16,7 @@ import {
 import { ThemeProvider } from "@material-tailwind/react";
 
 import Home from "./pages/Home";
-import PropertyPage from "./pages/PropertyPage";
+import Property from "./pages/Property";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Test from "./pages/Test";
@@ -27,9 +27,9 @@ import ResetPassword from "./pages/ResetPassword";
 import Listing from "./pages/Listing";
 import Likes from "./pages/Likes";
 
-import propertyPageLoader from "./loaders/propertyPageLoader";
-
 import ErrorElement from "./components/ErrorElement";
+import FlatManager from "../src/admin/FlatManager";
+import AddFlat from "../src/admin/AddFlat";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -38,7 +38,7 @@ const router = createBrowserRouter(
 
       <Route path="/listing/:type" element={<Listing />} />
 
-      <Route path="/listing/:type/:propertyname" element={<PropertyPage />} />
+      <Route path="/listing/:type/:propertyname" element={<Property />} />
 
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -50,6 +50,8 @@ const router = createBrowserRouter(
       <Route path="/test" element={<Test />} />
 
       <Route path="*" element={<NotFound />} />
+      <Route path="dashboard/flatlist" element={<FlatManager />} />
+      <Route path="dashboard/add-flat" element={<AddFlat />} />
     </Route>
   )
 );

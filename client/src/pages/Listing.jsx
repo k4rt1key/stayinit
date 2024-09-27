@@ -1,56 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useSearchParams, useParams, useLoaderData } from "react-router-dom";
-import { useAuth } from "../contexts/Auth";
-import { Spinner } from "@material-tailwind/react";
-import Select from "react-select";
-import { toast } from "react-toastify";
-import { Button, GoogleMapDiv, Img, Text } from "../components";
+import React, { useState, useEffect, useMemo } from "react";
+import { useSearchParams, useParams } from "react-router-dom";
 import LandingPageCard from "../components/LandingPageCard";
-
 import useFetchListing from "../customHooks/useFetchListing";
-
-// Filters Options
-const bhkOptions = [
-  { label: "1 BHK", value: "1" },
-  { label: "2 BHK", value: "2" },
-  { label: "3 BHK", value: "3" },
-  { label: "4 BHK", value: "4" },
-];
-
-const priceOptions = [
-  { label: "Below 10,000", value: "1" },
-  { label: "10,000 - 20,000", value: "2" },
-  { label: "20,000 - 30,000", value: "3" },
-  { label: "30,000+", value: "4" },
-];
-
-const priceOptionsForHostels = [
-  { label: "Below 40,000", value: "1" },
-  { label: "40,000 - 80,000", value: "2" },
-  { label: "80,000 - 1,20,000", value: "3" },
-  { label: "1,20,000+", value: "4" },
-];
-
-const furnitureTypeOptions = [
-  { label: "Unfurnished", value: "unfurnished" },
-  { label: "Furnished", value: "furnished" },
-  { label: "Semifurnished", value: "semifurnished" },
-];
-
-const sqftOptions = [
-  { label: "Below 600", value: "1" },
-  { label: "600 - 1200", value: "2" },
-  { label: "1200 - 2000", value: "3" },
-  { label: "2000+", value: "4" },
-];
-
-const genderOptions = [
-  { label: "Boys", value: "boys" },
-  { label: "Girls", value: "girls" },
-  { label: "Unisex", value: "both" },
-];
+import { ChevronLeft, ChevronRight, Sliders } from "lucide-react";
 
 const ListingPage = () => {
+<<<<<<< HEAD
 
   const { authData } = useAuth();
   const { isAuthenticate, profile } = authData;
@@ -63,673 +18,255 @@ const ListingPage = () => {
   const [likedProperty, setLikedProperty] = useState([]);
   const [likesLength, setLikesLength] = useState(() => likedProperty.length);
   
+=======
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [propertyArray, loading, error] = useFetchListing(searchParams);
+  const { type } = useParams(); // hostel or flat
+>>>>>>> 9579b71 (updated ui)
   const [page, setPage] = useState(1);
-  // if type is invalid then return error
-  if (type != "hostel" && type != "flat") {
-    throw new Error(`invalid path /listing/${type}`);
-  }
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // ############# FOR MAPS STARTS
-  const [propertyArrayAddresses, setPropertyArrayAddresses] = React.useState(
-    []
-  );
-
-  React.useEffect(() => {
-    const arr = propertyArray.map((x) => {
-      return `${x.address} ${x.locality} ${x.city}`;
-    });
-
-    setPropertyArrayAddresses(arr);
-  }, [propertyArray]);
-
-  // ############# FOR MAPS ENDS
-
-  // props ( for landing page card )
-  let propertyArrayProps = propertyArray.map((p) => {
-    if (type === "hostel") {
-      return {
-        _id: p._id,
-        images: p.images,
-        city: p.city,
-        locality: p.locality,
-        uniqueName: p.uniqueName,
-        name: p.name,
-        price: p.priceAndSharing[0].price,
-        sharing: p.priceAndSharing[0].sharing,
-        freeLaundry: p.freeLaundry,
-        wifiFacility: p.wifiFacility,
-        forWhichGender: p.forWhichGender,
-        type: "hostel",
-
-        setLikeLoading,
-        likedProperty,
-        setLikedProperty,
-        likesLength,
-        setLikesLength,
-      };
-    } else {
-      return {
-        _id: p._id,
-        images: p.images,
-        city: p.city,
-        locality: p.locality,
-        uniqueName: p.uniqueName,
-        name: p.name,
-        price: p.price,
-        bhk: p.bhk,
-        bathrooms: p.bathrooms,
-        sqft: p.sqft,
-        balconies: p.balconies,
-        type: "flat",
-
-        likeLoading,
-        setLikeLoading,
-        likedProperty,
-        setLikedProperty,
-        likesLength,
-        setLikesLength,
-      };
-    }
+  // Filters state
+  const [filters, setFilters] = useState({
+    priceRange: [],
+    bhk: [],
+    sqftRange: [],
+    furnitureType: [],
+    forWhichGender: [],
   });
 
-  useEffect(() => {
-    propertyArrayProps = propertyArray.map((p) => {
-      if (type === "hostel") {
-        return {
-          _id: p._id,
-          images: p.images,
-          city: p.city,
-          locality: p.locality,
-          uniqueName: p.uniqueName,
-          name: p.name,
-          price: p.priceAndSharing[0].price,
-          sharing: p.priceAndSharing[0].sharing,
-          freeLaundry: p.freeLaundry,
-          wifiFacility: p.wifiFacility,
-          forWhichGender: p.forWhichGender,
-          type: "hostel",
+  // Filter options based on type (hostel or flat)
+  const filterOptions = {
+    priceRange:
+      type === "hostel"
+        ? [
+            { label: "Below 40,000", value: "1" },
+            { label: "40,000 - 80,000", value: "2" },
+            { label: "80,000 - 1,20,000", value: "3" },
+            { label: "1,20,000+", value: "4" },
+          ]
+        : [
+            { label: "Below 10,000", value: "1" },
+            { label: "10,000 - 20,000", value: "2" },
+            { label: "20,000 - 30,000", value: "3" },
+            { label: "30,000+", value: "4" },
+          ],
+    bhk: [
+      { label: "1 BHK", value: "1" },
+      { label: "2 BHK", value: "2" },
+      { label: "3 BHK", value: "3" },
+      { label: "4 BHK", value: "4" },
+    ],
+    sqftRange: [
+      { label: "Below 600", value: "1" },
+      { label: "600 - 1200", value: "2" },
+      { label: "1200 - 2000", value: "3" },
+      { label: "2000+", value: "4" },
+    ],
+    furnitureType: [
+      { label: "Unfurnished", value: "unfurnished" },
+      { label: "Furnished", value: "furnished" },
+      { label: "Semifurnished", value: "semifurnished" },
+    ],
+    forWhichGender: [
+      { label: "Boys", value: "boys" },
+      { label: "Girls", value: "girls" },
+      { label: "Unisex", value: "both" },
+    ],
+  };
 
-          setLikeLoading,
-          likedProperty,
-          setLikedProperty,
-          likesLength,
-          setLikesLength,
-        };
-      } else {
-        return {
-          _id: p._id,
-          images: p.images,
-          city: p.city,
-          locality: p.locality,
-          uniqueName: p.uniqueName,
-          name: p.name,
-          price: p.price,
-          bhk: p.bhk,
-          bathrooms: p.bathrooms,
-          sqft: p.sqft,
-          balconies: p.balconies,
-          type: "flat",
+  // Handle filter change
+  const handleFilterChange = (category, value) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [category]: prevFilters[category].includes(value)
+        ? prevFilters[category].filter((item) => item !== value)
+        : [...prevFilters[category], value],
+    }));
+  };
 
-          likeLoading,
-          setLikeLoading,
-          likedProperty,
-          setLikedProperty,
-          likesLength,
-          setLikesLength,
-        };
-      }
-    });
-  }, [propertyArray]);
+  // Filtering logic
+  const itemsPerPage = 8;
+  const startIndex = (page - 1) * itemsPerPage;
 
-  // %%%%%%%%% FOR FILTERS STARTS
-  const [filters, setFilters] = useState(() => {
-    if (type === "hostel") {
-      return {
-        forWhichGender: searchParams.get("forWhichGender")
-          ? {
-              label: genderOptions.find(
-                (x) => x.value == searchParams.get("forWhichGender")
-              )?.label,
-              value: searchParams.get("forWhichGender"),
-            }
-          : null,
-        priceRange: searchParams.get("priceRange")
-          ? {
-              label: priceOptionsForHostels.find(
-                (x) => x.value == searchParams.get("priceRange")
-              )?.label,
-              value: searchParams.get("priceRange"),
-            }
-          : null,
-        search: searchParams.get("search") || null,
-      };
-    } else {
-      return {
-        furnitureType: searchParams.get("furnitureType")
-          ? {
-              label: furnitureTypeOptions.find(
-                (x) => x.value == searchParams.get("furnitureType")
-              )?.label,
-              value: searchParams.get("furnitureType"),
-            }
-          : null,
-        bhk: searchParams.get("bhk")
-          ? {
-              label: bhkOptions.find((x) => x.value == searchParams.get("bhk"))
-                ?.label,
-              value: searchParams.get("bhk"),
-            }
-          : null,
-        sqftRange: searchParams.get("sqftRange")
-          ? {
-              label: sqftOptions.find(
-                (x) => x.value == searchParams.get("sqftRange")
-              )?.label,
-              value: searchParams.get("sqftRange"),
-            }
-          : null,
-        priceRange: searchParams.get("priceRange")
-          ? {
-              label: priceOptions.find(
-                (x) => x.value == searchParams.get("priceRange")
-              )?.label,
-              value: searchParams.get("priceRange"),
-            }
-          : null,
-        search: searchParams.get("search") || null,
-      };
-    }
-  });
+  const filteredProperties = useMemo(() => {
+    return propertyArray
+      .filter((property) => {
+        // Price range filter
+        if (filters?.priceRange?.length > 0) {
+          let priceMatches = filters?.priceRange?.some((x) => {
+            if (x == 1)
+              return property.price < (type === "hostel" ? 40000 : 10000);
+            if (x == 2)
+              return (
+                property.price >= (type === "hostel" ? 40000 : 10000) &&
+                property.price < (type === "hostel" ? 80000 : 20000)
+              );
+            if (x == 3)
+              return (
+                property.price >= (type === "hostel" ? 80000 : 20000) &&
+                property.price < (type === "hostel" ? 120000 : 30000)
+              );
+            if (x == 4)
+              return property.price >= (type === "hostel" ? 120000 : 30000);
+          });
+          if (!priceMatches) return false;
+        }
 
-  function clearAllFilters() {
-    setFilters(() => {
-      if (type === "hostel") {
-        return {
-          forWhichGender: null,
-          priceRange: null,
-          search: null,
-        };
-      } else {
-        return {
-          furnitureType: null,
-          bhk: null,
-          sqftRange: null,
-          priceRange: null,
-          search: null,
-        };
-      }
-    });
+        // BHK filter (only for flats)
+        if (type === "flat" && filters.bhk.length > 0) {
+          const bhkMatches = filters?.bhk?.includes(property?.bhk?.toString());
+          if (!bhkMatches) return false;
+        }
 
-    setSearchParams("");
-    // window.location.reload();
-  }
+        // Sqft filter (only for flats)
+        if (type === "flat" && filters?.sqftRange?.length > 0) {
+          let sqftMatches = filters?.sqftRange?.some((sqft) => {
+            if (sqft == 1) return property.sqft < 600;
+            if (sqft == 2) return property.sqft >= 600 && property.sqft < 1200;
+            if (sqft == 3) return property.sqft >= 1200 && property.sqft < 2000;
+            if (sqft == 4) return property.sqft >= 2000;
+          });
+          if (!sqftMatches) return false;
+        }
 
-  function submitFlatFilters(event) {
-    setSearchParams("");
-    if (event) event.preventDefault();
-    const newSearchParams = new URLSearchParams();
+        // Furniture Type filter (only for flats)
+        if (type === "flat" && filters?.furnitureType?.length > 0) {
+          const furnitureMatches = filters?.furnitureType?.includes(
+            property?.furnitureType?.toLowerCase()
+          );
+          if (!furnitureMatches) return false;
+        }
 
-    if (filters.furnitureType) {
-      newSearchParams.set("furnitureType", filters.furnitureType.value);
-    }
-    if (filters.bhk) {
-      newSearchParams.set("bhk", filters.bhk.value);
-    }
-    if (filters.sqftRange) {
-      newSearchParams.set("sqftRange", filters.sqftRange.value);
-    }
-    if (filters.priceRange) {
-      newSearchParams.set("priceRange", filters.priceRange.value);
-    }
-    if (filters.search) {
-      newSearchParams.set("search", filters.search);
-    }
-    if (page) {
-      newSearchParams.set("page", page);
-    }
+        // Gender filter (only for hostels)
+        if (type === "hostel" && filters.forWhichGender.length > 0) {
+          const genderMatches = filters.forWhichGender.includes(
+            property.forWhichGender.toLowerCase()
+          );
+          if (!genderMatches) return false;
+        }
 
-    setSearchParams(newSearchParams.toString());
-  }
-
-  function submitHostelFilters(event) {
-    setSearchParams("");
-    if (event) event.preventDefault();
-    const newSearchParams = new URLSearchParams();
-
-    if (filters.forWhichGender) {
-      newSearchParams.set("forWhichGender", filters.forWhichGender.value);
-    }
-    if (filters.priceRange) {
-      newSearchParams.set("priceRange", filters.priceRange.value);
-    }
-    if (filters.search) {
-      newSearchParams.set("search", filters.search);
-    }
-    if (page) {
-      newSearchParams.set("page", page);
-    }
-
-    setSearchParams(newSearchParams.toString());
-  }
-
-  let selectHostelFilters = [
-    {
-      options: priceOptionsForHostels,
-      placeholder: "Select price",
-      name: "priceRange",
-      value: filters["priceRange"],
-    },
-    {
-      options: genderOptions,
-      placeholder: "Gender",
-      name: "forWhichGender",
-      value: filters["forWhichGender"],
-    },
-  ];
-
-  let selectFlatFilters = [
-    {
-      options: priceOptions,
-      placeholder: "Price",
-      name: "priceRange",
-      value: filters["priceRange"],
-    },
-    {
-      options: sqftOptions,
-      placeholder: "Sqft",
-      name: "sqftRange",
-      value: filters["sqftRange"],
-    },
-    {
-      options: furnitureTypeOptions,
-      placeholder: "Furniture type",
-      name: "furnitureType",
-      value: filters["furnitureType"],
-    },
-    {
-      options: bhkOptions,
-      placeholder: "BHK",
-      name: "bhk",
-      value: filters["bhk"],
-    },
-  ];
-
-  React.useEffect(() => {
-    // chnage only reference but not value of selectHostelFilters and selectFlatFilters
-    // because when filter changes, its changes value of selectHostelFilters and selectFlatFilters
-    // but selectHostelFilters and selectFlatFilters are not re-rendered
-    // because reference of selectHostelFilters and selectFlatFilters are not changed
-    selectHostelFilters = [...selectHostelFilters];
-    selectFlatFilters = [...selectFlatFilters];
-  }, [filters]);
-
-  React.useEffect(() => {
-    if (type === "hostel") submitHostelFilters();
-    else submitFlatFilters();
-  }, [page]);
-
-  // %%%%%%%%% FOR FILTERS ENDS
-  const filterStyle = `py-4 border-2 border-[#CAC4BC] placeholder: text-center focus:outline-none placeholder:text-gray-600 hover:font-semibold bg-color3 rounded-[0.5em] border-[#D8D4CD] appearance-none border leading-5 `;
+        return true;
+      })
+      .slice(startIndex, startIndex + itemsPerPage);
+  }, [propertyArray, filters, type]);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Spinner color="green" className="h-16 w-16" />
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
-  } else {
-    return (
-      <>
-        <div className="px-[1.5rem] lg:px-[10rem] py-[2rem] flex flex-col sm:gap-10 md:gap-10 gap-[100px] items-start justify-start w-auto sm:w-full md:w-full">
-          <div className="flex flex-col gap-10 items-center justify-center w-full">
-            {/* page header and filters */}
-            <div className="flex flex-col gap-6 items-center justify-center max-w-[1200px] mx-auto w-full">
-              <Text
-                className="text-4xl font-1 sm:text-[32px] md:text-[34px] text-gray-900 tracking-[-0.72px] w-full"
-                size=""
-              >
-                Find Property
-              </Text>
-
-              {/* Form */}
-              {type === "hostel" ? (
-                <form
-                  className="flex flex-col md:flex-row flex-wrap gap-4 items-start justify-start w-full text-lg"
-                  onSubmit={submitHostelFilters}
-                >
-                  {/* searchbar */}
-                  <input
-                    name="search"
-                    className={filterStyle + " w-full md:w-[25rem]"}
-                    placeholder="Search Property"
-                    value={filters.search || ""}
-                    onChange={(event) => {
-                      setFilters({
-                        ...filters,
-                        search: event.target.value,
-                      });
-                    }}
-                  />
-
-                  {selectHostelFilters.map((selectBox) => {
-                    return (
-                      <Select
-                        key={selectBox.name}
-                        styles={{
-                          container: (provided) => ({
-                            ...provided,
-                            // zIndex: 10,
-                          }),
-                          control: (provided) => ({
-                            ...provided,
-                            backgroundColor: "transparent",
-                            border: "0 !important",
-                            boxShadow: "0 !important",
-                            minHeight: "auto",
-                            "&:hover": {
-                              border: "0 !important",
-                            },
-                          }),
-                          option: (provided, state) => ({
-                            ...provided,
-                            color: state.isSelected && "#FFFBF2",
-                            backgroundColor: state.isSelected && "#191919",
-                            "&:hover": {
-                              backgroundColor: "#191919",
-                              color: "#ffffff",
-                            },
-                          }),
-                          singleValue: (provided) => ({
-                            ...provided,
-                            color: "inherit",
-                          }),
-                          input: (provided) => ({
-                            ...provided,
-                            color: "inherit",
-                            margin: "0",
-                            padding: "0",
-                            // height: "0",
-                          }),
-                          valueContainer: (provided) => ({
-                            ...provided,
-                            padding: "0",
-                          }),
-                          dropdownIndicator: (provided) => ({
-                            ...provided,
-                            paddingTop: "0px",
-                            paddingBottom: "0px",
-                          }),
-                          clearIndicator: (provided) => ({
-                            ...provided,
-                            padding: "0",
-                          }),
-                          multiValueLabel: (provided) => ({
-                            ...provided,
-                            padding: "0",
-                          }),
-                          menuPortal: (base) => ({ ...base, zIndex: 999999 }),
-                          placeholder: (base) => ({
-                            ...base,
-                            margin: 0,
-                          }),
-                        }}
-                        className={
-                          filterStyle + " cursor-pointer w-full md:w-[15rem]"
-                        }
-                        isMulti={false}
-                        options={selectBox.options}
-                        isSearchable={false}
-                        placeholder={selectBox.placeholder}
-                        name={selectBox.name}
-                        value={selectBox.value}
-                        onChange={(event) => {
-                          setFilters({
-                            ...filters,
-                            [selectBox.name]: event,
-                          });
-                        }}
-                      />
-                    );
-                  })}
-                  <button
-                    className={
-                      "py-4 px-8 focus:outline-none  border-2 border-gray-400 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-gray-200 rounded-[0.5rem] w-full md:w-[15rem]"
-                    }
-                    type="submit"
-                  >
-                    <span className="">
-                      Search <span className="m-2"></span>🔍
-                    </span>
-                  </button>
-                  <button
-                    className={
-                      "py-4 px-8 focus:outline-none  border-2 border-gray-400 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-gray-200 rounded-[0.5rem] w-full md:w-[15rem]"
-                    }
-                    type="button"
-                    onClick={clearAllFilters}
-                  >
-                    <span className="">
-                      Clear <span className="m-2"></span>🧹
-                    </span>
-                  </button>
-                </form>
-              ) : (
-                <form
-                  className="flex flex-row flex-wrap gap-4 items-start justify-start w-full"
-                  onSubmit={submitFlatFilters}
-                >
-                  {/* Searchbar */}
-                  <input
-                    placeholder="Search Property"
-                    className={
-                      filterStyle + " cursor-pointer w-full md:w-[25rem]"
-                    }
-                    name="search"
-                    value={filters.search || ""}
-                    onChange={(event) => {
-                      setFilters({
-                        ...filters,
-                        search: event.target.value,
-                      });
-                    }}
-                  />
-
-                  {selectFlatFilters.map((selectBox) => {
-                    return (
-                      <Select
-                        key={selectBox.name}
-                        styles={{
-                          container: (provided) => ({
-                            ...provided,
-                            // zIndex: 10,
-                          }),
-                          control: (provided) => ({
-                            ...provided,
-                            backgroundColor: "transparent",
-                            border: "0 !important",
-                            boxShadow: "0 !important",
-                            minHeight: "auto",
-                            "&:hover": {
-                              border: "0 !important",
-                            },
-                          }),
-                          option: (provided, state) => ({
-                            ...provided,
-                            color: state.isSelected && "#FFFBF2",
-                            backgroundColor: state.isSelected && "#191919",
-                            "&:hover": {
-                              backgroundColor: "#191919",
-                              color: "#ffffff",
-                            },
-                          }),
-                          singleValue: (provided) => ({
-                            ...provided,
-                            color: "inherit",
-                          }),
-                          input: (provided) => ({
-                            ...provided,
-                            color: "inherit",
-                            margin: "0",
-                            padding: "0",
-                            // height: "0",
-                          }),
-                          valueContainer: (provided) => ({
-                            ...provided,
-                            padding: "0",
-                          }),
-                          dropdownIndicator: (provided) => ({
-                            ...provided,
-                            paddingTop: "0px",
-                            paddingBottom: "0px",
-                          }),
-                          clearIndicator: (provided) => ({
-                            ...provided,
-                            padding: "0",
-                          }),
-                          multiValueLabel: (provided) => ({
-                            ...provided,
-                            padding: "0",
-                          }),
-                          menuPortal: (base) => ({ ...base, zIndex: 999999 }),
-                          placeholder: (base) => ({
-                            ...base,
-                            margin: 0,
-                          }),
-                        }}
-                        className={
-                          filterStyle + " cursor-pointer w-full md:w-[15rem]"
-                        }
-                        isMulti={false}
-                        options={selectBox.options}
-                        isSearchable={false}
-                        placeholder={selectBox.placeholder}
-                        name={selectBox.name}
-                        value={selectBox.value}
-                        onChange={(event) => {
-                          setFilters({
-                            ...filters,
-                            [selectBox.name]: event,
-                          });
-                        }}
-                      />
-                    );
-                  })}
-
-                  <button
-                    className={
-                      "py-4 px-8 focus:outline-none  border-2 border-gray-400 appearance-none  leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-gray-200 rounded-[0.5rem] w-full md:w-[15rem]"
-                    }
-                    type="submit"
-                  >
-                    <span className="">
-                      Search <span className="m-2"></span>🔍
-                    </span>
-                  </button>
-                  <button
-                    className={
-                      "py-4 px-8 focus:outline-none border-2 border-gray-400 appearance-none leading-5 focus:shadow-outline-blue focus:border-blue-300 bg-gray-200 rounded-[0.5rem] w-full md:w-[15rem]"
-                    }
-                    type="button"
-                    onClick={clearAllFilters}
-                  >
-                    <span className="">
-                      Clear <span className="m-2"></span>🧹
-                    </span>
-                  </button>
-                </form>
-              )}
-            </div>
-
-            {/* cards and map view */}
-            {propertyArrayProps.length === 0 ? (
-              <div className="text-2xl flex justify-center items-center w-full h-full">
-                <p className="font-1 text-4xl">No {type}s Found</p>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center w-full">
-                <div className="flex flex-col gap-6 items-start justify-center max-w-[1200px]  w-full">
-                  {/* maps view */}
-                  <div className="h-[511px] border-2 border-[#CAC4BC] relative w-full">
-                    <div className="h-[511px] m-auto w-full">
-                      <GoogleMapDiv addresses={propertyArrayAddresses} />
-                    </div>
-                  </div>
-
-                  {/* cards */}
-                  <div className="flex flex-col gap-10 items-start justify-start w-full">
-                    {/* cards */}
-                    <div className="flex flex-col items-start justify-start w-full">
-                      <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 justify-center w-full">
-                        {propertyArrayProps.map((props, index) => (
-                          <div
-                            className="relative"
-                            key={`LandingPageCard${index}`}
-                          >
-                            <LandingPageCard {...props} />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* page & nextpage
-                    <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
-                      <Button
-                        className="bg-color2 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
-                        onClick={() => {
-                          if (page > 1) setPage(page - 1);
-                        }}
-                      >
-                        ⏮️ Prev Page
-                      </Button>
-                      <Text
-                        size="lg"
-                        className="flex w-[33%] justify-center border-2 p-2 border-gray-400 bg-gray-200 items-center text-black font-semibold rounded-lg"
-                      >
-                        Page {page || 1}
-                      </Text>
-                      <Button
-                        className="bg-color2 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
-                        onClick={() => {
-                          setPage(page + 1);
-                        }}
-                      >
-                        Next Page ⏭️
-                      </Button>
-                    </div> */}
-                  </div>
-                </div>
-              </div>
-            )}
-            {/* page & nextpage */}
-            <div className="flex flex-col md:flex-row gap-5 items-center justify-between w-full">
-              <Button
-                className="bg-color2 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
-                onClick={() => {
-                  if (page > 1) setPage(page - 1);
-                }}
-              >
-                ⏮️ Prev Page
-              </Button>
-              <Text
-                size="lg"
-                className="flex w-[33%] justify-center border-2 p-2 border-gray-400 bg-gray-200 items-center text-black font-semibold rounded-lg"
-              >
-                Page {page || 1}
-              </Text>
-              <Button
-                className="bg-color2 cursor-pointer flex-1 font-semibold py-[13px] rounded-[10px] text-base text-center text-white w-full"
-                onClick={() => {
-                  setPage(page + 1);
-                }}
-              >
-                Next Page ⏭️
-              </Button>
-            </div>
-          </div>
-        </div>
-      </>
-    );
   }
+
+  return (
+    <div className="flex flex-col lg:flex-row">
+      {/* Sidebar */}
+      <aside
+        className={`${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 fixed lg:sticky top-0 left-0 z-10 w-64 h-screen transition-transform duration-300 ease-in-out bg-white shadow-lg lg:shadow-none overflow-y-auto`}
+      >
+        <div className="p-6 mb-20">
+          <h2 className="text-2xl font-1 mb-6 text-gray-800">Filters</h2>
+          {Object.entries(filterOptions).map(([category, options]) => {
+            // Only render relevant filters based on type
+            if (
+              (type === "flat" &&
+                ["priceRange", "bhk", "sqftRange", "furnitureType"].includes(
+                  category
+                )) ||
+              (type === "hostel" &&
+                ["priceRange", "forWhichGender"].includes(category))
+            ) {
+              return (
+                <div key={category} className="mb-6">
+                  <h3 className="font-semibold mb-3 text-gray-700 capitalize">
+                    {category.replace(/([A-Z])/g, " $1").trim()}
+                  </h3>
+                  {options.map((option) => (
+                    <label
+                      key={option.value}
+                      className="flex items-center mb-2 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
+                        checked={filters[category].includes(option.value)}
+                        onChange={() =>
+                          handleFilterChange(category, option.value)
+                        }
+                      />
+                      <span className="ml-2 text-gray-600">{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              );
+            }
+            return null;
+          })}
+        </div>
+      </aside>
+
+      {/* Listing content */}
+      <main className="flex-1">
+        <div className="flex justify-between items-center p-6 w-[97%] rounded-2xl bg-gray-100 ml-4">
+          <h1 className="text-lg md:text-3xl text-center font-1">
+            {type.charAt(0).toUpperCase() + type.slice(1)} Listings
+          </h1>
+          <button
+            className="lg:hidden bg-blue-600 text-white p-2 rounded-full"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          >
+            <Sliders size={24} />
+          </button>
+        </div>
+
+        <section className="p-6 min-h-screen grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+          {filteredProperties.length > 0 ? (
+            filteredProperties.map((property, index) => (
+              <LandingPageCard
+                key={index}
+                _id={property._id}
+                className={""}
+                type={property.type}
+                images={property.images}
+                name={property.name}
+                uniqueName={property.uniqueName}
+                city={property.city}
+                locality={property.locality}
+                sharing={property.sharing}
+                bhk={property.bhk}
+                sqft={property.sqft}
+                price={property.price}
+                priceAndSharing={property.priceAndSharing}
+              />
+            ))
+          ) : (
+            <p>No properties found matching your filters.</p>
+          )}
+        </section>
+
+        {/* Pagination section moved outside */}
+        <div className="flex justify-center items-center space-x-4 my-8">
+          <button
+            className="px-2 py-2 bg-gray-300 rounded-full"
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+          >
+            <ChevronLeft />
+          </button>
+          <span>{page}</span>
+          <button
+            className="px-2 py-2 bg-gray-300 rounded-full"
+            onClick={() => setPage((prev) => prev + 1)}
+          >
+            <ChevronRight />
+          </button>
+        </div>
+      </main>
+    </div>
+  );
 };
 
 export default ListingPage;

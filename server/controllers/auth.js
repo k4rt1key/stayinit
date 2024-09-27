@@ -216,7 +216,6 @@ async function sendOTP(req, res) {
         return res.status(201).json({
             "success": true,
             "message": `Otp is sent to : ${email}`,
-            "data": newOTP
         })
     } catch (error) {
         return res.status(500).json({

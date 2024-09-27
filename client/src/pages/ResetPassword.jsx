@@ -1,98 +1,151 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Spinner } from "@material-tailwind/react";
-import { toast } from "react-toastify";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  async function handlePasswordsSubmit() {
+  async function handlePasswordsSubmit(event) {
+    event.preventDefault();
     try {
-      setLoading(() => true);
+      setLoading(true);
       const resetToken = searchParams.get("token");
       const email = searchParams.get("email");
-      const requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          password,
-          confirmPassword,
-          token: resetToken,
-          email: email,
-        }),
-      };
       const response = await fetch(
         `${
           import.meta.env.VITE_BACKEND_URL
         }/api/v1/auth/user/verify-reset-password-token`,
-        requestOptions
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            password,
+            confirmPassword,
+            token: resetToken,
+            email: email,
+          }),
+        }
       );
       const jsonResponse = await response.json();
 
-      if (jsonResponse.success === true) {
-        toast.success(jsonResponse.message);
-        searchParams.set("return-url", window.location.pathname);
-        setSearchParams({ returnUrl: window.location.pathname });
+      if (jsonResponse.success) {
+        searchParams.set("returnUrl", window.location.pathname);
+        setSearchParams(searchParams);
         navigate("/login");
       } else {
-        toast.error(jsonResponse.message);
-        setError(() => jsonResponse.message);
+        setError(jsonResponse.message);
       }
-
-      setLoading(() => false);
     } catch (error) {
-      toast.error(error.message);
-      throw new Error(error.message);
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-color1">
-      <div className="w-[20rem]">
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            handlePasswordsSubmit();
-          }}
-          className="flex flex-col gap-4"
-        >
-          <h1 className="mb-4 text-3xl text-center font-1">Reset Password</h1>
+    <div className="min-h-screen flex flex-col md:flex-row">
+      <div className="hidden md:block md:w-1/2 bg-indigo-600">
+        <img
+          src="https://images.unsplash.com/photo-1505904267569-f02eaeb45a4c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80"
+          alt="Reset Password Illustration"
+          className="object-cover w-full h-full"
+        />
+      </div>
+      <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-gray-50">
+        <div className="w-full  max-w-md space-y-8">
+          <div className="">
+            <h2 className="mt-6 text-center text-3xl text-gray-900 font-1">
+              Reset your password
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600">
+              Enter your new password below
+            </p>
+          </div>
+          <form onSubmit={handlePasswordsSubmit} className="mt-8 space-y-6">
+            {error && (
+              <div className="text-sm text-red-600 bg-red-100 border border-red-400 rounded p-2">
+                {error}
+              </div>
+            )}
+            <div className="flex flex-col gap-4 rounded-md shadow-sm -space-y-px">
+              <div>
+                <label htmlFor="password" className="sr-only">
+                  New Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="New Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="confirmPassword" className="sr-only">
+                  Confirm New Password
+                </label>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Confirm New Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            </div>
 
-          <p className="text-red-500">
-            {error !== "" ? error.toLocaleUpperCase() : ""}
-          </p>
-
-          <input
-            type="password"
-            placeholder="New Password"
-            className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-nones"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-
-          <button
-            type="submit"
-            className="bg-color2 w-full text-[#FFFBF2] px-4 py-3 rounded-[3rem]"
-          >
-            Send
-          </button>
-        </form>
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                {loading ? (
+                  <span className="flex items-center">
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Resetting...
+                  </span>
+                ) : (
+                  "Reset Password"
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

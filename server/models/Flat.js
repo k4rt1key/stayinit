@@ -224,7 +224,6 @@ FlatSchema.pre("save", async function () {
             }
 
             this.addressCordinates = extractCoordinatesFromUrl(this.addressLink);
-            console.log(this.addressCordinates)
 
 
             // const Searching = require("./Searching")
