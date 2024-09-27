@@ -78,24 +78,43 @@ const ListingPage = () => {
     return propertyArray
       .filter((property) => {
         // Price range filter
-        if (filters?.priceRange?.length > 0) {
-          let priceMatches = filters?.priceRange?.some((x) => {
-            if (x == 1)
-              return property.price < (type === "hostel" ? 40000 : 10000);
-            if (x == 2)
-              return (
-                property.price >= (type === "hostel" ? 40000 : 10000) &&
-                property.price < (type === "hostel" ? 80000 : 20000)
-              );
-            if (x == 3)
-              return (
-                property.price >= (type === "hostel" ? 80000 : 20000) &&
-                property.price < (type === "hostel" ? 120000 : 30000)
-              );
-            if (x == 4)
-              return property.price >= (type === "hostel" ? 120000 : 30000);
-          });
-          if (!priceMatches) return false;
+        if (type == "flat") {
+          if (filters?.priceRange?.length > 0) {
+            let priceMatches = filters?.priceRange?.some((x) => {
+              if (x == 1) return property.price < 10000;
+              if (x == 2)
+                return property.price >= 10000 && property.price < 20000;
+              if (x == 3)
+                return property.price >= 20000 && property.price < 30000;
+              if (x == 4) return property.price >= 30000;
+            });
+            if (!priceMatches) return false;
+          }
+        }
+
+        if (type == "hostel") {
+          if (filters?.priceRange?.length > 0) {
+            let priceMatches = filters?.priceRange?.some((x) => {
+              if (x == 1) return property.priceAndSharing[0].price < 40000;
+              if (x == 2) {
+                return (
+                  property.priceAndSharing[0].price >= 40000 &&
+                  property.priceAndSharing[0].price < 80000
+                );
+              }
+              if (x == 3) {
+                return (
+                  property.priceAndSharing[0].price >= 80000 &&
+                  property.priceAndSharing[0].price < 120000
+                );
+              }
+              if (x == 4) {
+                return property.priceAndSharing[0].price >= 120000;
+              }
+            });
+
+            if (!priceMatches) return false;
+          }
         }
 
         // BHK filter (only for flats)
@@ -207,7 +226,7 @@ const ListingPage = () => {
           </button>
         </div>
 
-        <section className="p-6 min-h-screen grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+        <section className="p-6 min-h-screen grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
           {filteredProperties.length > 0 ? (
             filteredProperties.map((property, index) => (
               <LandingPageCard

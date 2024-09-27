@@ -77,7 +77,10 @@ export default function Home() {
                 Hostel
               </button>
             </div>
-            <form onSubmit={handleSearch} className="flex flex-row gap-4">
+            <form
+              onSubmit={handleSearch}
+              className="flex flex-col md:flex-row gap-4"
+            >
               <input
                 placeholder="Search by City or Locality"
                 value={search}
@@ -86,9 +89,9 @@ export default function Home() {
               />
               <button
                 type="submit"
-                className="bg-black/85 justify-center items-center text-white px-6 py-2 rounded-full transition-colors duration-200"
+                className="bg-black/85 flex justify-center items-center text-white px-6 py-2 rounded-full transition-colors duration-200"
               >
-                <Search className="w-6 h-6" />
+                <Search className="w-6 h-6 text-center" />
               </button>
             </form>
           </motion.div>
