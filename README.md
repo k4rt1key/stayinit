@@ -8,11 +8,11 @@ Demo Credentials:
 
 - Username:
   ```
-  test1234@gmail.com
+  demo@gmail.com
   ```
 - Password:
   ```
-  test1234
+  demo
   ```
 
 ## About the Project
@@ -23,9 +23,7 @@ Stayinit is a hostel and flat finding website designed to simplify the process o
 
 1. Comprehensive search for hostels and flats
 2. Advanced filtering options
-3. Google Maps integration showing nearest landmarks
 4. Personalized wishlist for saving favorite properties
-5. Machine Learning price prediction for flats
 6. User authentication with OTP and email-based verification
 7. Password recovery management
 
@@ -35,17 +33,10 @@ Stayinit is a hostel and flat finding website designed to simplify the process o
 
 Users can easily search for hostels and flats using our intuitive search function. Advanced filtering options allow for more refined results based on specific preferences.
 
-### Google Maps Integration
-
-Each property listing includes a Google Maps view, highlighting nearby landmarks to help users better understand the location and surroundings of their potential accommodation.
-
 ### Wishlist Functionality
 
 Users can save their favorite properties to a personal wishlist for easy access and comparison later.
 
-### AI-Powered Price Prediction
-
-Our machine learning feature provides estimated prices for flats, helping users gauge the market value of properties they're interested in.
 
 ### User Authentication
 

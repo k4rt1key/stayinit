@@ -27,7 +27,7 @@ const FlatManager = () => {
   }, [rerender]);
 
   if (!isAuthenticate) {
-    return navigate("/login?returnUrl=/dashboard/flatlist");
+    // return navigate("/login?returnUrl=/dashboard/flatlist");
   }
 
   return (

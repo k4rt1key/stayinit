@@ -4,7 +4,6 @@ import { Link, redirect, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/Auth";
 import getHostels from "../BackendUtils/getHostels";
 
-
 const HostelManager = () => {
   const [hostels, setHostels] = useState([]);
   const [rerender, setRerender] = useState(true);
@@ -25,7 +24,7 @@ const HostelManager = () => {
   }, [rerender]);
 
   if (!isAuthenticate) {
-    return navigate("/login?returnUrl=/dashboard/hostellist");
+    // return navigate("/login?returnUrl=/dashboard/hostellist");
   }
 
   return (
