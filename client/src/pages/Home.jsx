@@ -60,8 +60,8 @@ export default function Home() {
                 onClick={() => setPropertyType("flat")}
                 className={`px-8 py-3 rounded-full transition-colors duration-200 font-medium flex-1 ${
                   propertyType === "flat"
-                    ? "bg-gray-200 text-black hover:bg-gray-300"
-                    : "bg-gray-200 text-black hover:bg-gray-300"
+                    ? "bg-gray-900 text-white"
+                    : "bg-gray-200 text-black "
                 }`}
               >
                 Flat
@@ -70,8 +70,8 @@ export default function Home() {
                 onClick={() => setPropertyType("hostel")}
                 className={`px-8 py-2 rounded-full transition-colors duration-200 font-medium flex-1 ${
                   propertyType === "hostel"
-                    ? "bg-gray-900 text-white hover:bg-gray-300"
-                    : "bg-white text-gray-900 hover:bg-gray-300"
+                    ? "bg-gray-900 text-white"
+                    : "bg-white text-gray-900 "
                 }`}
               >
                 Hostel

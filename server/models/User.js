@@ -82,6 +82,8 @@ UserSchema.methods.generateRefreshAndAccessTokens = async function () {
                 _id: user.profile,
                 userId: user._id,
                 username: user.username,
+                email: user.email,
+
             },
 
             process.env.JWT_SECRET,

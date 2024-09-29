@@ -1,4 +1,6 @@
+const cloudinary = require('../../config/cloudinary');
 const Hostel = require('../../models/Hostel');
+const PriceAndSharing = require('../../models/PriceAndSharing');
 
 async function addImage(req, res) {
     try {
@@ -10,24 +12,41 @@ async function addImage(req, res) {
             });
         }
 
-        const images = req.files;
-        if (!images || images.length === 0) {
+        if (!req.files || Object.keys(req.files).length === 0) {
             return res.status(400).json({
                 success: false,
-                error: "No image uploaded",
+                error: "No files were uploaded.",
             });
         }
 
-        images.forEach(file => {
-            hostel.images.push(file.path);
-        });
+        const images = req.files.images; // 'images' is the field name in the form
+        const uploadedImagePaths = [];
+
+        // Handle both single and multiple image uploads
+        const imageArray = Array.isArray(images) ? images : [images];
+
+        // Upload each image to Cloudinary
+        for (const image of imageArray) {
+            const uploadResult = await cloudinary.uploader.upload(image.tempFilePath, {
+                folder: 'uploads', // Optional: Define the folder in Cloudinary
+                use_filename: true,
+                unique_filename: false,
+            });
+
+            // Store the uploaded image URL in the array
+            uploadedImagePaths.push(uploadResult.secure_url);
+        }
+
+        uploadedImagePaths.forEach(path => hostel.images.push(path));
 
         const updatedHostel = await hostel.save();
+
         res.status(200).json({
             success: true,
             message: "Images added successfully!",
             data: updatedHostel,
         });
+
     } catch (error) {
         res.status(400).json({
             success: false,
@@ -69,6 +88,25 @@ async function addHostel(req, res) {
         }
         const newHostel = new Hostel(newHostelObj);
         const savedHostel = await newHostel.save();
+
+
+        if (req.body.priceAndSharing && req.body.priceAndSharing.length > 0) {
+            for (const priceAndSharing of req.body.priceAndSharing) {
+                const priceAndSharingObj = new PriceAndSharing({
+                    hostel: savedHostel._id,
+                    sharing: priceAndSharing.sharing,
+                    price: priceAndSharing.price
+                });
+
+                console.log(priceAndSharingObj);
+
+                await priceAndSharingObj.save();
+
+                console.log("Hostel after saving price and sharing:");
+                console.log(await Hostel.findById(savedHostel._id));
+            }
+        }
+
 
         res.status(201).json({
             success: true,
@@ -146,7 +184,7 @@ async function deleteHostel(req, res) {
             });
         }
 
-        await hostel.remove();
+        await hostel.deleteOne();
         res.status(200).json({
             success: true,
             message: "Hostel deleted successfully!"
@@ -161,7 +199,7 @@ async function deleteHostel(req, res) {
 
 async function getOwnerHostels(req, res) {
     try {
-        const hostels = await Hostel.find({ addedBy: req.profile._id });
+        const hostels = await Hostel.find({ addedBy: req.profile._id }).populate('priceAndSharing');
         res.status(200).json({
             success: true,
             message: "Hostels fetched successfully!",
@@ -171,40 +209,6 @@ async function getOwnerHostels(req, res) {
         res.status(400).json({
             success: false,
             error: "Error fetching hostels: " + error.message
-        });
-    }
-}
-
-async function addImage(req, res) {
-    try {
-        const hostel = await Hostel.findById(req.params.id);
-        if (!hostel) {
-            return res.status(404).json({
-                success: false,
-                error: "Hostel not found"
-            });
-        }
-
-        const images = req.files;
-        if (!images) {
-            return res.status(400).json({
-                success: false,
-                error: "No image uploaded"
-            });
-        }
-
-
-        hostel.images.push(req.body.image);
-        const updatedHostel = await hostel.save();
-        res.status(200).json({
-            success: true,
-            message: "Image added successfully!",
-            data: updatedHostel
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            error: "Error adding image: " + error.message
         });
     }
 }

@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../contexts/Auth";
-import { Button, Text } from "../components";
-import ImageGallery from "../components/ImageGallary";
-import NearestLandmarksMap from "../components/NearestLandmarksMaps";
+import { useAuth } from "../../contexts/Auth";
+import { Button, Text } from "../../components";
+import ImageGallery from "../../components/ImageGallary";
+import NearestLandmarksMap from "../../components/NearestLandmarksMaps";
 import { toast } from "react-toastify";
-import { Spinner } from "@material-tailwind/react";
-import { roundToNearestThousand } from "../utils/UtilityFunctions";
-import useFetchProperty from "../customHooks/useFetchProperty";
-import useFetchPrediction from "../customHooks/useFetchPrediction";
-import SuggestedProperties from "../components/SuggestedProperties";
-import PropertyInfoBoxes from "../components/PropertyInfoBoxes";
+import { roundToNearestThousand } from "../../utils/UtilityFunctions";
+import useFetchProperty from "../../customHooks/useFetchProperty";
+import useFetchPrediction from "../../customHooks/useFetchPrediction";
+import SuggestedProperties from "../../components/SuggestedProperties";
+import PropertyInfoBoxes from "../../components/PropertyInfoBoxes";
 import { Heart, Phone, Mail, MapPin } from "lucide-react";
-import { extractCoordinatesFromUrl } from "../utils/UtilityFunctions";
+import { extractCoordinatesFromUrl } from "../../utils/UtilityFunctions";
 
 export default function PropertyPage() {
   const { authData } = useAuth();
@@ -79,7 +78,7 @@ export default function PropertyPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Spinner color="blue" className="h-16 w-16" />
+        <Loading size={"medium"} />
       </div>
     );
   }
@@ -127,9 +126,9 @@ export default function PropertyPage() {
                 <Button
                   onClick={() => {
                     if (!isAuthenticate) {
-                      navigate("/login", {
-                        state: { returnUrl: window.location.pathname },
-                      });
+                      // navigate("/login", {
+                      //   state: { returnUrl: window.location.pathname },
+                      // });
                     }
                     setShowPrediction(true);
                   }}

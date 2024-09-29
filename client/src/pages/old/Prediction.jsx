@@ -4,8 +4,8 @@ import { useAuth } from "../../contexts/Auth";
 
 // import of utility functions
 import { toast } from "react-toastify";
-import { roundToNearestThousand } from "../utils/UtilityFunctions";
-import useFetchPrediction from "../customHooks/useFetchPrediction";
+import { roundToNearestThousand } from "../../utils/UtilityFunctions";
+import useFetchPrediction from "../../customHooks/useFetchPrediction";
 
 const filterStyle =
   "py-2 px-4 w-full focus:outline-none placeholder:text-[#073937] hover: focus:placeholder-[#FFFBF2] focus:bg-[#073937] focus:text-[#D8D4CD]  rounded-[3rem] border border-[#D8D4CD]";

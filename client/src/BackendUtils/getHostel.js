@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export default async function getFlat(hostelname) {
+export default async function getHostel(hostelname) {
     try {
         const response = await axios.get(
             `${import.meta.env.VITE_BACKEND_URL}/api/v1/hostel/${hostelname}`,

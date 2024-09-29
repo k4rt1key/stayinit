@@ -15,7 +15,7 @@ async function getFlat(req, res) {
         }
 
         const flatInDb = await Flat.findOne({ uniqueName: flatname })
-            .populate("comments likes addedBy nearestLandmarksForSearching")
+            .populate("comments addedBy nearestLandmarksForSearching")
             .populate({
                 path: "comments",
                 populate: {
@@ -135,7 +135,6 @@ async function getAllFlats(req, res) {
         }
 
         const flatsInDb = await Flat.find(queryObj)
-            .populate("likes")
             .where("price").gt(minPrice - 1).lt(maxPrice + 1)
             .where("sqft").gt(minSqft - 1).lt(maxSqft + 1)
             .sort(

@@ -1,9 +1,9 @@
 import axios from "axios"
 
-export default async function getFlats(token) {
+export default async function getLikes(token) {
     try {
         const response = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/api/v1/flatadmin/`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/v1/likes/`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -13,12 +13,12 @@ export default async function getFlats(token) {
         return {
             data: response.data.data,
             success: true,
-            message: "Flat Fetched Successfully!!!"
+            message: "Fetched Likes Successfully!!!"
         }
     } catch (error) {
         return {
             success: false,
-            error: "Error While Fetching Flat!!!"
+            error: "Error While Fetching Likes!!!"
         }
     }
 };

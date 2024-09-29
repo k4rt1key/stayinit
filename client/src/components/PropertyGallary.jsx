@@ -32,7 +32,7 @@ export default function PropertyGallery({ images }) {
             <img
               src={images[0]}
               alt="Main property image"
-              className="w-full h-[400px] object-cover rounded-lg"
+              className="w-full h-[300px] md:h-[400px] object-cover rounded-lg"
             />
           ) : (
             <div className="w-full h-[400px] bg-gray-200 rounded-lg"></div>

@@ -33,6 +33,8 @@ const PropertyPage = () => {
   const lat = addressCordinates?.split(",")[0];
   const long = addressCordinates?.split(",")[1];
 
+  console.log(lat, long);
+
   useEffect(() => {
     async function fetchProperty() {
       if (propertyType === "flat") {
@@ -324,7 +326,7 @@ const PropertyPage = () => {
               <h2 className="text-xl font-1 font-semibold mb-3">Location</h2>
               <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-lg">
                 <iframe
-                  src={`https://www.google.com/maps/embed/v1/search?q=${property.lat},${property.long}&key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4`}
+                  src={`https://www.google.com/maps/embed/v1/search?q=${property.name}, at ${property.locality} ${property.city}}&key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4`}
                   width="600"
                   height="450"
                   style={{ border: 0 }}

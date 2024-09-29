@@ -7,7 +7,7 @@ async function getHostel(req, res) {
         const { hostelname } = req.params
 
         const hostelInDb = await Hostel.findOne({ uniqueName: hostelname })
-            .populate('priceAndSharing addedBy comments likes nearestLandmarksForSearching')
+            .populate('priceAndSharing addedBy comments nearestLandmarksForSearching')
             .populate({
                 path: "comments",
                 populate: {
@@ -95,7 +95,7 @@ async function getAllHostels(req, res) {
             .find(queryObj)
             .skip(skip)
             .limit(limit)
-            .populate('priceAndSharing comments addedBy likes nearestLandmarksForSearching').exec()
+            .populate('priceAndSharing comments addedBy nearestLandmarksForSearching').exec()
 
         let response = hostelsInDb;
 

@@ -28,8 +28,11 @@ import Listing from "./pages/Listing";
 import Likes from "./pages/Likes";
 
 import ErrorElement from "./components/ErrorElement";
-import FlatManager from "../src/admin/FlatManager";
 import AddFlat from "../src/admin/AddFlat";
+import UserDashboard from "./pages/UserDashboard";
+import FlatManager from "../src/admin/FlatManager";
+import HostelManager from "./admin/HostelManager";
+import AddHostel from "./admin/AddHostel";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -50,8 +53,11 @@ const router = createBrowserRouter(
       <Route path="/test" element={<Test />} />
 
       <Route path="*" element={<NotFound />} />
-      <Route path="dashboard/flatlist" element={<FlatManager />} />
+      <Route path="dashboard" element={<UserDashboard />} />
       <Route path="dashboard/add-flat" element={<AddFlat />} />
+      <Route path="dashboard/flatlist" element={<FlatManager />} />
+      <Route path="dashboard/hostellist" element={<HostelManager />} />
+      <Route path="dashboard/add-hostel" element={<AddHostel />} />
     </Route>
   )
 );

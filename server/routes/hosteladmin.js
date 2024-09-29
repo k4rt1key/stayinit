@@ -3,8 +3,14 @@ const express = require('express');
 const router = express.Router();
 const { addImage, addHostel, updateHostel, deleteHostel, getOwnerHostels } = require('../controllers/admin/hostel');
 const authMiddleware = require('../middlewares/auth');
-const upload = require('../config/multer');
+const fileUpload = require('express-fileupload'); // Import express-fileupload
 
+
+// Middleware for handling file uploads
+router.use(fileUpload({
+    useTempFiles: true, // Enables temporary file storage in the system
+    tempFileDir: '/tmp/', // Directory to store temp files (can be customized)
+}));
 // Add a new hostel
 router.post('/add', authMiddleware, addHostel);
 
@@ -17,6 +23,6 @@ router.delete('/delete/:id', authMiddleware, deleteHostel);
 // Get all hostels added by the authenticated owner
 router.get('/', authMiddleware, getOwnerHostels);
 
-router.post('add-images/:id', upload.array('images', 10), addImage);
+router.post('/add-images/:id', authMiddleware, addImage);
 
 module.exports = router;

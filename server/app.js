@@ -1,6 +1,5 @@
 const express = require("express")
 const app = express();
-const fileupload = require("express-fileupload")
 const mongoose = require("mongoose")
 // >>> security packages
 const helmet = require('helmet');
@@ -12,7 +11,6 @@ const csurf = require('csurf');
 // >>> config packages
 require('dotenv').config();
 const connectDB = require("./config/database")
-const connectCloudinary = require("./config/cloudinary")
 // >>> routers
 const AuthRouter = require("./routes/auth")
 const CommentRouter = require("./routes/comment")
@@ -62,10 +60,7 @@ const cookieParser = require("cookie-parser");
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(fileupload({
-    useTempFiles: true,
-    tempFileDir: '/tmp/'
-}));
+
 
 
 // >>> use Routers 
@@ -79,6 +74,8 @@ app.use("/api/v1/file", FileRouter)
 app.use("/api/v1/featured", FeaturedRouter)
 app.use("/api/v1/flatadmin", FlatAdminRouter)
 app.use("/api/v1/hosteladmin", HostelAdminRouter)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: false }));
 
 
 // >>> starting and connecting with server and db
@@ -90,7 +87,6 @@ async function runServer() {
             useUnifiedTopology: true
         });
 
-        connectCloudinary();
 
         app.listen(process.env.PORT || 5000, () => {
             console.log(`Listing on port ${process.env.PORT || 5000}`)

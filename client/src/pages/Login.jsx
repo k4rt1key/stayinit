@@ -6,7 +6,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { useAuth } from "../contexts/Auth";
-import { Spinner } from "@material-tailwind/react";
+import Loading from "../components/Loading";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -23,8 +23,8 @@ export default function Login() {
   }
 
   const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
+    email: "demo@gmail.com",
+    password: "demo",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -141,11 +141,11 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+              className="w-full h-10 flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
             >
               {loading ? (
                 <>
-                  <Spinner size="sm" className="mr-2" /> Signing in...
+                  <Loading size="small" className="mr-2" /> Signing in...
                 </>
               ) : (
                 "Sign in"

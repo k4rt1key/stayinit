@@ -1,31 +1,32 @@
 import React, { useState, useEffect } from "react";
-import DashboardCards from "../components/DashboardCards";
+import DashboardCardsForHostel from "../components/DashboardCardsForHostel";
 import { useNavigate } from "react-router-dom";
-import deleteFlat from "../BackendUtils/deleteFlat";
+import deleteHostel from "../BackendUtils/deleteHostel";
 import { UserCircle, Building, Home, Plus, List } from "lucide-react";
 
-const OwnedFlats = ({ flats, setFlats }) => {
+const OwnedHostels = ({ hostels, setHostels }) => {
   const navigate = useNavigate();
 
   async function onDelete(id) {
+    console.log("ONDELETE", id);
     const token = localStorage.getItem("token");
-    await deleteFlat(id, token);
-    setFlats(flats.filter((f) => f._id !== id));
+    await deleteHostel(id, token);
+    setHostels(hostels.filter((h) => h._id !== id));
   }
 
   const onEdit = async (id) => {
-    console.log("Edit flat with id: ", id);
+    console.log("Edit hostel with id: ", id);
   };
 
   const onView = async (uniqueName) => {
-    return navigate("/listing/flat/" + uniqueName);
+    return navigate("/listing/hostel/" + uniqueName);
   };
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2 flex-wrap">
-      {flats.length == 0 && (
+      {hostels.length == 0 && (
         <div className="flex flex-col gap-8">
-          <div className="text-xl">No flats found!!!</div>
+          <div className="text-xl">No Hostels found!!!</div>
           <div className="flex gap-8">
             <button
               onClick={() => navigate("/dashboard/add-flat")}
@@ -44,15 +45,14 @@ const OwnedFlats = ({ flats, setFlats }) => {
           </div>
         </div>
       )}
-      {flats.map((f) => {
+      {hostels.map((h) => {
         return (
           <>
-            <DashboardCards
-              flat={f}
+            <DashboardCardsForHostel
               onDelete={onDelete}
               onEdit={onEdit}
               onView={onView}
-              setFlats={setFlats}
+              hostel={h}
             />
           </>
         );
@@ -61,4 +61,4 @@ const OwnedFlats = ({ flats, setFlats }) => {
   );
 };
 
-export default OwnedFlats;
+export default OwnedHostels;

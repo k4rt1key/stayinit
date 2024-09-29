@@ -5,7 +5,8 @@ import { Button, Text, Img } from "../components";
 import LandingPageCard from "./LandingPageCard";
 import useFetchFeatured from "../customHooks/useFetchFeatured";
 import { useAuth } from "../contexts/Auth";
-import { Spinner } from "@material-tailwind/react";
+
+import Loading from "./Loading";
 
 export default function SuggestedProperties() {
   const { authData } = useAuth();
@@ -229,7 +230,7 @@ export default function SuggestedProperties() {
         <div className="flex flex-col items-start justify-start w-full">
           {loading ? (
             <div className="flex items-center h-[20rem] justify-center w-full">
-              <Spinner color="green" className="h-16 w-16" />
+              <Loading size={"medium"} />
             </div>
           ) : (
             <div className="gap-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 justify-center w-full">

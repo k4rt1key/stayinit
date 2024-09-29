@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Heart, MapPin, Maximize2 } from "lucide-react";
-import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/Auth";
 import { motion } from "framer-motion";
+import useStore from "../../zustand/likesStore";
 
 const LandingPageCard = ({
   _id,
@@ -24,13 +24,41 @@ const LandingPageCard = ({
   const { isAuthenticate } = authData;
   const navigate = useNavigate();
 
+  const {
+    likes,
+    isPropertyLiked,
+    toggleLike,
+    isLoading,
+    updatePropertyLikeStatus,
+  } = useStore();
+
   const backgroundImage =
-    images.length > 0 ? images[0] : "/images/property.png";
+    images?.length > 0 ? images[0] : "/images/property.png";
 
   if (priceAndSharing) {
-    price = priceAndSharing[0].price;
-    sharing = priceAndSharing[0].sharing;
+    price = priceAndSharing[0]?.price;
+    sharing = priceAndSharing[0]?.sharing;
   }
+
+  // const isLiked = isPropertyLiked(type, _id);
+  const isLiked = likes?.some(
+    (like) =>
+      (type === "hostel" && like.hostel?._id === _id) ||
+      (type === "flat" && like.flat?._id === _id)
+  );
+
+  const handleLikeToggle = async () => {
+    if (!isAuthenticate) {
+      navigate("/login", { state: { returnUrl: window.location.pathname } });
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      await toggleLike(type, _id, token);
+      updatePropertyLikeStatus(type, _id, !isLiked);
+    }
+  };
 
   return (
     <motion.div
@@ -58,13 +86,18 @@ const LandingPageCard = ({
           </div>
           <div className="flex gap-2">
             <motion.button
-              onClick={() => {}}
+              onClick={handleLikeToggle}
               className="w-10 h-10 flex items-center justify-center bg-white/20 rounded-full hover:bg-white/30 transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              aria-label={"Add to wishlist"}
+              disabled={isLoading}
+              aria-label={isLiked ? "Remove from wishlist" : "Add to wishlist"}
             >
-              <Heart className={`w-5 h-5 ${"text-white"}`} />
+              <Heart
+                className={`w-5 h-5 ${
+                  isLiked ? "text-red-500 fill-current" : "text-white"
+                }`}
+              />
             </motion.button>
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
               <Link

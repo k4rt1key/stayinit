@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function addFlatImages(flatId, images, token) {
+export async function addHostelImages(hostelId, images, token) {
     try {
         const formData = new FormData();
 
@@ -10,7 +10,7 @@ export async function addFlatImages(flatId, images, token) {
         });
 
         const response = await axios.post(
-            `${import.meta.env.VITE_BACKEND_URL}/api/v1/flatadmin/add-images/${flatId}`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/v1/hosteladmin/add-images/${hostelId}`,
             formData,
             {
                 headers: {
@@ -26,7 +26,7 @@ export async function addFlatImages(flatId, images, token) {
             message: "Images added successfully!"
         };
     } catch (error) {
-        console.error("Error in addFlatImages:", error);
+        console.error("Error in addHostelImages:", error);
         return {
             success: false,
             error: error.response?.data?.error || "Error adding images"
@@ -34,15 +34,14 @@ export async function addFlatImages(flatId, images, token) {
     }
 }
 
-export default async function addFlat(flat, token) {
+export default async function addHostel(hostel, token) {
     try {
-        // First, add the flat without images
-        const flatData = { ...flat };
-        delete flatData.images;  // Remove images from the initial flat data
+        const hostelData = { ...hostel };
+        delete hostelData.images;
 
         const response = await axios.post(
-            `${import.meta.env.VITE_BACKEND_URL}/api/v1/flatadmin/add`,
-            flatData,
+            `${import.meta.env.VITE_BACKEND_URL}/api/v1/hosteladmin/add`,
+            hostelData,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -51,9 +50,11 @@ export default async function addFlat(flat, token) {
             }
         );
 
-        // If flat is added successfully and there are images, upload them
-        if (response.data.success && flat.images && flat.images.length > 0) {
-            const imageUploadResponse = await addFlatImages(response.data.data._id, flat.images, token);
+        console.log("hostelData:", hostelData);
+        
+
+        if (response.data.success && hostel.images && hostel.images.length > 0) {
+            const imageUploadResponse = await addHostelImages(response.data.data._id, hostel.images, token);
 
             if (!imageUploadResponse.success) {
                 console.error("Failed to upload images:", imageUploadResponse.error);
@@ -63,13 +64,13 @@ export default async function addFlat(flat, token) {
         return {
             success: true,
             data: response.data.data,
-            message: "Flat added successfully!"
+            message: "Hostel added successfully!"
         };
     } catch (error) {
-        console.error("Error in addFlat:", error);
+        console.error("Error in addHostel:", error);
         return {
             success: false,
-            error: error.response?.data?.error || "Error while adding flat"
+            error: error.response?.data?.error || "Error while adding hostel"
         };
     }
 }

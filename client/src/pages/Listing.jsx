@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useSearchParams, useParams } from "react-router-dom";
+import { useSearchParams, useParams, useNavigate } from "react-router-dom";
 import LandingPageCard from "../components/LandingPageCard";
 import useFetchListing from "../customHooks/useFetchListing";
 import { ChevronLeft, ChevronRight, Sliders } from "lucide-react";
+import useStore from "../zustand/likesStore";
+import useAuth from "../contexts/Auth";
+import Loading from "../components/Loading";
 
 const ListingPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -10,6 +13,26 @@ const ListingPage = () => {
   const { type } = useParams(); // hostel or flat
   const [page, setPage] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { isAuthenticate } = useAuth();
+  const navigate = useNavigate();
+  const [likesLength, setLikesLength] = useState(0);
+
+  const {
+    likes,
+    fetchLikedProperties,
+    isPropertyLiked,
+    toggleLike,
+    isLoading,
+  } = useStore();
+
+  useEffect(() => {
+    if (isAuthenticate) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        fetchLikedProperties(token);
+      }
+    }
+  }, [isAuthenticate, fetchLikedProperties]);
 
   // Filters state
   const [filters, setFilters] = useState({
@@ -95,21 +118,21 @@ const ListingPage = () => {
         if (type == "hostel") {
           if (filters?.priceRange?.length > 0) {
             let priceMatches = filters?.priceRange?.some((x) => {
-              if (x == 1) return property.priceAndSharing[0].price < 40000;
+              if (x == 1) return property.priceAndSharing[0]?.price < 40000;
               if (x == 2) {
                 return (
-                  property.priceAndSharing[0].price >= 40000 &&
-                  property.priceAndSharing[0].price < 80000
+                  property.priceAndSharing[0]?.price >= 40000 &&
+                  property.priceAndSharing[0]?.price < 80000
                 );
               }
               if (x == 3) {
                 return (
-                  property.priceAndSharing[0].price >= 80000 &&
-                  property.priceAndSharing[0].price < 120000
+                  property.priceAndSharing[0]?.price >= 80000 &&
+                  property.priceAndSharing[0]?.price < 120000
                 );
               }
               if (x == 4) {
-                return property.priceAndSharing[0].price >= 120000;
+                return property.priceAndSharing[0]?.price >= 120000;
               }
             });
 
@@ -153,14 +176,20 @@ const ListingPage = () => {
         return true;
       })
       .slice(startIndex, startIndex + itemsPerPage);
-  }, [propertyArray, filters, type]);
+  }, [propertyArray, likesLength, page, filters, type]);
 
-  if (loading) {
+  if (error) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="flex justify-center items-center">
+        <p className="text-red-600">
+          Failed to load properties. Please try again.
+        </p>
       </div>
     );
+  }
+
+  if (loading) {
+    return <Loading size={"medium"} />;
   }
 
   return (
@@ -246,7 +275,8 @@ const ListingPage = () => {
                 bhk={property.bhk}
                 sqft={property.sqft}
                 price={property.price}
-                priceAndSharing={property.priceAndSharing}
+                priceAndSharing={property?.priceAndSharing}
+                setLikesLength={setLikesLength}
               />
             ))
           ) : (

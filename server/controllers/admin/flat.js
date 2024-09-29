@@ -1,4 +1,5 @@
-const Flat = require("../../models/Flat");
+const cloudinary = require('../../config/cloudinary');
+const Flat = require('../../models/Flat');
 
 async function addImage(req, res) {
     try {
@@ -10,24 +11,42 @@ async function addImage(req, res) {
             });
         }
 
-        const images = req.files;
-        if (!images || images.length === 0) {
+        if (!req.files || Object.keys(req.files).length === 0) {
             return res.status(400).json({
                 success: false,
-                error: "No image uploaded",
+                error: "No files were uploaded.",
             });
         }
 
-        images.forEach(file => {
-            flat.images.push(file.path);
-        });
+        const images = req.files.images; // 'images' is the field name in the form
+        const uploadedImagePaths = [];
+
+        // Handle both single and multiple image uploads
+        const imageArray = Array.isArray(images) ? images : [images];
+
+        // Upload each image to Cloudinary
+        for (const image of imageArray) {
+            const uploadResult = await cloudinary.uploader.upload(image.tempFilePath, {
+                folder: 'uploads', // Optional: Define the folder in Cloudinary
+                use_filename: true,
+                unique_filename: false,
+            });
+
+            // Store the uploaded image URL in the array
+            uploadedImagePaths.push(uploadResult.secure_url);
+        }
+
+        // Add image URLs to the Flat document
+        uploadedImagePaths.forEach(path => flat.images.push(path));
 
         const updatedFlat = await flat.save();
+
         res.status(200).json({
             success: true,
             message: "Images added successfully!",
             data: updatedFlat,
         });
+
     } catch (error) {
         res.status(400).json({
             success: false,
@@ -35,6 +54,7 @@ async function addImage(req, res) {
         });
     }
 }
+
 
 async function addFlat(req, res) {
     try {
@@ -137,7 +157,7 @@ async function deleteFlat(req, res) {
             });
         }
 
-        await flat.remove();
+        await flat.deleteOne();
         res.status(200).json({
             success: true,
             message: "Flat deleted successfully!"

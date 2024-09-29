@@ -135,7 +135,7 @@ async function register(req, res) {
             username,
             role,
             email,
-            password: hash
+            password: hash,
         });
 
 

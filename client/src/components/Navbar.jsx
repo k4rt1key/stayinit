@@ -31,7 +31,7 @@ export default function Navbar() {
         {
           key: "User",
           icon: <User size={20} />,
-          link: "/",
+          link: "/dashboard",
           text: profile ? profile.username : "User",
           onClick: () => {},
         },
