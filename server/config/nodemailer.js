@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config();
+const logger = require('../config/logger');
 
 let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -29,12 +30,11 @@ async function mailSender(email, otp) {
         Best regards, The Stayinit.in Team
 
     `
-
     };
 
     await transporter.sendMail(mailOptions)
         .catch(function (error) {
-            console.log(error);
+            throw new Error(error.message || 'Error in sending email');
         });
 }
 
@@ -49,7 +49,7 @@ async function resetPasswordMailSender(email, token) {
 
     await transporter.sendMail(mailOptions)
         .catch(function (error) {
-            console.log(error);
+            throw new Error(error.message || 'Error in sending email');
         });
 }
 

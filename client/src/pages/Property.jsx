@@ -22,6 +22,7 @@ import getFlat from "../BackendUtils/getFlat";
 import getHostel from "../BackendUtils/getHostel";
 import { extractCoordinatesFromUrl } from "../utils/UtilityFunctions";
 import PropertyGallery from "../components/PropertyGallary";
+import AIPricePredictor from "../components/AIPricePredictor";
 
 const PropertyPage = () => {
   const [activeTab, setActiveTab] = useState("details");
@@ -55,9 +56,12 @@ const PropertyPage = () => {
   const renderPricing = () => {
     if (property?.type === "flat") {
       return (
-        <p className="text-2xl font-bold text-indigo-600">
-          ₹{property.price.toLocaleString()}
-        </p>
+        <div>
+          <p className="text-2xl font-bold text-indigo-600">
+            ₹{property.price.toLocaleString()}
+          </p>
+          <AIPricePredictor property={property} />
+        </div>
       );
     } else if (property?.type === "hostel") {
       return (

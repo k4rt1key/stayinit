@@ -3,7 +3,13 @@ import { Edit, Trash2, Eye, MapPin } from "lucide-react";
 
 const DashboardCards = ({ flat, onEdit, onDelete, onView }) => {
   return (
-    <div className="relative h-[28rem] sm:h-80 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl mb-6">
+    <div
+      onClick={(e) => {
+        e.preventDefault();
+        onView(flat.uniqueName);
+      }}
+      className="relative h-[28rem] sm:h-80 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl mb-6"
+    >
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{

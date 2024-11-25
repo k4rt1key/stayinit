@@ -83,6 +83,7 @@ UserSchema.methods.generateRefreshAndAccessTokens = async function () {
                 userId: user._id,
                 username: user.username,
                 email: user.email,
+                role: user.role,
 
             },
 
@@ -130,6 +131,8 @@ const handleDelete = async function () {
         await Like.deleteMany({ profile: this.profile });
         await Flat.deleteMany({ addedBy: this.profile });
         await Hostel.deleteMany({ addedBy: this.profile });
+        await Flat.updateMany({ likes: this.profile }, { $pull: { likes: this.profile } });
+        await Hostel.updateMany({ likes: this.profile }, { $pull: { likes: this.profile } });
 
         await Profile.findOneAndDelete({ userId: this._id });
     } catch (error) {
