@@ -30,7 +30,7 @@ const AIPricePredictor = ({ property }) => {
         totalfloornan: 0,
       };
 
-      const response = await fetch("http://localhost:8000/", {
+      const response = await fetch("https://ml.stayinit.in/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
