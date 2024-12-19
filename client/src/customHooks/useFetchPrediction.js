@@ -53,7 +53,7 @@ function useFetchPrediction(property) {
                     }),
                 };
 
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL
+                const response = await fetch(`${import.meta.env.VITE_ML
                 }`, options);
                 const responseJson = await response.json();
                 const data = responseJson.prediction;
