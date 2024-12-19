@@ -4,6 +4,16 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'stayinit/ml/**'  
+      - 'stayinit/server/**' 
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'stayinit/ml/**'    
+      - 'stayinit/server/**' 
+
 
 jobs:
   build-and-deploy:
