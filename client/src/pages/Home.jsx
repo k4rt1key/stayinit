@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, Home as HomeIcon, Filter, DollarSign } from "lucide-react";
+import CitySearch from '../components/CitySearch'
 import { useNavigate } from "react-router-dom";
 
 const FeatureCard = ({ icon, title, description }) => (
@@ -15,13 +16,12 @@ const FeatureCard = ({ icon, title, description }) => (
 );
 
 export default function Home() {
-  const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
   const [propertyType, setPropertyType] = useState("flat");
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    navigate(`/listing/${propertyType}?search=${search}`);
+  const handleSearch = (city) => {
+    navigate(`/listing/${propertyType}?search=${city}`);
   };
 
   return (
@@ -77,23 +77,7 @@ export default function Home() {
                 Hostel
               </button>
             </div>
-            <form
-              onSubmit={handleSearch}
-              className="flex flex-col md:flex-row gap-4"
-            >
-              <input
-                placeholder="Search by City or Locality"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="flex-grow rounded-full px-6 py-2 bg-gray-100 text-black placeholder-gray-900 focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="bg-black/85 flex justify-center items-center text-white px-6 py-2 rounded-full transition-colors duration-200"
-              >
-                <Search className="w-6 h-6 text-center" />
-              </button>
-            </form>
+              <CitySearch onSearch={handleSearch} type={propertyType}/>
           </motion.div>
         </div>
       </motion.div>

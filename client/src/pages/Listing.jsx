@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, Sliders } from "lucide-react";
 import useStore from "../zustand/likesStore";
 import useAuth from "../contexts/Auth";
 import Loading from "../components/Loading";
+import CitySearch from "../components/CitySearch";
 
 const ListingPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -188,6 +189,11 @@ const ListingPage = () => {
     );
   }
 
+  const handleSearch = (city) => {
+    navigate(`/listing/${type}?search=${city}`);
+  };
+
+
   if (loading) {
     return <Loading size={"medium"} />;
   }
@@ -202,6 +208,9 @@ const ListingPage = () => {
       >
         <div className="p-6 mb-20">
           <h2 className="text-2xl font-1 mb-6 text-gray-800">Filters</h2>
+          <div className="mb-6">
+            <CitySearch onSearch={handleSearch} type={type} value={searchParams.toString().replace("search=","")}/>
+          </div>
           {Object.entries(filterOptions).map(([category, options]) => {
             // Only render relevant filters based on type
             if (

@@ -23,6 +23,7 @@ const FeaturedRouter = require("./routes/featured")
 const FlatAdminRouter = require("./routes/flatadmin")
 const HostelAdminRouter = require("./routes/hosteladmin")
 const AdminRouter = require("./routes/admin")
+const SearchRouter = require("./routes/search")
 
 // >> Importing Models
 const Hostel = require("./models/Hostel")
@@ -77,6 +78,7 @@ app.use("/api/v1/featured", FeaturedRouter)
 app.use("/api/v1/flatadmin", FlatAdminRouter)
 app.use("/api/v1/hosteladmin", HostelAdminRouter)
 app.use("/api/v1/admin", AdminRouter)
+app.use("/api/v1/search", SearchRouter)
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: false }));
 
