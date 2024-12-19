@@ -88,20 +88,7 @@ jobs:
 
             # Run the ml container on the custom network
             sudo docker run -d \
-              -e MONGO_URL="${{ secrets.MONGO_URL }}" \
-              -e PORT="${{ secrets.PORT }}" \
-              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-              -e JWT_REFRESH_SECRET="${{ secrets.JWT_REFRESH_SECRET }}" \
-              -e GOOGLE_MAP_API_KEY="${{ secrets.GOOGLE_MAP_API_KEY }}" \
-              -e JWT_EXPIRY="${{ secrets.JWT_EXPIRY }}" \
-              -e JWT_REFRESH_EXPIRY="${{ secrets.JWT_REFRESH_EXPIRY }}" \
-              -e SALT_ROUNDS="${{ secrets.SALT_ROUNDS }}" \
-              -e CLOUD_NAME="${{ secrets.CLOUD_NAME }}" \
-              -e API_KEY="${{ secrets.API_KEY }}" \
-              -e API_SECRET="${{ secrets.API_SECRET }}" \
-              -e EMAIL="${{ secrets.EMAIL }}" \
-              -e PASSWORD="${{ secrets.PASSWORD }}" \
-              -p 8000:8000 \
+              -p 7000:7000 \
               --name stayinit-ml \
               --network stayinit-network \
               ${{ secrets.DOCKER_USERNAME }}/stayinit-ml:latest
