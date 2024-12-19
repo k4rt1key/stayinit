@@ -56,6 +56,7 @@ jobs:
             # Stop any existing containers with the same names
             sudo docker stop stayinit-server stayinit-ml || true
             sudo docker rm stayinit-server stayinit-ml || true
+            sudo docker image prune -f
 
             # Create a custom Docker network
             sudo docker network create stayinit-network || true
