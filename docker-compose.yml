@@ -22,8 +22,7 @@ services:
       API_SECRET:
       EMAIL:
       PASSWORD: 
-      FRONTEND_URL: http://localhost:5173
-
+      FRONTEND_URL: stayinit.in
   ml:
     build: 
       context: ./ml
