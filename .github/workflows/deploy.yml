@@ -5,14 +5,14 @@ on:
     branches:
       - main
     paths:
-      - 'stayinit/ml/**'  
-      - 'stayinit/server/**' 
+      - 'ml/**'  
+      - 'server/**' 
   pull_request:
     branches:
       - main
     paths:
-      - 'stayinit/ml/**'    
-      - 'stayinit/server/**' 
+      - 'ml/**'    
+      - 'server/**' 
 
 
 jobs:
