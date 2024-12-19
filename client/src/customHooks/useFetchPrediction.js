@@ -53,7 +53,8 @@ function useFetchPrediction(property) {
                     }),
                 };
 
-                const response = await fetch(`http://localhost:7000/`, options);
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL
+                }`, options);
                 const responseJson = await response.json();
                 const data = responseJson.prediction;
 

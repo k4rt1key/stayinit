@@ -30,7 +30,8 @@ const AIPricePredictor = ({ property }) => {
         totalfloornan: 0,
       };
 
-      const response = await fetch("http://localhost:7000/", {
+      const response = await fetch(${import.meta.env.VITE_BACKEND_URL
+      }, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
