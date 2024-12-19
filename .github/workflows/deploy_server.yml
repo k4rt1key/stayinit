@@ -1,0 +1,94 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/**' 
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'server/**' 
+
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      # Step 3: Build Docker images for server and ml
+      - name: Build Docker images
+        run: |
+
+
+          # Build the Docker image for the server
+          cd server
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/stayinit-server:latest .
+
+
+      # Step 4: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Step 5: Push Docker images to Docker Hub
+      - name: Push Docker images
+        run: |
+
+          # Push the server Docker image
+          docker push ${{ secrets.DOCKER_USERNAME }}/stayinit-server:latest
+
+      # Step 6: SSH to EC2 and deploy the new images
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_IP }}  # Your EC2 instance IP
+          username: ubuntu  # Change if your user is different
+          key: ${{ secrets.EC2_SSH_KEY }}  # SSH private key stored in Secrets
+          script: |
+
+
+            # Stop any existing containers with the same names
+            sudo docker stop stayinit-server || true
+            sudo docker rm stayinit-server || true
+            sudo docker image prune -f
+
+            # Create a custom Docker network
+            sudo docker network create stayinit-network || true
+
+            # Pull the new Docker images
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/stayinit-server:latest
+
+            # Run the server container on the custom network
+            sudo docker run -d \
+              -e MONGO_URL="${{ secrets.MONGO_URL }}" \
+              -e PORT="${{ secrets.PORT }}" \
+              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+              -e JWT_REFRESH_SECRET="${{ secrets.JWT_REFRESH_SECRET }}" \
+              -e GOOGLE_MAP_API_KEY="${{ secrets.GOOGLE_MAP_API_KEY }}" \
+              -e JWT_EXPIRY="${{ secrets.JWT_EXPIRY }}" \
+              -e JWT_REFRESH_EXPIRY="${{ secrets.JWT_REFRESH_EXPIRY }}" \
+              -e SALT_ROUNDS="${{ secrets.SALT_ROUNDS }}" \
+              -e CLOUD_NAME="${{ secrets.CLOUD_NAME }}" \
+              -e API_KEY="${{ secrets.API_KEY }}" \
+              -e API_SECRET="${{ secrets.API_SECRET }}" \
+              -e EMAIL="${{ secrets.EMAIL }}" \
+              -e PASSWORD="${{ secrets.PASSWORD }}" \
+              -e FRONTEND_URL="${{ secrets.FRONTEND_URL }}" \
+              -p 5000:5000 \
+              --name stayinit-server \
+              --network stayinit-network \
+              ${{ secrets.DOCKER_USERNAME }}/stayinit-server:latest
+
