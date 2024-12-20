@@ -31,7 +31,7 @@ jobs:
         run: |
 
           # Build the Docker image for the ml
-          cd ../ml
+          cd ml
           docker build -t ${{ secrets.DOCKER_USERNAME }}/stayinit-ml:latest .
 
       # Step 4: Log in to Docker Hub
