@@ -27,7 +27,7 @@ const CitySearch = ({ onSearch, type, value }) => {
 
   const fetchCities = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/v1/search/cities');
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/search/cities`);
       const data = await response.json();
       if (data.success) {
         setCities(data.data);
