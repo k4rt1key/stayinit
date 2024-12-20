@@ -57,7 +57,7 @@ async def validate(item: ValidationItem):
     try:
         input_data = pd.DataFrame([item.dict()])
         input_data_encoded = preprocess_data(input_data)
-        prediction = model.predict(input_data_encoded)
+        prediction = model.predict(input_data_encoded) 
         return {"prediction": float(prediction[0])}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
