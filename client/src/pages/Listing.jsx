@@ -204,7 +204,7 @@ const ListingPage = () => {
       <aside
         className={`${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 fixed lg:sticky top-0 left-0 z-40 w-64 h-screen transition-transform duration-300 ease-in-out bg-white shadow-lg lg:shadow-none overflow-y-auto`}
+        } lg:translate-x-0 fixed lg:sticky top-0 left-0 z-40 w-82 h-screen transition-transform duration-300 ease-in-out bg-white shadow-lg lg:shadow-none overflow-y-auto`}
       >
         <div className="p-6 mb-20">
           <h2 className="text-2xl font-1 mb-6 text-gray-800">Filters</h2>
@@ -267,7 +267,7 @@ const ListingPage = () => {
           </button>
         </div>
 
-        <section className="p-6 min-h-screen grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
+        <section className="p-6 min-h-screen grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
           {filteredProperties.length > 0 ? (
             filteredProperties.map((property, index) => (
               <LandingPageCard

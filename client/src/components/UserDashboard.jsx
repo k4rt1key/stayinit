@@ -59,7 +59,7 @@ const UserDashboard = ({ profile }) => {
                   onClick={() => navigate("/dashboard/add-hostel")}
                   className="w-full flex items-center justify-center px-6 py-3 text-base font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-300"
                 >
-                  <Plus className="w-5 h-5 mr-2" />
+                  <Plus className="w-10 h-5 mr-2" />
                   Add Your Hostel
                 </button>
                 <button

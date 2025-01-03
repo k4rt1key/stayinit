@@ -11,6 +11,7 @@ const OwnedFlats = ({ flats, setFlats }) => {
     const token = localStorage.getItem("token");
     await deleteFlat(id, token);
     setFlats(flats.filter((f) => f._id !== id));
+    navigate('/dashboard/flatlist')
   }
 
   const onEdit = async (id) => {
@@ -25,7 +26,7 @@ const OwnedFlats = ({ flats, setFlats }) => {
     <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2 flex-wrap">
       {flats.length == 0 && (
         <div className="flex flex-col gap-8">
-          <div className="text-xl">No flats found!!!</div>
+          <div className="p-6 text-2xl">No flats found!!!</div>
           <div className="flex gap-8">
             <button
               onClick={() => navigate("/dashboard/add-flat")}

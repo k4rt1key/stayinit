@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search } from 'lucide-react';
+import { Search, ChevronDown } from 'lucide-react';
 
-const CitySearch = ({ onSearch, type, value }) => {
+const CitySearch = ({ onSearch, initialType = 'flat', value , setPropertyType}) => {
   const [search, setSearch] = useState('');
   const [cities, setCities] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [type, setType] = useState(initialType);
+  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const suggestionsRef = useRef(null);
   const inputRef = useRef(null);
+  const typeDropdownRef = useRef(null);
+  const formRef = useRef(null);
 
   useEffect(() => {
     fetchCities();
@@ -17,6 +23,9 @@ const CitySearch = ({ onSearch, type, value }) => {
       if (suggestionsRef.current && !suggestionsRef.current.contains(event.target) && !inputRef.current.contains(event.target)) {
         setShowSuggestions(false);
       }
+      if (typeDropdownRef.current && !typeDropdownRef.current.contains(event.target)) {
+        setShowTypeDropdown(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -26,20 +35,27 @@ const CitySearch = ({ onSearch, type, value }) => {
   }, []);
 
   const fetchCities = async () => {
+    setIsLoading(true);
+    setError(null);
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/search/cities`);
       const data = await response.json();
       if (data.success) {
         setCities(data.data);
+      } else {
+        setError('Failed to fetch cities');
       }
     } catch (error) {
       console.error('Error fetching cities:', error);
+      setError('An error occurred while fetching cities');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    onSearch(search);
+    onSearch(search, type);
     setShowSuggestions(false);
   };
 
@@ -51,7 +67,13 @@ const CitySearch = ({ onSearch, type, value }) => {
   const handleSuggestionClick = (city) => {
     setSearch(city);
     setShowSuggestions(false);
-    onSearch(city);
+    onSearch(city, type);
+  };
+
+  const handleTypeChange = (newType) => {
+    setType(newType);
+    setPropertyType(newType);
+    setShowTypeDropdown(false);
   };
 
   const filteredCities = cities
@@ -60,44 +82,90 @@ const CitySearch = ({ onSearch, type, value }) => {
     .map(cityData => cityData.city);
 
   return (
-    <form onSubmit={handleSearch} className="flex flex-col z-10 w-full gap-2">
-      <div className="relative w-full">
+    <form ref={formRef} onSubmit={handleSearch} className="flex flex-col z-10 w-full max-w-md mx-auto">
+      <div className="relative w-full flex">
         <input
           ref={inputRef}
-          placeholder={`Search for ${type}s by City or Locality`}
+          placeholder="Search city"
           value={search || value}
           onChange={handleInputChange}
           onFocus={() => setShowSuggestions(true)}
-          className="w-full rounded-md px-4 py-2 bg-gray-100 text-black placeholder-gray-900 focus:outline-none"
+          className="flex-grow rounded-l-full px-6 py-4 bg-white text-gray-800 placeholder-gray-500 shadow-md focus:outline-none transition-all duration-300 text-sm"
+          aria-label={`Search for ${type}s by City`}
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded={showSuggestions}
         />
-        {showSuggestions && (
-          <div 
-            ref={suggestionsRef}
-            className="absolute z-9 mt-1 w-full max-h-40 overflow-y-auto bg-gray-50 border border-gray-300 rounded-md shadow-lg"
+        <div className="relative">
+          <button
+            type="button"
+            className="h-full px-3 bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 focus:outline-none transition-colors duration-200 flex items-center text-sm"
+            onClick={() => setShowTypeDropdown(!showTypeDropdown)}
+            aria-haspopup="listbox"
+            aria-expanded={showTypeDropdown}
           >
-            {filteredCities.length > 0 ? (
-              filteredCities.map((city, index) => (
-                <div
-                  key={index}
-                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                  onClick={() => handleSuggestionClick(city)}
-                >
-                  {city}
-                </div>
-              ))
-            ) : (
-              <div className="px-4 py-2 text-gray-500">No {type}s found in any city</div>
-            )}
-          </div>
-        )}
+            {type.charAt(0).toUpperCase() + type.slice(1)}
+            <ChevronDown className="w-4 h-4 ml-1" />
+          </button>
+          {showTypeDropdown && (
+            <div
+              ref={typeDropdownRef}
+              className="absolute right-0 mt-1 w-28 bg-white border border-gray-200 rounded-md shadow-lg z-20"
+            >
+              <button
+                type="button"
+                className="w-full px-3 py-2 text-left hover:bg-indigo-50 focus:outline-none focus:bg-indigo-50 text-sm"
+                onClick={() => handleTypeChange('flat')}
+              >
+                Flat
+              </button>
+              <button
+                type="button"
+                className="w-full px-3 py-2 text-left hover:bg-indigo-50 focus:outline-none focus:bg-indigo-50 text-sm"
+                onClick={() => handleTypeChange('hostel')}
+              >
+                Hostel
+              </button>
+            </div>
+          )}
+        </div>
+        <button
+          type="submit"
+          className="bg-indigo-600 text-white px-4 py-2 rounded-r-full hover:bg-indigo-700 transition-colors duration-200 flex items-center"
+          aria-label="Search"
+        >
+          <Search className="w-5 h-5" />
+        </button>
       </div>
-      <button
-        type="submit"
-        className="bg-black/85 flex justify-center items-center text-white px-4 py-2 rounded-md transition-colors duration-200"
-      >
-        <Search className="w-5 h-5 mr-2" />
-        Search
-      </button>
+      {showSuggestions && (
+        <div 
+          ref={suggestionsRef}
+          className="absolute z-20 mt-16 w-full max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg"
+          style={{ width: formRef.current ? formRef.current.offsetWidth : '100%' }}
+        >
+          {filteredCities.length > 0 ? (
+            filteredCities.map((city, index) => (
+              <div
+                key={index}
+                className="px-4 py-2 hover:bg-indigo-50 cursor-pointer transition-colors duration-200 text-sm"
+                onClick={() => handleSuggestionClick(city)}
+              >
+                {city}
+              </div>
+            ))
+          ) : (
+            <div className="px-4 py-2 text-gray-500 text-sm">No {type}s found in any city</div>
+          )}
+        </div>
+      )}
+      {isLoading && (
+        <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+          <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-indigo-500"></div>
+        </div>
+      )}
+      {error && (
+        <div className="mt-2 text-red-500 text-xs">{error}</div>
+      )}
     </form>
   );
 };

@@ -12,6 +12,7 @@ const OwnedHostels = ({ hostels, setHostels }) => {
     const token = localStorage.getItem("token");
     await deleteHostel(id, token);
     setHostels(hostels.filter((h) => h._id !== id));
+    navigate('/dashboard/hostellist')
   }
 
   const onEdit = async (id) => {
@@ -26,7 +27,7 @@ const OwnedHostels = ({ hostels, setHostels }) => {
     <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2 flex-wrap">
       {hostels.length == 0 && (
         <div className="flex flex-col gap-8">
-          <div className="text-xl">No Hostels found!!!</div>
+          <div className="p-6 text-2xl">No Hostels found!!!</div>
           <div className="flex gap-8">
             <button
               onClick={() => navigate("/dashboard/add-flat")}

@@ -32,8 +32,12 @@ const FlatManager = () => {
 
   return (
     <div className="flex gap-10 px-[1.5rem] lg:px-[10rem] py-[2rem]">
-      <div className="flex flex-col w-full">
-        <div className="font-1 text-3xl mb-8">Your Flats</div>
+      <div className="flex flex-col gap-8 w-full">
+      <div className="flex justify-between items-center p-6 w-[97%] rounded-2xl bg-gray-100">
+        <h1 className="text-lg md:text-3xl text-center font-1">
+          Your Flats
+        </h1>
+      </div>
         <OwnedFlats flats={flats} setFlats={setFlats} />
       </div>
     </div>

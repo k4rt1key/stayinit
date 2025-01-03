@@ -1,24 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Search, Home as HomeIcon, Filter, DollarSign } from "lucide-react";
-import CitySearch from '../components/CitySearch'
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, HomeIcon, Filter, DollarSign } from 'lucide-react';
+import CitySearch from '../components/CitySearch';
 import { useNavigate } from "react-router-dom";
 
 const FeatureCard = ({ icon, title, description }) => (
   <motion.div
-    className="flex flex-col items-center p-8 bg-white rounded-lg shadow-sm transition-all duration-300 hover:shadow-md"
-    whileHover={{ y: -5 }}
+    className="flex flex-col items-center p-8 bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+    whileHover={{ y: -5, scale: 1.02 }}
   >
-    <div className="text-black mb-6">{icon}</div>
+    <div className="text-indigo-600 mb-6">{icon}</div>
     <h3 className="text-xl font-semibold mb-4 text-gray-800">{title}</h3>
     <p className="text-gray-600 text-center text-sm">{description}</p>
   </motion.div>
 );
 
+const backgrounds = [
+  "/images/bg.jpg",
+];
+
 export default function Home() {
-  // const [search, setSearch] = useState("");
   const [propertyType, setPropertyType] = useState("flat");
+  const [currentBg, setCurrentBg] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBg((prev) => (prev + 1) % backgrounds.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSearch = (city) => {
     navigate(`/listing/${propertyType}?search=${city}`);
@@ -27,62 +38,69 @@ export default function Home() {
   return (
     <div className="flex flex-col justify-center bg-white">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="relative bg-gray-400 py-24 px-6 lg:px-32"
-        style={{
-          backgroundImage: "url('/images/bg.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+        className="relative h-screen flex items-center"
       >
+        <AnimatePresence>
+          <motion.div
+            key={currentBg}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute inset-0 bg-black"
+            style={{
+              backgroundImage: `url('${backgrounds[currentBg]}')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+        </AnimatePresence>
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        <div className="relative z-10 max-w-6xl mx-auto text-center">
-          <h1 className="text-4xl lg:text-6xl font-1 mb-6 leading-tight text-white">
+        <div className="relative z-10 max-w-6xl mx-auto text-center px-6">
+          <motion.h1
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="text-4xl lg:text-6xl font-bold mb-6 leading-tight text-white"
+          >
             Find Your Perfect <br />
             <span className="text-gray-200">Living Space</span>
-          </h1>
-          <p className="text-xl lg:text-2xl mb-12 max-w-xl mx-auto text-gray-200">
+          </motion.h1>
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="text-xl lg:text-2xl mb-12 max-w-xl mx-auto text-gray-200"
+          >
             Discover your dream property in our curated selection of hostels and
             flats for rent.
-          </p>
+          </motion.p>
 
-          {/* Search Section */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="bg-gray-400/40 p-6 rounded-xl shadow-md max-w-md mx-auto"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className=" p-6 rounded-xl shadow-lg max-w-md mx-auto"
           >
-            <div className="flex md:flex gap-4 mb-6">
-              <button
-                onClick={() => setPropertyType("flat")}
-                className={`px-8 py-3 rounded-full transition-colors duration-200 font-medium flex-1 ${
-                  propertyType === "flat"
-                    ? "bg-gray-900 text-white"
-                    : "bg-gray-200 text-black "
-                }`}
-              >
-                Flat
-              </button>
-              <button
-                onClick={() => setPropertyType("hostel")}
-                className={`px-8 py-2 rounded-full transition-colors duration-200 font-medium flex-1 ${
-                  propertyType === "hostel"
-                    ? "bg-gray-900 text-white"
-                    : "bg-white text-gray-900 "
-                }`}
-              >
-                Hostel
-              </button>
-            </div>
-              <CitySearch onSearch={handleSearch} type={propertyType}/>
+            <CitySearch onSearch={handleSearch} setPropertyType={setPropertyType} type={propertyType}/>
           </motion.div>
+        </div>
+        <div className="absolute bottom-10 left-0 right-0 flex justify-center space-x-2">
+          {backgrounds.map((_, index) => (
+            <button
+              key={index}
+              className={`w-3 h-3 rounded-full ${
+                currentBg === index ? "bg-white" : "bg-gray-400"
+              }`}
+              onClick={() => setCurrentBg(index)}
+            />
+          ))}
         </div>
       </motion.div>
 
-      {/* Feature Section */}
       <div className="py-24 px-6 lg:px-32 bg-white">
         <div className="max-w-6xl mx-auto">
           <motion.h2
@@ -113,7 +131,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Call to Action Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -132,7 +149,7 @@ export default function Home() {
               onClick={() => {
                 navigate("/dashboard/add-flat");
               }}
-              className="bg-indigo-900 text-white px-8 py-3 rounded-full text-base font-medium hover:bg-gray-800 transition-colors duration-200"
+              className="bg-indigo-900 text-white px-8 py-3 rounded-full text-base font-medium hover:bg-indigo-800 transition-colors duration-200"
             >
               List Property
             </button>
@@ -150,3 +167,4 @@ export default function Home() {
     </div>
   );
 }
+
