@@ -10,8 +10,6 @@ const FlatManager = () => {
   const [flats, setFlats] = useState([]);
   const [flat, setFlat] = useState({});
   const [rerender, setRerender] = useState(true);
-  const { authData, loginContextFunction, logoutContextFunction } = useAuth();
-  const { isAuthenticate, profile } = authData;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,9 +24,6 @@ const FlatManager = () => {
     fetchFlats();
   }, [rerender]);
 
-  if (!isAuthenticate) {
-    // return navigate("/login?returnUrl=/dashboard/flatlist");
-  }
 
   return (
     <div className="flex gap-10 px-[1.5rem] lg:px-[10rem] py-[2rem]">

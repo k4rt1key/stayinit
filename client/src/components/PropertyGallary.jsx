@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 export default function PropertyGallery({ images }) {
   const [showFullScreen, setShowFullScreen] = useState(false);
@@ -10,19 +10,54 @@ export default function PropertyGallery({ images }) {
     setShowFullScreen(true);
   };
 
-  const closeFullScreen = () => {
+  const closeFullScreen = useCallback(() => {
     setShowFullScreen(false);
-  };
+  }, []);
 
-  const navigateImage = (direction) => {
+  const navigateImage = useCallback((direction) => {
     setCurrentImageIndex((prevIndex) => {
       if (direction === "prev") {
         return prevIndex > 0 ? prevIndex - 1 : images.length - 1;
       } else {
-        return prevIndex < images.length - 1 ? prevIndex + 1 : 0;
+        return (prevIndex + 1) % images.length;
       }
     });
-  };
+  }, [images.length]);
+
+  const handleKeyDown = useCallback((event) => {
+    if (showFullScreen) {
+      switch (event.key) {
+        case "ArrowLeft":
+          navigateImage("prev");
+          break;
+        case "ArrowRight":
+          navigateImage("next");
+          break;
+        case "Escape":
+          closeFullScreen();
+          break;
+        default:
+          break;
+      }
+    }
+  }, [showFullScreen, navigateImage, closeFullScreen]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
+  useEffect(() => {
+    if (showFullScreen) {
+      // Set focus to the fullscreen container when it opens
+      const fullscreenContainer = document.getElementById("fullscreen-container");
+      if (fullscreenContainer) {
+        fullscreenContainer.focus();
+      }
+    }
+  }, [showFullScreen]);
 
   return (
     <div className="w-full">
@@ -69,7 +104,12 @@ export default function PropertyGallery({ images }) {
       </div>
 
       {showFullScreen && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
+        <div 
+          id="fullscreen-container"
+          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center"
+          tabIndex={-1}
+          onKeyDown={handleKeyDown}
+        >
           <button
             onClick={closeFullScreen}
             className="absolute top-4 right-4 text-white hover:text-gray-300"
@@ -104,3 +144,4 @@ export default function PropertyGallery({ images }) {
     </div>
   );
 }
+

@@ -19,6 +19,7 @@ export default function Login() {
     } || { returnUrl: "/" };
 
   if (isAuthenticate) {
+    console.log("aleready authenticated")
     navigate("/");
   }
 

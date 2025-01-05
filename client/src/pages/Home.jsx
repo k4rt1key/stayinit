@@ -85,16 +85,15 @@ export default function Home() {
             transition={{ delay: 0.6, duration: 0.8 }}
             className=" p-6 rounded-xl shadow-lg max-w-md mx-auto"
           >
-            <CitySearch onSearch={handleSearch} setPropertyType={setPropertyType} type={propertyType}/>
+            <CitySearch onSearch={handleSearch} setPropertyType={setPropertyType} type={propertyType} />
           </motion.div>
         </div>
         <div className="absolute bottom-10 left-0 right-0 flex justify-center space-x-2">
           {backgrounds.map((_, index) => (
             <button
               key={index}
-              className={`w-3 h-3 rounded-full ${
-                currentBg === index ? "bg-white" : "bg-gray-400"
-              }`}
+              className={`w-3 h-3 rounded-full ${currentBg === index ? "bg-white" : "bg-gray-400"
+                }`}
               onClick={() => setCurrentBg(index)}
             />
           ))}
@@ -144,23 +143,25 @@ export default function Home() {
           <p className="text-lg text-gray-700 mb-12">
             Join our community of property owners and seekers today!
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-6">
-            <button
-              onClick={() => {
-                navigate("/dashboard/add-flat");
-              }}
-              className="bg-indigo-900 text-white px-8 py-3 rounded-full text-base font-medium hover:bg-indigo-800 transition-colors duration-200"
-            >
-              List Property
-            </button>
-            <button
-              onClick={() => {
-                navigate("/dashboard/flatlist");
-              }}
-              className="bg-white text-black px-8 py-3 rounded-full text-base font-medium border border-black hover:bg-gray-100 transition-colors duration-200"
-            >
-              Browse Listings
-            </button>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-6">
+              <button
+                onClick={() => {
+                  navigate("/dashboard/add-flat");
+                }}
+                className="bg-indigo-900 text-white px-8 py-3 rounded-full text-base font-medium hover:bg-indigo-800 transition-colors duration-200"
+              >
+                Add Your Flat
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/dashboard/add-hostel");
+                }}
+                className="bg-white text-black px-8 py-3 rounded-full text-base font-medium border border-black hover:bg-gray-100 transition-colors duration-200"
+              >
+                Add Your Hostel
+              </button>
+            </div>
           </div>
         </div>
       </motion.div>

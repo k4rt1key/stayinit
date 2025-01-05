@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import DashboardLayout from "../src/components/DashboardLayout"
 
 import {
   RouterProvider,
@@ -52,12 +53,15 @@ const router = createBrowserRouter(
 
       <Route path="/test" element={<Test />} />
 
+      <Route path="/dashboard" element={<DashboardLayout />}>
+        <Route index element={<UserDashboard />} />
+        <Route path="add-flat" element={<AddFlat />} />
+        <Route path="flatlist" element={<FlatManager />} />
+        <Route path="hostellist" element={<HostelManager />} />
+        <Route path="add-hostel" element={<AddHostel />} /> 
+      </Route>
+
       <Route path="*" element={<NotFound />} />
-      <Route path="dashboard" element={<UserDashboard />} />
-      <Route path="dashboard/add-flat" element={<AddFlat />} />
-      <Route path="dashboard/flatlist" element={<FlatManager />} />
-      <Route path="dashboard/hostellist" element={<HostelManager />} />
-      <Route path="dashboard/add-hostel" element={<AddHostel />} />
     </Route>
   )
 );

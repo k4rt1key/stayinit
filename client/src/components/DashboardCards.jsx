@@ -55,13 +55,13 @@ const DashboardCards = ({ flat, onEdit, onDelete, onView }) => {
               >
                 <Eye className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
               </button>
-              <button
+              {/* <button
                 onClick={() => onEdit(flat)}
                 className="w-12 h-12 sm:w-10 sm:h-10 flex items-center justify-center bg-white/20 rounded-full hover:bg-white/30 transition-colors"
                 aria-label="Edit flat"
               >
                 <Edit className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
-              </button>
+              </button> */}
               <button
                 onClick={(e) => {
                   e.preventDefault();

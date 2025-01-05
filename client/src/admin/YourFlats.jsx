@@ -3,6 +3,7 @@ import DashboardCards from "../components/DashboardCards";
 import { useNavigate } from "react-router-dom";
 import deleteFlat from "../BackendUtils/deleteFlat";
 import { UserCircle, Building, Home, Plus, List } from "lucide-react";
+import { useAuth } from "../contexts/Auth";
 
 const OwnedFlats = ({ flats, setFlats }) => {
   const navigate = useNavigate();
