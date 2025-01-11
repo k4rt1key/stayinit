@@ -1,7 +1,7 @@
 const validator = require('validator');
 
 const emailValidator = (email) => {
-    const allowedDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
+    // const allowedDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
 
     // Use a regex to check the basic email format
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -11,9 +11,8 @@ const emailValidator = (email) => {
         const [, domain] = email.split('@');
 
         // Check if the domain is in the allowed domains list
-        if (allowedDomains.includes(domain.toLowerCase())) {
+       
             return true; // Valid email address
-        }
     }
 
     return false; // Invalid email address
