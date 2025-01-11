@@ -110,7 +110,7 @@ const FlatSchema = new mongoose.Schema({
 
     addressLink: {
         type: String,
-        required: true,
+        required: false,
         trim: true,
         min: 10,
         max: 200,
