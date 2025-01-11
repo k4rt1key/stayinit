@@ -125,9 +125,15 @@ const PropertyPage = () => {
             <div className="flex items-center bg-gray-100 p-3 rounded-lg">
               <MapPin className="w-5 h-5 mr-2 text-indigo-600" />
               <div>
-                <p className="text-gray-500">Floor</p>
+                <p className="text-gray-500">at </p>
                 <p className="font-semibold">
-                  {property.atWhichFloor} of {property.totalFloor}
+                  {property.atWhichFloor} {
+                    property.atWhichFloor == 1 ? ("th") :
+                   
+                    property.atWhichFloor == 2 ? "nd": 
+                     property.atWhichFloor == 3 ? "rd" : "th"
+                    
+                   }
                 </p>
               </div>
             </div>
