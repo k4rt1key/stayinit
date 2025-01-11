@@ -132,8 +132,7 @@ const PropertyPage = () => {
                    
                     property.atWhichFloor == 2 ? "nd": 
                      property.atWhichFloor == 3 ? "rd" : "th"
-                    
-                   }
+                   } floor
                 </p>
               </div>
             </div>
