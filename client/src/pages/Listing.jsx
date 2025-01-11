@@ -7,6 +7,7 @@ import useStore from "../zustand/likesStore";
 import useAuth from "../contexts/Auth";
 import Loading from "../components/Loading";
 import CitySearch from "../components/CitySearch";
+import FilterButton from "../components/FIlterButton";
 
 const ListingPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -259,12 +260,7 @@ const ListingPage = () => {
               ? "for Rent"
               : ""}{" "}
           </h1>
-          <button
-            className="lg:hidden bg-blue-600 text-white p-2 rounded-full"
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          >
-            <Sliders size={24} />
-          </button>
+       
         </div>
 
         <section className="p-6 min-h-screen grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
@@ -311,6 +307,7 @@ const ListingPage = () => {
           </button>
         </div>
       </main>
+      <FilterButton onClick={() => setIsSidebarOpen(!isSidebarOpen)} isOpen={isSidebarOpen} />
     </div>
   );
 };

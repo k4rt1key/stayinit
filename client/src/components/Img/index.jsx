@@ -12,7 +12,7 @@ const Img = ({
       src={src}
       alt={alt}
       {...restProps}
-      loading={"lazy"}
+      // loading={"lazy"}
     />
   );
 };

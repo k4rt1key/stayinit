@@ -92,13 +92,22 @@ export default function AddHostelForm() {
     setLoading(true);
     setError("");
 
+    for (const [key, value] of Object.entries(hostelData)) {
+      if (!value) {
+        setLoading(false);
+        setError(`${key} is required`);
+        window.scrollTo(0, 0);
+        return;
+      }
+    }
+
     try {
       const token = localStorage.getItem("token");
       const result = await addHostel(hostelData, token);
 
       if (result.success) {
         localStorage.removeItem("hostelFormData");
-        navigate("/dashboard");
+        navigate("/dashboard/hostellist");
       } else {
         setError(result.error);
       }
@@ -108,8 +117,7 @@ export default function AddHostelForm() {
   }
 
   function renderStepContent() {
-    switch (step) {
-      case 1:
+    
         return (
           <>
             <input
@@ -201,11 +209,7 @@ export default function AddHostelForm() {
                 Add Price and Sharing
               </button>
             </div>
-          </>
-        );
-      case 2:
-        return (
-          <>
+
             <input
               name="address"
               type="text"
@@ -251,11 +255,7 @@ export default function AddHostelForm() {
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm"
               required
             />
-          </>
-        );
-      case 3:
-        return (
-          <>
+
             <input
               name="contactNumber"
               type="tel"
@@ -282,10 +282,7 @@ export default function AddHostelForm() {
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm"
               rows="4"
             />
-          </>
-        );
-      case 4:
-        return (
+   
           <>
             {[
               "liftFacility",
@@ -330,15 +327,37 @@ export default function AddHostelForm() {
             <div className="mt-2 text-sm text-gray-600">
               {hostelData.images.length} image(s) selected
             </div>
+            <div className="flex flex-col gap-2 max-h-[10rem] overflow-y-scroll">
+          {hostelData.images.map(image => {
+            return <>
+              <div className="bg-gradient-to-r from-gray-50 to-gray-200 p-6 rounded-lg shadow-lg flex justify-between items-center">
+                <h1 className="text-lg font-semibold text-black">{image.name}</h1>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setHostelData(() => {
+                      const imgs = hostelData.images.filter((i) => i.name !== image.name);
+                      return { ...hostelData, images: imgs };
+                    });
+                  }}
+                  className="w-8 h-8 flex justify-center items-center bg-red-500 hover:bg-red-600 text-white font-bold rounded-full shadow transition-transform transform hover:scale-110"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
+
+            </>
+          })}
+          </div>
           </>
-        );
-      default:
-        return null;
+          </>
+        )
     }
-  }
+  
 
   return (
-    <div className="flex bg-white">
+    <div className="flex bg-white px-4">
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-1 text-gray-900 mb-6">Add New Hostel</h2>
@@ -350,24 +369,7 @@ export default function AddHostelForm() {
             {renderStepContent()}
 
             <div className="flex gap-4 justify-between">
-              {step > 1 && (
-                <button
-                  type="button"
-                  onClick={() => setStep(step - 1)}
-                  className="py-2 px-4 border border-transparent rounded-md text-sm font-medium text-indigo-600 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-                >
-                  Previous
-                </button>
-              )}
-              {step < 4 ? (
-                <button
-                  type="button"
-                  onClick={() => setStep(step + 1)}
-                  className="py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-                >
-                  Next
-                </button>
-              ) : (
+              {(
                 <button
                   type="button"
                   onClick={handleSubmit}
@@ -384,10 +386,10 @@ export default function AddHostelForm() {
       <div className="hidden lg:block relative w-0 flex-1">
         <img
           className="absolute inset-0 h-full w-full object-cover"
-          src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1908&q=80"
+          src="/images/bg.jpg"
           alt="Hostel interior"
         />
       </div>
     </div>
-  );
+  )
 }

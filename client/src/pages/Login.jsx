@@ -20,7 +20,7 @@ export default function Login() {
 
   if (isAuthenticate) {
     console.log("aleready authenticated")
-    navigate("/");
+    navigate(`/`);
   }
 
   const [loginData, setLoginData] = useState({

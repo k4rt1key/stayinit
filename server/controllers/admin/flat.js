@@ -94,8 +94,9 @@ async function addFlat(req, res) {
     } catch (error) {
         res.status(400).json({
             sucess: false,
-            error: "Error adding flat: " + error.message
+            error: "Error adding flat please fill out form data correctly"
         });
+        console.log(error.message)
     }
 };
 

@@ -142,24 +142,7 @@ export default function Home() {
             Join our community of property owners and seekers today!
           </p>
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
-              <button
-                onClick={() => {
-                  navigate("/dashboard/add-flat")
-                }}
-                className="bg-indigo-900 text-white px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-medium hover:bg-indigo-800 transition-colors duration-200"
-              >
-                Add Your Flat
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/dashboard/add-hostel")
-                }}
-                className="bg-white text-black px-6 sm:px-8 py-3 rounded-full text-sm sm:text-base font-medium border border-black hover:bg-gray-100 transition-colors duration-200"
-              >
-                Add Your Hostel
-              </button>
-            </div>
+            
           </div>
         </div>
       </motion.div>

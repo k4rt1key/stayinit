@@ -244,10 +244,15 @@ const handleFlatRemove = async function () {
         const Comment = require("./Comment");
         const Like = require("./Like");
         const NearestLandmarksForSearching = require("./NearestLandmarksForSearching");
+        const Profile = require("./Profile");
+
+        const like = await Like.find({ flat: this._id });
 
         await NearestLandmarksForSearching.deleteMany({ _id: { $in: this.nearestLandmarksForSearching } });
         await Comment.deleteMany({ _id: { $in: this.comments } });
         await Like.deleteMany({ _id: { $in: this.likes } });
+        await Profile.updateOne({$pull: {likes: like._id}});
+
     } catch (error) {
         throw new Error(`Backend: ${error.message}`);
     }

@@ -3,6 +3,8 @@ import DashboardCardsForHostel from "../components/DashboardCardsForHostel";
 import { useNavigate } from "react-router-dom";
 import deleteHostel from "../BackendUtils/deleteHostel";
 import { UserCircle, Building, Home, Plus, List } from "lucide-react";
+import { toast } from "react-toastify";
+
 
 const OwnedHostels = ({ hostels, setHostels }) => {
   const navigate = useNavigate();
@@ -12,6 +14,8 @@ const OwnedHostels = ({ hostels, setHostels }) => {
     const token = localStorage.getItem("token");
     await deleteHostel(id, token);
     setHostels(hostels.filter((h) => h._id !== id));
+    toast.success(`flat deleted successfully !!!`)
+
     navigate('/dashboard/hostellist')
   }
 

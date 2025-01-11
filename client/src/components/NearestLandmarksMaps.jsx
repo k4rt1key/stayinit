@@ -47,7 +47,7 @@ export default function NearestLandmarksMap({ property }) {
           src={`https://www.google.com/maps/embed/v1/search?q=${mapTypes[mapStringNumber].query}&key=AIzaSyCR_yl9s_fGqzm4enDuQ_4elU6H1xSPOa4`}
           className="w-full h-full border-0"
           allowFullScreen
-          loading="lazy"
+          // loading="lazy"
         ></iframe>
       </div>
     </div>

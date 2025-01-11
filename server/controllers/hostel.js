@@ -1,7 +1,4 @@
 const Hostel = require("../models/Hostel")
-const PriceAndSharing = require("../models/PriceAndSharing")
-const NearestLandmarksForSearching = require("../models/NearestLandmarksForSearching")
-
 async function getHostel(req, res) {
     try {
         const { hostelname } = req.params

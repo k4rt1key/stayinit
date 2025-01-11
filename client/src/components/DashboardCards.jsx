@@ -18,9 +18,9 @@ const DashboardCards = ({ flat, onEdit, onDelete, onView }) => {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
       <div className="absolute inset-0 p-4 sm:p-6 flex flex-col justify-between">
-        <div className="flex flex-col sm:flex-row justify-between items-start">
+        <div className="flex flex-col gap-2 justify-between items-start">
           <div className="mb-4 sm:mb-0">
-            <h2 className="text-2xl sm:text-3xl font-1 text-white mb-2">
+            <h2 className="text-xl sm:text-2xl font-1 text-white mb-2">
               {flat.uniqueName}
             </h2>
             <div className="flex items-center text-white/80">

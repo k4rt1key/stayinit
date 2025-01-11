@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 export default function Layout() {
   return (
     <Auth>
-      <div className="font-2 h-screen m-0 p-0 flex flex-col justify-between gap-2">
+      <div className="font-2 h-screen m-0 p-2 md:p-0 flex flex-col justify-between gap-2">
         <Navbar />
         <Outlet />
         <Footer />

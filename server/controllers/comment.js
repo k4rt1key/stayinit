@@ -1,7 +1,4 @@
 const Comment = require('../models/Comment');
-const Flat = require('../models/Flat');
-const Hostel = require('../models/Hostel');
-const Profile = require('../models/Profile');
 
 async function addComment(req, res) {
     try {

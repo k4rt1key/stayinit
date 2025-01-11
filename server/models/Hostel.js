@@ -223,11 +223,16 @@ const handleHostelRemove = async function () {
         const Comment = require("./Comment");
         const Like = require("./Like");
         const NearestLandmarksForSearching = require("./NearestLandmarksForSearching");
+        const Profile = require("./Profile");
+
+        const like = await Like.find({ hostel: this._id });
 
         await Pricing.deleteMany({ hostel: this._id });
         await NearestLandmarksForSearching.deleteMany({ _id: { $in: this.nearestLandmarksForSearching } });
         await Comment.deleteMany({ hostel: this._id });
         await Like.deleteMany({ hostel: this._id });
+        await Profile.updateOne({$pull: {likes: like._id}});
+
     } catch (error) {
         throw new Error(`backend: ${error.message}`);
     }
