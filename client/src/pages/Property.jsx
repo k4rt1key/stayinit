@@ -34,10 +34,10 @@ const PropertyPage = () => {
   const addressCordinates = extractCoordinatesFromUrl(property?.addressLink);
   const lat = addressCordinates?.split(",")[0];
   const long = addressCordinates?.split(",")[1];
+
   const { isAuthenticate } = useAuth();
-
-  console.log(lat, long);
-
+  
+  
   useEffect(() => {
     async function fetchProperty() {
       if (propertyType === "flat") {
@@ -276,7 +276,7 @@ const PropertyPage = () => {
             <div className="mt-4 text-md">
               {activeTab === "details" && renderDetails()}
               {activeTab === "amenities" && renderAmenities()}
-              {activeTab === "contact" && isAuthenticate ? (
+              {/* {activeTab === "contact" && isAuthenticate ? (
                 <div className="space-y-3">
                   <p className="flex items-center">
                     <Phone className="w-4 h-4 mr-2 text-indigo-600" />
@@ -296,7 +296,7 @@ const PropertyPage = () => {
                 </div>
               ) : <>
                 <p>Please Login to see contact details</p>
-              </>}
+              </>} */}
             </div>
           </div>
 
