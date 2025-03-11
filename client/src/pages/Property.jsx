@@ -259,7 +259,7 @@ const PropertyPage = () => {
 
           <div className="mb-8">
             <div className="flex border-b overflow-x-auto">
-              {["details", "amenities", "contact"].map((tab) => (
+              {["details", "amenities"].map((tab) => (
                 <button
                   key={tab}
                   className={`py-2 px-4 font-1 whitespace-nowrap ${
