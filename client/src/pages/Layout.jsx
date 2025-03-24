@@ -10,7 +10,8 @@ export default function Layout() {
     <Auth>
       <div className="font-2 h-screen m-0 p-2 md:p-0 flex flex-col justify-between gap-2">
         <Navbar />
-        <Outlet />
+       // <Outlet />
+        <div className="font-2 flex flex-col justify-between">This website is currently under maintenance</div>
         <Footer />
       </div>
     </Auth>
